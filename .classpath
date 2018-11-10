@@ -181,5 +181,8 @@
 	<classpathentry kind="lib" path="webapps/glaf/WEB-INF/lib/asm-util.jar"/>
 	<classpathentry kind="lib" path="webapps/glaf/WEB-INF/lib/asm.jar"/>
 	<classpathentry kind="lib" path="webapps/glaf/WEB-INF/lib/hibernate3.jar"/>
+	<classpathentry kind="lib" path="webapps/glaf/WEB-INF/lib/eclipselink.jar"/>
+	<classpathentry kind="lib" path="webapps/glaf/WEB-INF/lib/jbpm-jpdl.jar"/>
+	<classpathentry kind="lib" path="webapps/glaf/WEB-INF/lib/mybatis-2.3.5.jar"/>
 	<classpathentry kind="output" path="webapps/glaf/WEB-INF/classes"/>
 </classpath>
