@@ -41,9 +41,9 @@ import com.glaf.core.util.JsonUtils;
 import com.glaf.core.util.LogUtils;
 import com.glaf.core.util.RequestUtils;
 import com.glaf.template.util.TemplateUtils;
-import com.glaf.jbpm.container.ProcessContainer;
 import com.glaf.jbpm.context.ProcessContext;
 import com.glaf.jbpm.datafield.DataField;
+import com.glaf.jbpm.factory.ProcessFactory;
 
 @Controller("/jbpm/start")
 @RequestMapping("/jbpm/start")
@@ -65,7 +65,7 @@ public class JbpmStartProcessController {
 		String processName = RequestUtils
 				.getStringValue(request, "processName");
 		String actorId = RequestUtils.getActorId(request);
-		ProcessContainer container = ProcessContainer.getContainer();
+		ProcessFactory container = ProcessFactory.getContainer();
 		Long processInstanceId = null;
 
 		if (StringUtils.isNotEmpty(rowId)

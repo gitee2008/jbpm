@@ -46,7 +46,7 @@ import com.glaf.core.util.FileUtils;
 import com.glaf.core.util.LogUtils;
 import com.glaf.core.util.ZipUtils;
 import com.glaf.jbpm.config.JbpmExtensionReader;
-import com.glaf.jbpm.container.ProcessContainer;
+import com.glaf.jbpm.factory.ProcessFactory;
 import com.glaf.jbpm.model.Extension;
 import com.glaf.jbpm.manager.JbpmExtensionManager;
 
@@ -140,7 +140,7 @@ public class JbpmProcessDeployer {
 						List<Extension> extensions = reader.readTasks(new ByteArrayInputStream(x_bytes));
 						if (extensions != null && extensions.size() > 0) {
 
-							JbpmExtensionManager jbpmExtensionManager = ProcessContainer.getContainer()
+							JbpmExtensionManager jbpmExtensionManager = ProcessFactory.getContainer()
 									.getJbpmExtensionManager();
 							jbpmExtensionManager.reconfig(jbpmContext, extensions);
 						}

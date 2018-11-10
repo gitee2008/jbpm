@@ -40,7 +40,7 @@ import org.jbpm.taskmgmt.def.Task;
 import org.jbpm.taskmgmt.exe.TaskInstance;
 import org.jbpm.taskmgmt.exe.TaskMgmtInstance;
 
-import com.glaf.jbpm.container.ProcessContainer;
+import com.glaf.jbpm.factory.ProcessFactory;
 import com.glaf.jbpm.util.Constant;
 
 /**
@@ -180,7 +180,7 @@ public class GeneralTaskInstanceAction implements ActionHandler {
 
 		paramMap.put("roleId", roleId);
 
-		List<String> x_actorIds = ProcessContainer.getContainer()
+		List<String> x_actorIds = ProcessFactory.getContainer()
 				.getMembershipActorIds(paramMap);
 
 		if (x_actorIds != null && x_actorIds.size() > 0) {

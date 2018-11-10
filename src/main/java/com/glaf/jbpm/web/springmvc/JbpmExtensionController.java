@@ -38,8 +38,8 @@ import org.springframework.web.servlet.ModelAndView;
 import com.glaf.core.config.ViewProperties;
 import com.glaf.core.util.RequestUtils;
 import com.glaf.core.util.Tools;
-import com.glaf.jbpm.container.ProcessContainer;
 import com.glaf.jbpm.context.Context;
+import com.glaf.jbpm.factory.ProcessFactory;
 import com.glaf.jbpm.manager.JbpmExtensionManager;
 import com.glaf.jbpm.model.Extension;
 import com.glaf.jbpm.model.ExtensionField;
@@ -63,11 +63,11 @@ public class JbpmExtensionController {
 				&& StringUtils.isNotEmpty(taskName)) {
 
 		}
-		JbpmExtensionManager jbpmExtensionManager = ProcessContainer
+		JbpmExtensionManager jbpmExtensionManager = ProcessFactory
 				.getContainer().getJbpmExtensionManager();
 		JbpmContext jbpmContext = null;
 		try {
-			jbpmContext = ProcessContainer.getContainer().createJbpmContext();
+			jbpmContext = ProcessFactory.getContainer().createJbpmContext();
 			Extension extension = jbpmExtensionManager.getExtensionTask(
 					jbpmContext, processName, taskName);
 			request.setAttribute("extension", extension);
@@ -96,11 +96,11 @@ public class JbpmExtensionController {
 	public ModelAndView list(HttpServletRequest request) {
 		String processName = request.getParameter("processName");
 		if (StringUtils.isNotEmpty(processName)) {
-			JbpmExtensionManager jbpmExtensionManager = ProcessContainer
+			JbpmExtensionManager jbpmExtensionManager = ProcessFactory
 					.getContainer().getJbpmExtensionManager();
 			JbpmContext jbpmContext = null;
 			try {
-				jbpmContext = ProcessContainer.getContainer()
+				jbpmContext = ProcessFactory.getContainer()
 						.createJbpmContext();
 				jbpmExtensionManager
 						.getExtensionTasks(jbpmContext, processName);
@@ -154,11 +154,11 @@ public class JbpmExtensionController {
 					}
 				}
 			}
-			JbpmExtensionManager jbpmExtensionManager = ProcessContainer
+			JbpmExtensionManager jbpmExtensionManager = ProcessFactory
 					.getContainer().getJbpmExtensionManager();
 			JbpmContext jbpmContext = null;
 			try {
-				jbpmContext = ProcessContainer.getContainer()
+				jbpmContext = ProcessFactory.getContainer()
 						.createJbpmContext();
 				jbpmExtensionManager.reconfig(jbpmContext, extensions);
 			} catch (Exception ex) {

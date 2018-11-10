@@ -54,8 +54,8 @@ import com.glaf.core.util.Paging;
 import com.glaf.core.util.ParamUtils;
 import com.glaf.core.util.RequestUtils;
 import com.glaf.core.util.Tools;
-import com.glaf.jbpm.container.ProcessContainer;
 import com.glaf.jbpm.context.Context;
+import com.glaf.jbpm.factory.ProcessFactory;
 import com.glaf.jbpm.manager.JbpmProcessManager;
 import com.glaf.jbpm.manager.JbpmTaskManager;
 import com.glaf.jbpm.model.TaskItem;
@@ -76,7 +76,7 @@ public class JbpmMonitorController {
 		GraphSession graphSession = null;
 		JbpmContext jbpmContext = null;
 		try {
-			jbpmContext = ProcessContainer.getContainer().createJbpmContext();
+			jbpmContext = ProcessFactory.getContainer().createJbpmContext();
 			graphSession = jbpmContext.getGraphSession();
 			List<ProcessDefinition> processDefinitions = graphSession
 					.findAllProcessDefinitions();
@@ -131,10 +131,10 @@ public class JbpmMonitorController {
 		Paging jpage = null;
 		JbpmContext jbpmContext = null;
 		try {
-			Map<String, User> userMap = ProcessContainer.getContainer()
+			Map<String, User> userMap = ProcessFactory.getContainer()
 					.getUserMap();
-			jbpmContext = ProcessContainer.getContainer().createJbpmContext();
-			JbpmProcessManager jbpmProcessManager = ProcessContainer
+			jbpmContext = ProcessFactory.getContainer().createJbpmContext();
+			JbpmProcessManager jbpmProcessManager = ProcessFactory
 					.getContainer().getJbpmProcessManager();
 			jpage = jbpmProcessManager.getPageProcessInstances(jbpmContext,
 					currPageNo, limit, query);
@@ -232,7 +232,7 @@ public class JbpmMonitorController {
 		JbpmContext jbpmContext = null;
 		List<TaskItem> taskItems = null;
 		try {
-			jbpmContext = ProcessContainer.getContainer().createJbpmContext();
+			jbpmContext = ProcessFactory.getContainer().createJbpmContext();
 			if (processDefinitionId > 0) {
 				ProcessDefinition pd = jbpmContext.getGraphSession()
 						.loadProcessDefinition(processDefinitionId);
@@ -251,7 +251,7 @@ public class JbpmMonitorController {
 				}
 				request.setAttribute("taskMap", taskMap);
 			}
-			JbpmProcessManager jbpmProcessManager = ProcessContainer
+			JbpmProcessManager jbpmProcessManager = ProcessFactory
 					.getContainer().getJbpmProcessManager();
 			jpage = jbpmProcessManager.getPageProcessInstances(jbpmContext,
 					currPageNo, limit, query);
@@ -268,7 +268,7 @@ public class JbpmMonitorController {
 				ProcessQuery q = new ProcessQuery();
 
 				q.setProcessInstanceIds(processInstanceIds);
-				JbpmTaskManager jbpmTaskManager = ProcessContainer
+				JbpmTaskManager jbpmTaskManager = ProcessFactory
 						.getContainer().getJbpmTaskManager();
 				taskItems = jbpmTaskManager.getWorkedTaskItems(jbpmContext, q);
 
@@ -284,7 +284,7 @@ public class JbpmMonitorController {
 			Context.close(jbpmContext);
 		}
 
-		Map<String, User> userMap = ProcessContainer.getContainer()
+		Map<String, User> userMap = ProcessFactory.getContainer()
 				.getUserMap();
 		if (userMap != null && taskItems != null && taskItems.size() > 0) {
 
@@ -320,10 +320,10 @@ public class JbpmMonitorController {
 		GraphSession graphSession = null;
 		JbpmContext jbpmContext = null;
 		try {
-			Map<String, User> userMap = ProcessContainer.getContainer()
+			Map<String, User> userMap = ProcessFactory.getContainer()
 					.getUserMap();
 			modelMap.put("userMap", userMap);
-			jbpmContext = ProcessContainer.getContainer().createJbpmContext();
+			jbpmContext = ProcessFactory.getContainer().createJbpmContext();
 			graphSession = jbpmContext.getGraphSession();
 
 			List<ProcessDefinition> processDefinitions = graphSession

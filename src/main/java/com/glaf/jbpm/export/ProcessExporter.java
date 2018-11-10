@@ -46,8 +46,8 @@ import com.glaf.core.util.LogUtils;
 import com.glaf.core.util.StringTools;
 
 import com.glaf.jbpm.config.JbpmExtensionWriter;
-import com.glaf.jbpm.container.ProcessContainer;
 import com.glaf.jbpm.context.Context;
+import com.glaf.jbpm.factory.ProcessFactory;
 import com.glaf.jbpm.model.Extension;
 import com.glaf.jbpm.manager.JbpmExtensionManager;
 
@@ -59,7 +59,7 @@ public class ProcessExporter {
 		GraphSession graphSession = null;
 		JbpmContext jbpmContext = null;
 		try {
-			jbpmContext = ProcessContainer.getContainer().createJbpmContext();
+			jbpmContext = ProcessFactory.getContainer().createJbpmContext();
 			graphSession = jbpmContext.getGraphSession();
 			List<ProcessDefinition> processDefinitions = graphSession
 					.findLatestProcessDefinitions();
@@ -126,7 +126,7 @@ public class ProcessExporter {
 		Map<String, InputStream> zipMap = new java.util.HashMap<String, InputStream>();
 		try {
 
-			jbpmContext = ProcessContainer.getContainer().createJbpmContext();
+			jbpmContext = ProcessFactory.getContainer().createJbpmContext();
 			ProcessDefinition processDefinition = jbpmContext.getGraphSession()
 					.getProcessDefinition(processDefinitionId);
 			if (processDefinition != null
@@ -165,7 +165,7 @@ public class ProcessExporter {
 					}
 				}
 			}
-			JbpmExtensionManager jbpmExtensionManager = ProcessContainer
+			JbpmExtensionManager jbpmExtensionManager = ProcessFactory
 					.getContainer().getJbpmExtensionManager();
 			List<Extension> extensions = jbpmExtensionManager.getExtensions(
 					jbpmContext, process_name);
@@ -202,7 +202,7 @@ public class ProcessExporter {
 		long processDefinitionId = 0;
 		JbpmContext jbpmContext = null;
 		try {
-			jbpmContext = ProcessContainer.getContainer().createJbpmContext();
+			jbpmContext = ProcessFactory.getContainer().createJbpmContext();
 			ProcessDefinition processDefinition = jbpmContext.getGraphSession()
 					.findLatestProcessDefinition(process_name);
 			if (processDefinition != null

@@ -51,8 +51,8 @@ import com.glaf.core.util.LogUtils;
 import com.glaf.core.util.ParamUtils;
 import com.glaf.core.util.RequestUtils;
 import com.glaf.core.util.Tools;
-import com.glaf.jbpm.container.ProcessContainer;
 import com.glaf.jbpm.context.Context;
+import com.glaf.jbpm.factory.ProcessFactory;
 import com.glaf.jbpm.manager.JbpmTaskManager;
 import com.glaf.jbpm.model.ActivityInstance;
 import com.glaf.jbpm.model.TaskItem;
@@ -80,12 +80,12 @@ public class JbpmTaskController {
 		ProcessInstance processInstance;
 		JbpmContext jbpmContext = null;
 		try {
-			Map<String, User> userMap = ProcessContainer.getContainer()
+			Map<String, User> userMap = ProcessFactory.getContainer()
 					.getUserMap();
 			if (processInstanceId != null) {
-				List<TaskItem> taskItems = ProcessContainer.getContainer()
+				List<TaskItem> taskItems = ProcessFactory.getContainer()
 						.getTaskItemsByProcessInstanceId(processInstanceId);
-				jbpmContext = ProcessContainer.getContainer()
+				jbpmContext = ProcessFactory.getContainer()
 						.createJbpmContext();
 				processInstance = jbpmContext.getProcessInstance(Long
 						.valueOf(processInstanceId));
@@ -132,9 +132,9 @@ public class JbpmTaskController {
 		Set<String> actorIds = new HashSet<String>();
 		JbpmContext jbpmContext = null;
 		try {
-			Map<String, User> userMap = ProcessContainer.getContainer()
+			Map<String, User> userMap = ProcessFactory.getContainer()
 					.getUserMap();
-			jbpmContext = ProcessContainer.getContainer().createJbpmContext();
+			jbpmContext = ProcessFactory.getContainer().createJbpmContext();
 			if (StringUtils.isNotEmpty(processInstanceId)
 					&& StringUtils.isNumeric(processInstanceId)) {
 				ProcessInstance processInstance = jbpmContext
@@ -254,14 +254,14 @@ public class JbpmTaskController {
 		try {
 			ProcessQuery query = new ProcessQuery();
 			Tools.populate(query, params);
-			Map<String, User> userMap = ProcessContainer.getContainer()
+			Map<String, User> userMap = ProcessFactory.getContainer()
 					.getUserMap();
 
 			if (StringUtils.equals(actionType, "finished")) {
-				taskItems = ProcessContainer.getContainer().getWorkedTaskItems(
+				taskItems = ProcessFactory.getContainer().getWorkedTaskItems(
 						query);
 			} else {
-				taskItems = ProcessContainer.getContainer().getXYTaskItems(
+				taskItems = ProcessFactory.getContainer().getXYTaskItems(
 						query);
 			}
 			if (userMap != null && userMap.size() > 0 && taskItems != null
@@ -316,7 +316,7 @@ public class JbpmTaskController {
 	@RequestMapping("/query")
 	public ModelAndView query(ModelMap modelMap, HttpServletRequest request) {
 		try {
-			Map<String, User> userMap = ProcessContainer.getContainer()
+			Map<String, User> userMap = ProcessFactory.getContainer()
 					.getUserMap();
 			modelMap.put("userMap", userMap);
 		} catch (Exception ex) {
@@ -367,11 +367,11 @@ public class JbpmTaskController {
 
 		if (actorIds.size() > 0) {
 			if (taskInstanceId != null && taskInstanceId > 0) {
-				ProcessContainer.getContainer().reassignTask(taskInstanceId,
+				ProcessFactory.getContainer().reassignTask(taskInstanceId,
 						actorIds);
 			}
 			if (processInstanceId != null && StringUtils.isNotEmpty(taskName)) {
-				ProcessContainer.getContainer().reassignTask(processInstanceId,
+				ProcessFactory.getContainer().reassignTask(processInstanceId,
 						taskName, actorIds);
 			}
 		}
@@ -384,7 +384,7 @@ public class JbpmTaskController {
 		Long processInstanceId = ParamUtils.getLong(paramMap,
 				"processInstanceId");
 		if (processInstanceId != null) {
-			ProcessContainer.getContainer().resume(processInstanceId);
+			ProcessFactory.getContainer().resume(processInstanceId);
 		}
 
 	}
@@ -396,7 +396,7 @@ public class JbpmTaskController {
 		Long processInstanceId = ParamUtils.getLong(paramMap,
 				"processInstanceId");
 		if (processInstanceId != null) {
-			ProcessContainer.getContainer().suspend(processInstanceId);
+			ProcessFactory.getContainer().suspend(processInstanceId);
 		}
 	}
 
@@ -410,13 +410,13 @@ public class JbpmTaskController {
 		ProcessDefinition processDefinition = null;
 		JbpmContext jbpmContext = null;
 		try {
-			Map<String, User> userMap = ProcessContainer.getContainer()
+			Map<String, User> userMap = ProcessFactory.getContainer()
 					.getUserMap();
 			if (processInstanceId != null && processInstanceId > 0) {
-				List<TaskItem> taskItems = ProcessContainer.getContainer()
+				List<TaskItem> taskItems = ProcessFactory.getContainer()
 						.getTaskItemsByProcessInstanceId(processInstanceId);
 
-				jbpmContext = ProcessContainer.getContainer()
+				jbpmContext = ProcessFactory.getContainer()
 						.createJbpmContext();
 
 				Map<String, Object> params = new java.util.HashMap<String, Object>();
@@ -447,7 +447,7 @@ public class JbpmTaskController {
 					List<TaskItem> finishedTaskItems = new java.util.ArrayList<TaskItem>();
 					Collection<?> taskInstances = tmi.getTaskInstances();
 					if (taskInstances != null && taskInstances.size() > 0) {
-						JbpmTaskManager jbpmTaskManager = ProcessContainer
+						JbpmTaskManager jbpmTaskManager = ProcessFactory
 								.getContainer().getJbpmTaskManager();
 						Map<Long, ActivityInstance> workedMap = jbpmTaskManager
 								.getActivityInstanceMap(jbpmContext,
@@ -525,40 +525,40 @@ public class JbpmTaskController {
 		String processName = request.getParameter("processName");
 		List<TaskItem> taskItems = null;
 
-		Map<String, User> userMap = ProcessContainer.getContainer()
+		Map<String, User> userMap = ProcessFactory.getContainer()
 				.getUserMap();
 
 		if (StringUtils.equals(actionType, "running")) {
 			if (StringUtils.isNotEmpty(processName)) {
 				if (StringUtils.isNotEmpty(actorId)) {
-					taskItems = ProcessContainer.getContainer()
+					taskItems = ProcessFactory.getContainer()
 							.getTaskItemsByProcessName(processName, actorId);
 				} else {
-					taskItems = ProcessContainer.getContainer()
+					taskItems = ProcessFactory.getContainer()
 							.getTaskItemsByProcessName(processName);
 				}
 			} else {
 				if (StringUtils.isNotEmpty(actorId)) {
-					taskItems = ProcessContainer.getContainer().getTaskItems(
+					taskItems = ProcessFactory.getContainer().getTaskItems(
 							actorId);
 				}
 			}
 		} else if (StringUtils.equals(actionType, "finished")) {
 			if (StringUtils.isNotEmpty(processName)) {
 				if (StringUtils.isNotEmpty(actorId)) {
-					taskItems = ProcessContainer.getContainer()
+					taskItems = ProcessFactory.getContainer()
 							.getWorkedTaskItems(processName, actorId);
 				}
 			} else {
 				if (StringUtils.isNotEmpty(actorId)) {
-					taskItems = ProcessContainer.getContainer()
+					taskItems = ProcessFactory.getContainer()
 							.getWorkedTaskItems(actorId);
 				}
 			}
 		}
 
 		if (taskItems == null) {
-			taskItems = ProcessContainer.getContainer().getAllTaskItems();
+			taskItems = ProcessFactory.getContainer().getAllTaskItems();
 		}
 
 		modelMap.put("taskItems", taskItems);
@@ -588,10 +588,10 @@ public class JbpmTaskController {
 		List<TaskItem> taskItems = null;
 
 		if (StringUtils.isNotEmpty(processName)) {
-			taskItems = ProcessContainer.getContainer()
+			taskItems = ProcessFactory.getContainer()
 					.getTaskItemsByProcessName(processName, actorId);
 		} else {
-			taskItems = ProcessContainer.getContainer().getTaskItems(actorId);
+			taskItems = ProcessFactory.getContainer().getTaskItems(actorId);
 		}
 		request.setAttribute("taskItems", taskItems);
 
@@ -631,14 +631,14 @@ public class JbpmTaskController {
 		try {
 			ProcessQuery query = new ProcessQuery();
 			Tools.populate(query, params);
-			Map<String, User> userMap = ProcessContainer.getContainer()
+			Map<String, User> userMap = ProcessFactory.getContainer()
 					.getUserMap();
 
 			if (StringUtils.equals(actionType, "finished")) {
-				taskItems = ProcessContainer.getContainer().getWorkedTaskItems(
+				taskItems = ProcessFactory.getContainer().getWorkedTaskItems(
 						query);
 			} else {
-				taskItems = ProcessContainer.getContainer().getTaskItems(query);
+				taskItems = ProcessFactory.getContainer().getTaskItems(query);
 			}
 			if (userMap != null && userMap.size() > 0 && taskItems != null
 					&& taskItems.size() > 0) {

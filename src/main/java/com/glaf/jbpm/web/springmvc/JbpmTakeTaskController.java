@@ -41,7 +41,7 @@ import com.glaf.core.util.LogUtils;
 import com.glaf.core.util.ParamUtils;
 import com.glaf.core.util.RequestUtils;
 import com.glaf.template.util.TemplateUtils;
-import com.glaf.jbpm.container.ProcessContainer;
+import com.glaf.jbpm.factory.ProcessFactory;
 import com.glaf.jbpm.model.ActivityInstance;
 import com.glaf.jbpm.model.TaskItem;
 
@@ -63,7 +63,7 @@ public class JbpmTakeTaskController {
 				"processInstanceId");
 		Long taskInstanceId = ParamUtils.getLong(paramMap, "taskInstanceId");
 		String actorId = RequestUtils.getActorId(request);
-		ProcessContainer container = ProcessContainer.getContainer();
+		ProcessFactory container = ProcessFactory.getContainer();
 		boolean canSubmit = false;
 		TaskItem taskItem = null;
 		String processName = null;

@@ -11,8 +11,8 @@ import org.jbpm.graph.def.ProcessDefinition;
 
 import com.glaf.core.config.SystemProperties;
 import com.glaf.core.util.FileUtils;
-import com.glaf.jbpm.container.ProcessContainer;
 import com.glaf.jbpm.context.Context;
+import com.glaf.jbpm.factory.ProcessFactory;
 
 public class JbpmProcessConfig {
 
@@ -28,7 +28,7 @@ public class JbpmProcessConfig {
 
 		JbpmContext jbpmContext = null;
 		try {
-			jbpmContext = ProcessContainer.getContainer().createJbpmContext();
+			jbpmContext = ProcessFactory.getContainer().createJbpmContext();
 			if (jbpmContext.getSession() != null) {
 				ProcessDefinition processDefinition = jbpmContext
 						.getGraphSession().getProcessDefinition(
@@ -57,7 +57,7 @@ public class JbpmProcessConfig {
 			if (file.exists()) {
 				bytes = FileUtils.getBytes(file);
 			} else {
-				jbpmContext = ProcessContainer.getContainer()
+				jbpmContext = ProcessFactory.getContainer()
 						.createJbpmContext();
 				if (jbpmContext.getSession() != null) {
 					ProcessDefinition processDefinition = jbpmContext

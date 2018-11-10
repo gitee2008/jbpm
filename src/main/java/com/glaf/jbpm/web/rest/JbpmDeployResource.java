@@ -56,8 +56,8 @@ import com.glaf.core.util.LogUtils;
 import com.glaf.core.util.RequestUtils;
 import com.glaf.core.util.StringTools;
 import com.glaf.jbpm.config.JbpmExtensionWriter;
-import com.glaf.jbpm.container.ProcessContainer;
 import com.glaf.jbpm.deploy.JbpmProcessDeployer;
+import com.glaf.jbpm.factory.ProcessFactory;
 import com.glaf.jbpm.manager.JbpmExtensionManager;
 import com.glaf.jbpm.model.Extension;
 
@@ -97,7 +97,7 @@ public class JbpmDeployResource {
 					JbpmContext jbpmContext = null;
 					JbpmProcessDeployer deployer = new JbpmProcessDeployer();
 					try {
-						jbpmContext = ProcessContainer.getContainer().createJbpmContext();
+						jbpmContext = ProcessFactory.getContainer().createJbpmContext();
 						if (jbpmContext != null && jbpmContext.getSession() != null) {
 							deployer.deploy(jbpmContext, mFile.getBytes());
 							status_code = 200;
@@ -158,8 +158,8 @@ public class JbpmDeployResource {
 			Map<String, InputStream> zipMap = new java.util.HashMap<String, InputStream>();
 			JbpmContext jbpmContext = null;
 			try {
-				JbpmExtensionManager jbpmExtensionManager = ProcessContainer.getContainer().getJbpmExtensionManager();
-				jbpmContext = ProcessContainer.getContainer().createJbpmContext();
+				JbpmExtensionManager jbpmExtensionManager = ProcessFactory.getContainer().getJbpmExtensionManager();
+				jbpmContext = ProcessFactory.getContainer().createJbpmContext();
 				ProcessDefinition processDefinition = jbpmContext.getGraphSession()
 						.findLatestProcessDefinition(process_name);
 				if (processDefinition != null && processDefinition.getFileDefinition() != null) {

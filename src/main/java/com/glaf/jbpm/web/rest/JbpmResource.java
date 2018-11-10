@@ -43,9 +43,9 @@ import com.glaf.core.util.JsonUtils;
 import com.glaf.core.util.LogUtils;
 import com.glaf.core.util.ParamUtils;
 import com.glaf.core.util.RequestUtils;
-import com.glaf.jbpm.container.ProcessContainer;
 import com.glaf.jbpm.context.ProcessContext;
 import com.glaf.jbpm.datafield.DataField;
+import com.glaf.jbpm.factory.ProcessFactory;
 import com.glaf.jbpm.model.TaskItem;
 
 @Controller("/rs/jbpm")
@@ -67,7 +67,7 @@ public class JbpmResource {
 		String processName = RequestUtils
 				.getStringValue(request, "processName");
 		String actorId = RequestUtils.getActorId(request);
-		ProcessContainer container = ProcessContainer.getContainer();
+		ProcessFactory container = ProcessFactory.getContainer();
 		Long processInstanceId = null;
 
 		if (StringUtils.isNotEmpty(rowId)
@@ -160,7 +160,7 @@ public class JbpmResource {
 		logger.debug("isAgree:" + isAgree);
 		logger.debug("opinion:" + opinion);
 		String actorId = RequestUtils.getActorId(request);
-		ProcessContainer container = ProcessContainer.getContainer();
+		ProcessFactory container = ProcessFactory.getContainer();
 		boolean canSubmit = false;
 		boolean isOK = false;
 		TaskItem taskItem = null;

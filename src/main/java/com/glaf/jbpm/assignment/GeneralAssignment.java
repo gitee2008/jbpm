@@ -32,7 +32,7 @@ import org.jbpm.taskmgmt.def.AssignmentHandler;
 import org.jbpm.taskmgmt.exe.Assignable;
 
 import com.glaf.core.util.LogUtils;
-import com.glaf.jbpm.container.ProcessContainer;
+import com.glaf.jbpm.factory.ProcessFactory;
 
 /**
  * 任务分配说明： 根据优先级顺序，设置任务的参与者<br>
@@ -127,7 +127,7 @@ public class GeneralAssignment implements AssignmentHandler {
 
 		paramMap.put("roleId", roleId);
 
-		List<String> x_actorIds = ProcessContainer.getContainer()
+		List<String> x_actorIds = ProcessFactory.getContainer()
 				.getMembershipActorIds(paramMap);
 
 		if (x_actorIds != null && x_actorIds.size() > 0) {

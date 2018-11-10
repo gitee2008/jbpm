@@ -29,8 +29,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.glaf.jbpm.config.JbpmProcessConfig;
-import com.glaf.jbpm.container.ProcessContainer;
 import com.glaf.jbpm.context.Context;
+import com.glaf.jbpm.factory.ProcessFactory;
 
 @Controller("/jbpm/image")
 @RequestMapping("/jbpm/image")
@@ -51,7 +51,7 @@ public class JbpmImageController {
 				bytes = JbpmProcessConfig.getImage(Long
 						.parseLong(processDefinitionId));
 			} else if (StringUtils.isNotEmpty(processName)) {
-				jbpmContext = ProcessContainer.getContainer()
+				jbpmContext = ProcessFactory.getContainer()
 						.createJbpmContext();
 				ProcessDefinition processDefinition = jbpmContext
 						.getGraphSession().findLatestProcessDefinition(

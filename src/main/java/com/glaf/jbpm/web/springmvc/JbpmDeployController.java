@@ -47,9 +47,9 @@ import com.glaf.core.config.ViewProperties;
 import com.glaf.core.util.LogUtils;
 import com.glaf.core.util.RequestUtils;
 import com.glaf.jbpm.config.JbpmExtensionReader;
-import com.glaf.jbpm.container.ProcessContainer;
 import com.glaf.jbpm.context.Context;
 import com.glaf.jbpm.deploy.JbpmProcessDeployer;
+import com.glaf.jbpm.factory.ProcessFactory;
 import com.glaf.jbpm.manager.JbpmExtensionManager;
 import com.glaf.jbpm.model.Extension;
 
@@ -105,7 +105,7 @@ public class JbpmDeployController {
 		byte[] bytes = null;
 		JbpmContext jbpmContext = null;
 		try {
-			jbpmContext = ProcessContainer.getContainer().createJbpmContext();
+			jbpmContext = ProcessFactory.getContainer().createJbpmContext();
 
 			if (jbpmContext != null && jbpmContext.getSession() != null) {
 				// 将当前上下文初始化给 CommonsMutipartResolver（多部分解析器）
@@ -173,7 +173,7 @@ public class JbpmDeployController {
 			JbpmExtensionReader reader = new JbpmExtensionReader();
 			JbpmContext jbpmContext = null;
 			try {
-				jbpmContext = ProcessContainer.getContainer().createJbpmContext();
+				jbpmContext = ProcessFactory.getContainer().createJbpmContext();
 				Map<String, MultipartFile> fileMap = req.getFileMap();
 				Set<Entry<String, MultipartFile>> entrySet = fileMap.entrySet();
 				for (Entry<String, MultipartFile> entry : entrySet) {
@@ -186,7 +186,7 @@ public class JbpmDeployController {
 								Extension extension = iter.next();
 								extension.setCreateActorId(actorId);
 							}
-							JbpmExtensionManager jbpmExtensionManager = ProcessContainer.getContainer()
+							JbpmExtensionManager jbpmExtensionManager = ProcessFactory.getContainer()
 									.getJbpmExtensionManager();
 							jbpmExtensionManager.reconfig(jbpmContext, extensions);
 							request.setAttribute("message", "???");

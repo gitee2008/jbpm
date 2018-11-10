@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package com.glaf.jbpm.container;
+package com.glaf.jbpm.factory;
 
 import java.io.InputStream;
 import java.sql.SQLException;
@@ -66,18 +66,18 @@ import com.glaf.jbpm.model.TaskItem;
 import com.glaf.jbpm.query.ProcessQuery;
 import com.glaf.jbpm.util.ThreadVariable;
 
-public class ProcessContainer {
+public class ProcessFactory {
 
 	private static class ProcessContainerHolder {
-		public static ProcessContainer instance = new ProcessContainer();
+		public static ProcessFactory instance = new ProcessFactory();
 	}
 
 	protected final static Log logger = LogFactory
-			.getLog(ProcessContainer.class);
+			.getLog(ProcessFactory.class);
 
 	private static ConcurrentMap<String, Object> cache = new ConcurrentHashMap<String, Object>();
 
-	public static ProcessContainer getContainer() {
+	public static ProcessFactory getContainer() {
 		return ProcessContainerHolder.instance;
 	}
 
@@ -89,7 +89,7 @@ public class ProcessContainer {
 
 	private JbpmProcessManager jbpmProcessManager;
 
-	private ProcessContainer() {
+	private ProcessFactory() {
 		jbpmTaskManager = new JbpmTaskManager();
 		jbpmProcessManager = new JbpmProcessManager();
 		jbpmExtensionManager = new JbpmExtensionManager();

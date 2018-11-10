@@ -39,8 +39,8 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.glaf.core.config.ViewProperties;
 import com.glaf.core.util.RequestUtils;
-import com.glaf.jbpm.container.ProcessContainer;
 import com.glaf.jbpm.context.Context;
+import com.glaf.jbpm.factory.ProcessFactory;
 
 @Controller("/jbpm/tree")
 @RequestMapping("/jbpm/tree")
@@ -82,7 +82,7 @@ public class JbpmProcessTreeController {
 		GraphSession graphSession = null;
 		JbpmContext jbpmContext = null;
 		try {
-			jbpmContext = ProcessContainer.getContainer().createJbpmContext();
+			jbpmContext = ProcessFactory.getContainer().createJbpmContext();
 			graphSession = jbpmContext.getGraphSession();
 			if (StringUtils.isNotEmpty(process_name)) {
 				result = graphSession
@@ -139,7 +139,7 @@ public class JbpmProcessTreeController {
 		GraphSession graphSession = null;
 		JbpmContext jbpmContext = null;
 		try {
-			jbpmContext = ProcessContainer.getContainer().createJbpmContext();
+			jbpmContext = ProcessFactory.getContainer().createJbpmContext();
 			graphSession = jbpmContext.getGraphSession();
 			if (StringUtils.isNotEmpty(processDefinitionId)
 					&& StringUtils.isNumeric(processDefinitionId)) {

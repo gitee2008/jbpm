@@ -48,8 +48,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.glaf.jbpm.config.JbpmProcessConfig;
-import com.glaf.jbpm.container.ProcessContainer;
 import com.glaf.jbpm.context.Context;
+import com.glaf.jbpm.factory.ProcessFactory;
 import com.glaf.jbpm.manager.JbpmTaskManager;
 
 @Controller("/rs/jbpm/view")
@@ -90,7 +90,7 @@ public class JbpmProcessViewResource {
 			JbpmContext jbpmContext = null;
 			try {
 				contextPath = request.getContextPath();
-				jbpmContext = ProcessContainer.getContainer()
+				jbpmContext = ProcessFactory.getContainer()
 						.createJbpmContext();
 				initialize(jbpmContext);
 				if (processInstance != null && processDefinition != null) {
@@ -146,7 +146,7 @@ public class JbpmProcessViewResource {
 	}
 
 	public JbpmTaskManager getJbpmTaskManager() {
-		jbpmTaskManager = ProcessContainer.getContainer().getJbpmTaskManager();
+		jbpmTaskManager = ProcessFactory.getContainer().getJbpmTaskManager();
 		return jbpmTaskManager;
 	}
 

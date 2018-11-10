@@ -30,8 +30,8 @@ import org.jbpm.JbpmException;
 
 import com.glaf.core.config.SystemProperties;
 import com.glaf.core.util.LogUtils;
-import com.glaf.jbpm.container.ProcessContainer;
 import com.glaf.jbpm.context.Context;
+import com.glaf.jbpm.factory.ProcessFactory;
 import com.glaf.jbpm.manager.JbpmExtensionManager;
 import com.glaf.jbpm.model.Extension;
 
@@ -60,10 +60,10 @@ public class JbpmConfigLoader {
 		try {
 			List<Extension> extensions = this.getActions(directory);
 			if (extensions != null && extensions.size() > 0) {
-				jbpmContext = ProcessContainer.getContainer()
+				jbpmContext = ProcessFactory.getContainer()
 						.createJbpmContext();
 				if (jbpmContext.getSession() != null) {
-					JbpmExtensionManager jbpmExtensionManager = ProcessContainer
+					JbpmExtensionManager jbpmExtensionManager = ProcessFactory
 							.getContainer().getJbpmExtensionManager();
 					jbpmExtensionManager.reconfig(jbpmContext, extensions);
 				}

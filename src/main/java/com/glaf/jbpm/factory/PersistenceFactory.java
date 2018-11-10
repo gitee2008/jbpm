@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package com.glaf.jbpm.container;
+package com.glaf.jbpm.factory;
 
 import java.io.Serializable;
 import java.util.Collection;
@@ -26,11 +26,11 @@ import org.jbpm.JbpmContext;
 import com.glaf.jbpm.context.Context;
 import com.glaf.jbpm.manager.JbpmPersistenceManager;
 
-public class PersistenceContainer {
+public class PersistenceFactory {
 
-	public final static PersistenceContainer getContainer() {
+	public final static PersistenceFactory getContainer() {
 		if (container == null) {
-			container = new PersistenceContainer();
+			container = new PersistenceFactory();
 		}
 		return container;
 	}
@@ -41,14 +41,14 @@ public class PersistenceContainer {
 
 	public static void setJbpmPersistenceManager(
 			JbpmPersistenceManager jbpmPersistenceManager) {
-		PersistenceContainer.jbpmPersistenceManager = jbpmPersistenceManager;
+		PersistenceFactory.jbpmPersistenceManager = jbpmPersistenceManager;
 	}
 
-	private static PersistenceContainer container;
+	private static PersistenceFactory container;
 
 	private static JbpmPersistenceManager jbpmPersistenceManager;
 
-	private PersistenceContainer() {
+	private PersistenceFactory() {
 		jbpmPersistenceManager = new JbpmPersistenceManager();
 	}
 
@@ -60,7 +60,7 @@ public class PersistenceContainer {
 	public void delete(Serializable model) {
 		JbpmContext jbpmContext = null;
 		try {
-			jbpmContext = ProcessContainer.getContainer().createJbpmContext();
+			jbpmContext = ProcessFactory.getContainer().createJbpmContext();
 			if (jbpmContext.getSession() != null) {
 				jbpmPersistenceManager.delete(jbpmContext, model);
 			}
@@ -82,7 +82,7 @@ public class PersistenceContainer {
 	public void deleteAll(Collection<Object> rows) {
 		JbpmContext jbpmContext = null;
 		try {
-			jbpmContext = ProcessContainer.getContainer().createJbpmContext();
+			jbpmContext = ProcessFactory.getContainer().createJbpmContext();
 			if (jbpmContext.getSession() != null) {
 				jbpmPersistenceManager.deleteAll(jbpmContext, rows);
 			}
@@ -109,7 +109,7 @@ public class PersistenceContainer {
 			java.io.Serializable persistId) {
 		JbpmContext jbpmContext = null;
 		try {
-			jbpmContext = ProcessContainer.getContainer().createJbpmContext();
+			jbpmContext = ProcessFactory.getContainer().createJbpmContext();
 			if (jbpmContext.getSession() != null) {
 				return jbpmPersistenceManager.getPersistObject(jbpmContext,
 						clazz, persistId);
@@ -130,7 +130,7 @@ public class PersistenceContainer {
 	public void save(Serializable model) {
 		JbpmContext jbpmContext = null;
 		try {
-			jbpmContext = ProcessContainer.getContainer().createJbpmContext();
+			jbpmContext = ProcessFactory.getContainer().createJbpmContext();
 			if (jbpmContext.getSession() != null) {
 				jbpmPersistenceManager.save(jbpmContext, model);
 			}
@@ -152,7 +152,7 @@ public class PersistenceContainer {
 	public void saveAll(Collection<Object> rows) {
 		JbpmContext jbpmContext = null;
 		try {
-			jbpmContext = ProcessContainer.getContainer().createJbpmContext();
+			jbpmContext = ProcessFactory.getContainer().createJbpmContext();
 			if (jbpmContext.getSession() != null) {
 				jbpmPersistenceManager.saveAll(jbpmContext, rows);
 			}
@@ -174,7 +174,7 @@ public class PersistenceContainer {
 	public void update(Serializable model) {
 		JbpmContext jbpmContext = null;
 		try {
-			jbpmContext = ProcessContainer.getContainer().createJbpmContext();
+			jbpmContext = ProcessFactory.getContainer().createJbpmContext();
 			if (jbpmContext.getSession() != null) {
 				jbpmPersistenceManager.update(jbpmContext, model);
 			}
@@ -196,7 +196,7 @@ public class PersistenceContainer {
 	public void updateAll(Collection<Object> rows) {
 		JbpmContext jbpmContext = null;
 		try {
-			jbpmContext = ProcessContainer.getContainer().createJbpmContext();
+			jbpmContext = ProcessFactory.getContainer().createJbpmContext();
 			if (jbpmContext.getSession() != null) {
 				jbpmPersistenceManager.updateAll(jbpmContext, rows);
 			}

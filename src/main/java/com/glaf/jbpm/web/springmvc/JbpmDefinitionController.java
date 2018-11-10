@@ -41,9 +41,9 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.glaf.core.config.ViewProperties;
 import com.glaf.core.util.ResponseUtils;
-import com.glaf.jbpm.container.ProcessContainer;
 import com.glaf.jbpm.context.Context;
 import com.glaf.jbpm.export.ProcessExporter;
+import com.glaf.jbpm.factory.ProcessFactory;
 
 @Controller("/jbpm/definition")
 @RequestMapping("/jbpm/definition")
@@ -66,7 +66,7 @@ public class JbpmDefinitionController {
 		String filename = null;
 		byte[] bytes = null;
 		try {
-			jbpmContext = ProcessContainer.getContainer().createJbpmContext();
+			jbpmContext = ProcessFactory.getContainer().createJbpmContext();
 			if (StringUtils.isNotEmpty(processDefinitionId)
 					&& StringUtils.isNumeric(processDefinitionId)) {
 				ProcessDefinition processDefinition = jbpmContext
@@ -107,7 +107,7 @@ public class JbpmDefinitionController {
 		GraphSession graphSession = null;
 		JbpmContext jbpmContext = null;
 		try {
-			jbpmContext = ProcessContainer.getContainer().createJbpmContext();
+			jbpmContext = ProcessFactory.getContainer().createJbpmContext();
 			graphSession = jbpmContext.getGraphSession();
 
 			List<ProcessDefinition> processDefinitions = graphSession
@@ -143,7 +143,7 @@ public class JbpmDefinitionController {
 		GraphSession graphSession = null;
 		JbpmContext jbpmContext = null;
 		try {
-			jbpmContext = ProcessContainer.getContainer().createJbpmContext();
+			jbpmContext = ProcessFactory.getContainer().createJbpmContext();
 			graphSession = jbpmContext.getGraphSession();
 			if (StringUtils.isNumeric(processDefinitionId)) {
 				processDefinition = graphSession.getProcessDefinition(Long

@@ -24,8 +24,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.glaf.jbpm.container.ProcessContainer;
 import com.glaf.jbpm.context.Context;
+import com.glaf.jbpm.factory.ProcessFactory;
 
 @Controller("/rs/jbpm/definition")
 @Path("/rs/jbpm/definition")
@@ -47,7 +47,7 @@ public class JbpmProcessDefinitionResource {
 		GraphSession graphSession = null;
 		JbpmContext jbpmContext = null;
 		try {
-			jbpmContext = ProcessContainer.getContainer().createJbpmContext();
+			jbpmContext = ProcessFactory.getContainer().createJbpmContext();
 			graphSession = jbpmContext.getGraphSession();
 			if (StringUtils.isNotEmpty(processName)) {
 				result = graphSession
@@ -92,7 +92,7 @@ public class JbpmProcessDefinitionResource {
 		JbpmContext jbpmContext = null;
 		ProcessDefinition pd = null;
 		try {
-			jbpmContext = ProcessContainer.getContainer().createJbpmContext();
+			jbpmContext = ProcessFactory.getContainer().createJbpmContext();
 			graphSession = jbpmContext.getGraphSession();
 
 			if (StringUtils.isNotEmpty(processDefinitionId)

@@ -43,8 +43,8 @@ import org.jbpm.graph.exe.Token;
 import com.glaf.core.config.Configuration;
 import com.glaf.jbpm.config.JbpmBaseConfiguration;
 import com.glaf.jbpm.config.JbpmProcessConfig;
-import com.glaf.jbpm.container.ProcessContainer;
 import com.glaf.jbpm.context.Context;
+import com.glaf.jbpm.factory.ProcessFactory;
 
 public class JbpmProcessImageTag extends TagSupport {
 
@@ -87,7 +87,7 @@ public class JbpmProcessImageTag extends TagSupport {
 		try {
 			request = (HttpServletRequest) pageContext.getRequest();
 			contextPath = request.getContextPath();
-			jbpmContext = ProcessContainer.getContainer().createJbpmContext();
+			jbpmContext = ProcessFactory.getContainer().createJbpmContext();
 			initialize(jbpmContext);
 			if (processInstance != null && processDefinition != null) {
 				retrieveByteArrays();
