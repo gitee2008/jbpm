@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="glaf_user">
+ 
+	<typeAlias alias="user" type="com.glaf.core.identity.impl.UserImpl"/>
+
+	<select id="getUsers" resultClass="user" parameterClass="java.util.HashMap">
+	    SELECT DISTINCT x.USERID as actorId, x.USERNAME as name, x.EMAIL as mail, 
+		       x.MOBILE as mobile 
+		FROM SYS_USER x
+		where x.DELETEFLAG = 0
+	</select>
+
+
+ 	<select id="getRoleUsers" resultClass="user" parameterClass="java.util.HashMap">
+		 
+		SELECT DISTINCT x.USERID as actorId, x.USERNAME as name, x.EMAIL as mail, x.MOBILE as mobile 
+		FROM SYS_USER x
+		INNER JOIN SYS_USER_ROLE ur
+		ON x.USERID = ur.USERID
+		INNER JOIN SYS_ROLE r
+		on r.ID = ur.ROLEID
+		WHERE 1=1
+		and x.DELETEFLAG = 0
+
+		<dynamic prepend="">
+			<isPropertyAvailable prepend="AND" property="roleId">
+				<isNotEmpty prepend="" property="roleId">
+
+					r.ID = #roleId#
+
+				</isNotEmpty>
+			</isPropertyAvailable>
+
+			<isPropertyAvailable prepend="AND" property="roleIds">
+				<isNotNull prepend="" property="roleIds">
+					<iterate prepend="" property="roleIds" open="(" close=")"
+						conjunction="OR">
+						( r.ID = #roleIds[]# )
+					</iterate>
+				</isNotNull>
+			</isPropertyAvailable>
+		</dynamic>
+
+	</select>
+
+</sqlMap>
