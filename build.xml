@@ -53,6 +53,12 @@
 					 excludes="**/test/**,global.properties"/>
 		    <fileset dir="jar-conf" includes="**/*.xml,**/*.properties"/>
         </jar>
+		<jar jarfile="glaf-jbpm.jar">
+		    <fileset dir="bin" 
+			         includes="com/glaf/jbpm/**/*.class,com/glaf/jbpm/**/*.xml,com/glaf/jbpm/**/*.properties" 
+					 excludes="**/test/**,global.properties"/>
+		    <fileset dir="jar-conf" includes="**/*.xml,**/*.properties"/>
+        </jar>
 	</target>
 
 	<target name="web_jar" description="Create java jar file">

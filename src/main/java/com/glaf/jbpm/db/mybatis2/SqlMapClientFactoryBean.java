@@ -158,7 +158,7 @@ public class SqlMapClientFactoryBean implements FactoryBean<SqlMapClient>,
 		}
 
 		SqlMapClient c = getObject();
-		logger.debug("SqlMapClient impl class:" + c.getClass().getName());
+		//logger.debug("SqlMapClient impl class:" + c.getClass().getName());
 		if (sqlExecutor != null && c instanceof SqlMapClientImpl) {
 			SqlMapClientImpl client = (SqlMapClientImpl) c;
 			SqlMapExecutorDelegate delegate = client.getDelegate();

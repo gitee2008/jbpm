@@ -84,8 +84,7 @@ import com.ibatis.sqlmap.client.event.RowHandler;
  * @see com.ibatis.sqlmap.client.SqlMapExecutor
  */
 
-public class SqlMapClientTemplate extends JdbcAccessor implements
-		SqlMapClientOperations {
+public class SqlMapClientTemplate extends JdbcAccessor implements SqlMapClientOperations {
 
 	private SqlMapClient sqlMapClient;
 
@@ -98,8 +97,7 @@ public class SqlMapClientTemplate extends JdbcAccessor implements
 	/**
 	 * Create a new SqlMapTemplate.
 	 * 
-	 * @param sqlMapClient
-	 *            iBATIS SqlMapClient that defines the mapped statements
+	 * @param sqlMapClient iBATIS SqlMapClient that defines the mapped statements
 	 */
 	public SqlMapClientTemplate(SqlMapClient sqlMapClient) {
 		setSqlMapClient(sqlMapClient);
@@ -109,8 +107,7 @@ public class SqlMapClientTemplate extends JdbcAccessor implements
 	@Override
 	public void afterPropertiesSet() {
 		if (this.sqlMapClient == null) {
-			throw new IllegalArgumentException(
-					"Property 'sqlMapClient' is required");
+			throw new IllegalArgumentException("Property 'sqlMapClient' is required");
 		}
 		super.afterPropertiesSet();
 	}
@@ -119,62 +116,51 @@ public class SqlMapClientTemplate extends JdbcAccessor implements
 		return delete(statementName, null);
 	}
 
-	public int delete(final String statementName, final Object parameterObject)
-			throws DataAccessException {
+	public int delete(final String statementName, final Object parameterObject) throws DataAccessException {
 		return execute(new SqlMapClientCallback<Integer>() {
-			public Integer doInSqlMapClient(SqlMapExecutor executor)
-					throws SQLException {
+			public Integer doInSqlMapClient(SqlMapExecutor executor) throws SQLException {
 				return executor.delete(statementName, parameterObject);
 			}
 		});
 	}
 
-	public void delete(String statementName, Object parameterObject,
-			int requiredRowsAffected) throws DataAccessException {
+	public void delete(String statementName, Object parameterObject, int requiredRowsAffected)
+			throws DataAccessException {
 		int actualRowsAffected = delete(statementName, parameterObject);
 		if (actualRowsAffected != requiredRowsAffected) {
-			throw new RuntimeException("SQL update '" + statementName
-					+ "' affected " + actualRowsAffected + " rows, not "
-					+ requiredRowsAffected + " as expected");
+			throw new RuntimeException("SQL update '" + statementName + "' affected " + actualRowsAffected
+					+ " rows, not " + requiredRowsAffected + " as expected");
 		}
 	}
 
 	/**
 	 * Execute the given data access action on a SqlMapExecutor.
 	 * 
-	 * @param action
-	 *            callback object that specifies the data access action
+	 * @param action callback object that specifies the data access action
 	 * @return a result object returned by the action, or <code>null</code>
-	 * @throws DataAccessException
-	 *             in case of SQL Maps errors
+	 * @throws DataAccessException in case of SQL Maps errors
 	 */
-	public <T> T execute(SqlMapClientCallback<T> action)
-			throws DataAccessException {
+	public <T> T execute(SqlMapClientCallback<T> action) throws DataAccessException {
 		Assert.notNull(action, "Callback object must not be null");
 		Assert.notNull(this.sqlMapClient, "No SqlMapClient specified");
 		SqlMapSession session = null;
 		try {
 			if (this.sqlMapClient.getCurrentConnection() != null) {
-				session = this.sqlMapClient.openSession(this.sqlMapClient
-						.getCurrentConnection());
+				session = this.sqlMapClient.openSession(this.sqlMapClient.getCurrentConnection());
 
-				logger.debug("Opened SqlMapSession [" + session
-						+ "] for iBATIS operation");
+				logger.debug("Opened SqlMapSession [" + session + "] for iBATIS operation");
 
 				return action.doInSqlMapClient(session);
 			}
 			throw new SqlMapException(" connection is null ");
 		} catch (SQLException ex) {
-			throw getExceptionTranslator().translate("SqlMapClient operation",
-					null, ex);
+			throw new RuntimeException("SqlMapClient operation", ex);
 		}
 	}
 
-	public Object executeBatch(final List<SqlExecutor> sqlExecutors)
-			throws DataAccessException {
+	public Object executeBatch(final List<SqlExecutor> sqlExecutors) throws DataAccessException {
 		return execute(new SqlMapClientCallback<Object>() {
-			public Object doInSqlMapClient(SqlMapExecutor executor)
-					throws SQLException {
+			public Object doInSqlMapClient(SqlMapExecutor executor) throws SQLException {
 				executor.startBatch();
 				int batch = 0;
 				for (SqlExecutor sqlExecutor : sqlExecutors) {
@@ -183,11 +169,9 @@ public class SqlMapClientTemplate extends JdbcAccessor implements
 					Object parameter = sqlExecutor.getParameter();
 					if (StringUtils.equalsIgnoreCase("insert", operation)) {
 						executor.insert(statementId, parameter);
-					} else if (StringUtils
-							.equalsIgnoreCase("update", operation)) {
+					} else if (StringUtils.equalsIgnoreCase("update", operation)) {
 						executor.update(statementId, parameter);
-					} else if (StringUtils
-							.equalsIgnoreCase("delete", operation)) {
+					} else if (StringUtils.equalsIgnoreCase("delete", operation)) {
 						executor.delete(statementId, parameter);
 					}
 					batch++;
@@ -204,8 +188,7 @@ public class SqlMapClientTemplate extends JdbcAccessor implements
 	}
 
 	/**
-	 * Return the iBATIS Database Layer SqlMapClient that this template works
-	 * with.
+	 * Return the iBATIS Database Layer SqlMapClient that this template works with.
 	 */
 	public SqlMapClient getSqlMapClient() {
 		return this.sqlMapClient;
@@ -215,118 +198,94 @@ public class SqlMapClientTemplate extends JdbcAccessor implements
 		return insert(statementName, null);
 	}
 
-	public Object insert(final String statementName,
-			final Object parameterObject) throws DataAccessException {
+	public Object insert(final String statementName, final Object parameterObject) throws DataAccessException {
 		return execute(new SqlMapClientCallback<Object>() {
-			public Object doInSqlMapClient(SqlMapExecutor executor)
-					throws SQLException {
+			public Object doInSqlMapClient(SqlMapExecutor executor) throws SQLException {
 				return executor.insert(statementName, parameterObject);
 			}
 		});
 	}
 
-	public List<Object> queryForList(String statementName)
-			throws DataAccessException {
+	public List<Object> queryForList(String statementName) throws DataAccessException {
 		return queryForList(statementName, null);
 	}
 
-	public List<Object> queryForList(String statementName, int skipResults,
-			int maxResults) throws DataAccessException {
+	public List<Object> queryForList(String statementName, int skipResults, int maxResults) throws DataAccessException {
 		return queryForList(statementName, null, skipResults, maxResults);
 	}
 
-	public List<Object> queryForList(final String statementName,
-			final Object parameterObject) throws DataAccessException {
+	public List<Object> queryForList(final String statementName, final Object parameterObject)
+			throws DataAccessException {
 		return execute(new SqlMapClientCallback<List<Object>>() {
 			@SuppressWarnings("unchecked")
-			public List<Object> doInSqlMapClient(SqlMapExecutor executor)
-					throws SQLException {
+			public List<Object> doInSqlMapClient(SqlMapExecutor executor) throws SQLException {
 				return executor.queryForList(statementName, parameterObject);
 			}
 		});
 	}
 
-	public List<Object> queryForList(final String statementName,
-			final Object parameterObject, final int skipResults,
+	public List<Object> queryForList(final String statementName, final Object parameterObject, final int skipResults,
 			final int maxResults) throws DataAccessException {
 		return execute(new SqlMapClientCallback<List<Object>>() {
 			@SuppressWarnings("unchecked")
-			public List<Object> doInSqlMapClient(SqlMapExecutor executor)
-					throws SQLException {
-				return executor.queryForList(statementName, parameterObject,
-						skipResults, maxResults);
+			public List<Object> doInSqlMapClient(SqlMapExecutor executor) throws SQLException {
+				return executor.queryForList(statementName, parameterObject, skipResults, maxResults);
 			}
 		});
 	}
 
-	public Map<Object, Object> queryForMap(final String statementName,
-			final Object parameterObject, final String keyProperty)
-			throws DataAccessException {
+	public Map<Object, Object> queryForMap(final String statementName, final Object parameterObject,
+			final String keyProperty) throws DataAccessException {
 		return execute(new SqlMapClientCallback<Map<Object, Object>>() {
 			@SuppressWarnings("unchecked")
-			public Map<Object, Object> doInSqlMapClient(SqlMapExecutor executor)
-					throws SQLException {
-				return executor.queryForMap(statementName, parameterObject,
-						keyProperty);
+			public Map<Object, Object> doInSqlMapClient(SqlMapExecutor executor) throws SQLException {
+				return executor.queryForMap(statementName, parameterObject, keyProperty);
 			}
 		});
 	}
 
-	public Map<Object, Object> queryForMap(final String statementName,
-			final Object parameterObject, final String keyProperty,
-			final String valueProperty) throws DataAccessException {
+	public Map<Object, Object> queryForMap(final String statementName, final Object parameterObject,
+			final String keyProperty, final String valueProperty) throws DataAccessException {
 		return execute(new SqlMapClientCallback<Map<Object, Object>>() {
 			@SuppressWarnings("unchecked")
-			public Map<Object, Object> doInSqlMapClient(SqlMapExecutor executor)
-					throws SQLException {
-				return executor.queryForMap(statementName, parameterObject,
-						keyProperty, valueProperty);
+			public Map<Object, Object> doInSqlMapClient(SqlMapExecutor executor) throws SQLException {
+				return executor.queryForMap(statementName, parameterObject, keyProperty, valueProperty);
 			}
 		});
 	}
 
-	public Object queryForObject(String statementName)
-			throws DataAccessException {
+	public Object queryForObject(String statementName) throws DataAccessException {
 		return queryForObject(statementName, null);
 	}
 
-	public Object queryForObject(final String statementName,
-			final Object parameterObject) throws DataAccessException {
+	public Object queryForObject(final String statementName, final Object parameterObject) throws DataAccessException {
 		return execute(new SqlMapClientCallback<Object>() {
-			public Object doInSqlMapClient(SqlMapExecutor executor)
-					throws SQLException {
+			public Object doInSqlMapClient(SqlMapExecutor executor) throws SQLException {
 				return executor.queryForObject(statementName, parameterObject);
 			}
 		});
 	}
 
-	public Object queryForObject(final String statementName,
-			final Object parameterObject, final Object resultObject)
+	public Object queryForObject(final String statementName, final Object parameterObject, final Object resultObject)
 			throws DataAccessException {
 		return execute(new SqlMapClientCallback<Object>() {
-			public Object doInSqlMapClient(SqlMapExecutor executor)
-					throws SQLException {
-				return executor.queryForObject(statementName, parameterObject,
-						resultObject);
+			public Object doInSqlMapClient(SqlMapExecutor executor) throws SQLException {
+				return executor.queryForObject(statementName, parameterObject, resultObject);
 			}
 		});
 	}
 
-	public void queryWithRowHandler(final String statementName,
-			final Object parameterObject, final RowHandler rowHandler)
-			throws DataAccessException {
+	public void queryWithRowHandler(final String statementName, final Object parameterObject,
+			final RowHandler rowHandler) throws DataAccessException {
 		execute(new SqlMapClientCallback<Object>() {
-			public Object doInSqlMapClient(SqlMapExecutor executor)
-					throws SQLException {
-				executor.queryWithRowHandler(statementName, parameterObject,
-						rowHandler);
+			public Object doInSqlMapClient(SqlMapExecutor executor) throws SQLException {
+				executor.queryWithRowHandler(statementName, parameterObject, rowHandler);
 				return null;
 			}
 		});
 	}
 
-	public void queryWithRowHandler(String statementName, RowHandler rowHandler)
-			throws DataAccessException {
+	public void queryWithRowHandler(String statementName, RowHandler rowHandler) throws DataAccessException {
 		queryWithRowHandler(statementName, null, rowHandler);
 	}
 
@@ -350,23 +309,20 @@ public class SqlMapClientTemplate extends JdbcAccessor implements
 		return update(statementName, null);
 	}
 
-	public int update(final String statementName, final Object parameterObject)
-			throws DataAccessException {
+	public int update(final String statementName, final Object parameterObject) throws DataAccessException {
 		return execute(new SqlMapClientCallback<Integer>() {
-			public Integer doInSqlMapClient(SqlMapExecutor executor)
-					throws SQLException {
+			public Integer doInSqlMapClient(SqlMapExecutor executor) throws SQLException {
 				return executor.update(statementName, parameterObject);
 			}
 		});
 	}
 
-	public void update(String statementName, Object parameterObject,
-			int requiredRowsAffected) throws DataAccessException {
+	public void update(String statementName, Object parameterObject, int requiredRowsAffected)
+			throws DataAccessException {
 		int actualRowsAffected = update(statementName, parameterObject);
 		if (actualRowsAffected != requiredRowsAffected) {
-			throw new RuntimeException("SQL update '" + statementName
-					+ "' affected " + actualRowsAffected + " rows, not "
-					+ requiredRowsAffected + " as expected");
+			throw new RuntimeException("SQL update '" + statementName + "' affected " + actualRowsAffected
+					+ " rows, not " + requiredRowsAffected + " as expected");
 		}
 	}
 
