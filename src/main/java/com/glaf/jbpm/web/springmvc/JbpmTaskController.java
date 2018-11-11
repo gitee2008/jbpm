@@ -57,6 +57,7 @@ import com.glaf.jbpm.manager.JbpmTaskManager;
 import com.glaf.jbpm.model.ActivityInstance;
 import com.glaf.jbpm.model.TaskItem;
 import com.glaf.jbpm.query.ProcessQuery;
+import com.glaf.jbpm.tag.JbpmProcessImageBean;
 import com.glaf.jbpm.util.Constant;
 
 @Controller("/jbpm/task")
@@ -446,15 +447,20 @@ public class JbpmTaskController {
 				}
 			}
 		} catch (Throwable ex) {
-			if (LogUtils.isDebug()) {
-				logger.debug(ex);
-				ex.printStackTrace();
-			}
+			logger.error(ex);
+			ex.printStackTrace();
 		} finally {
-			try {
-				Context.close(jbpmContext);
-			} catch (java.lang.Throwable ex) {
-			}
+			Context.close(jbpmContext);
+		}
+
+		try {
+			JbpmProcessImageBean bean = new JbpmProcessImageBean();
+			bean.setProcessInstanceId(processInstanceId);
+			bean.setRequest(request);
+			String tag = bean.apply();
+			request.setAttribute("tag_script", tag);
+		} catch (Throwable ex) {
+			ex.printStackTrace();
 		}
 
 		logger.debug("----------------------------view task---------------------");

@@ -158,7 +158,7 @@
 <fieldset class="x-fieldset"  style="width: 95%;"><legend>流程图</legend>
 <br />
 <div id="task_processimage" align="center">
-   
+   ${tag_script}
 </div>
 <br />
 </fieldset>
