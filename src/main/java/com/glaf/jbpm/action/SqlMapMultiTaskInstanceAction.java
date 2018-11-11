@@ -45,7 +45,7 @@ import org.jbpm.taskmgmt.exe.TaskMgmtInstance;
 import com.glaf.core.identity.User;
 import com.glaf.core.util.LogUtils;
 import com.glaf.core.util.StringTools;
-import com.glaf.jbpm.db.mybatis2.SqlMapContainer;
+import com.glaf.jbpm.db.mybatis2.SqlMapFactory;
 import com.glaf.jbpm.el.DefaultExpressionEvaluator;
 import com.glaf.jbpm.util.Constant;
 
@@ -237,7 +237,7 @@ public class SqlMapMultiTaskInstanceAction implements ActionHandler {
 
 					List<String> actorIds = new java.util.ArrayList<String>();
 
-					SqlMapContainer container = SqlMapContainer.getContainer();
+					SqlMapFactory container = SqlMapFactory.getInstance();
 
 					Collection<?> actors = container.getList(ctx
 							.getJbpmContext().getConnection(), queryId, params);

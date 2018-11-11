@@ -37,13 +37,13 @@
 					href="${request.contextPath}/jbpm/definition/task?processDefinitionId=${a.id}"><img
 					src="${request.contextPath}/static/images/actor.gif"
 					border="0" title="查看流程任务定义"> 流程任务</a>   &nbsp;<a
-					href="${request.contextPath}/jbpm/monitor/processInstances?processDefinitionId=${a.id}"><img
+					href="${request.contextPath}/jbpm/processInstances?processDefinitionId=${a.id}"><img
 					src="${request.contextPath}/static/images/task.gif"
 					border="0" title="查看全部流程实例"> 全部</a> &nbsp;<a
-					href="${request.contextPath}/jbpm/monitor/processInstances?processDefinitionId=${a.id}&processType=running"><img
+					href="${request.contextPath}/jbpm/processInstances?processDefinitionId=${a.id}&processType=running"><img
 					src="${request.contextPath}/static/images/lightbulb.png"
 					border="0" title="查看运行中的流程实例"> 运行中</a> &nbsp;<a
-					href="${request.contextPath}/jbpm/monitor/processInstances?processDefinitionId=${a.id}&processType=finished"><img
+					href="${request.contextPath}/jbpm/processInstances?processDefinitionId=${a.id}&processType=finished"><img
 					src="${request.contextPath}/static/images/lightbulb_off.png"
 					border="0" title="查看已经完成的流程实例"> 已完成</a> &nbsp;<a
 					href="${request.contextPath}/jbpm/image?processDefinitionId=${a.id}"

@@ -56,7 +56,7 @@ import com.glaf.core.util.LogUtils;
 import com.glaf.core.util.StringTools;
 import com.glaf.jbpm.context.Context;
 import com.glaf.jbpm.context.ProcessContext;
-import com.glaf.jbpm.db.mybatis2.SqlMapContainer;
+import com.glaf.jbpm.db.mybatis2.SqlMapFactory;
 import com.glaf.jbpm.manager.JbpmExtensionManager;
 import com.glaf.jbpm.manager.JbpmProcessManager;
 import com.glaf.jbpm.manager.JbpmTaskManager;
@@ -524,7 +524,7 @@ public class ProcessFactory {
 		List<Agent> agents = new java.util.ArrayList<Agent>();
 		Map<String, Object> params = new java.util.HashMap<String, Object>();
 		params.put("assignTo", assignTo);
-		SqlMapContainer container = SqlMapContainer.getContainer();
+		SqlMapFactory container = SqlMapFactory.getInstance();
 		try {
 			Collection<?> actors = container.getList("getAgents", params);
 
@@ -685,7 +685,7 @@ public class ProcessFactory {
 		if (StringUtils.isEmpty(statementId)) {
 			statementId = "getFinishedProcessInstanceIds";
 		}
-		List<Object> rows = SqlMapContainer.getContainer().getList(statementId,
+		List<Object> rows = SqlMapFactory.getInstance().getList(statementId,
 				query);
 		if (rows != null && rows.size() > 0) {
 			Iterator<Object> iterator = rows.iterator();
@@ -716,7 +716,7 @@ public class ProcessFactory {
 		if (StringUtils.isEmpty(statementId)) {
 			statementId = "getFinishedProcessInstanceIds";
 		}
-		List<Object> rows = SqlMapContainer.getContainer().getList(statementId,
+		List<Object> rows = SqlMapFactory.getInstance().getList(statementId,
 				query);
 		if (rows != null && rows.size() > 0) {
 			Iterator<Object> iterator = rows.iterator();
@@ -750,7 +750,7 @@ public class ProcessFactory {
 		if (StringUtils.isEmpty(statementId)) {
 			statementId = "getFinishedProcessInstanceIds";
 		}
-		List<Object> rows = SqlMapContainer.getContainer().getList(statementId,
+		List<Object> rows = SqlMapFactory.getInstance().getList(statementId,
 				query);
 		List<Long> processInstanceIds = new java.util.ArrayList<Long>();
 		if (rows != null && rows.size() > 0) {
@@ -821,7 +821,7 @@ public class ProcessFactory {
 
 	public List<String> getMembershipActorIds(Map<String, Object> params) {
 		List<String> actorIds = new java.util.ArrayList<String>();
-		SqlMapContainer container = SqlMapContainer.getContainer();
+		SqlMapFactory container = SqlMapFactory.getInstance();
 		try {
 			Collection<?> actors = container.getList("getXYDeptRoleUsers",
 					params);
@@ -1434,9 +1434,9 @@ public class ProcessFactory {
 		}
 
 		List<Object> rows = new java.util.ArrayList<Object>();
-		List<Object> rows01 = SqlMapContainer.getContainer().getList(
+		List<Object> rows01 = SqlMapFactory.getInstance().getList(
 				statementId, query);
-		List<Object> rows02 = SqlMapContainer.getContainer().getList(
+		List<Object> rows02 = SqlMapFactory.getInstance().getList(
 				statementId2, query);
 		if (rows01 != null && rows01.size() > 0) {
 			rows.addAll(rows01);
@@ -1520,9 +1520,9 @@ public class ProcessFactory {
 		this.limitStartDate(query);
 
 		List<Object> rows = new java.util.ArrayList<Object>();
-		List<Object> rows01 = SqlMapContainer.getContainer().getList(
+		List<Object> rows01 = SqlMapFactory.getInstance().getList(
 				statementId, query);
-		List<Object> rows02 = SqlMapContainer.getContainer().getList(
+		List<Object> rows02 = SqlMapFactory.getInstance().getList(
 				statementId2, query);
 		if (rows01 != null && rows01.size() > 0) {
 			rows.addAll(rows01);
@@ -1577,9 +1577,9 @@ public class ProcessFactory {
 		this.limitStartDate(query);
 
 		List<Object> rows = new java.util.ArrayList<Object>();
-		List<Object> rows01 = SqlMapContainer.getContainer().getList(
+		List<Object> rows01 = SqlMapFactory.getInstance().getList(
 				statementId, query);
-		List<Object> rows02 = SqlMapContainer.getContainer().getList(
+		List<Object> rows02 = SqlMapFactory.getInstance().getList(
 				statementId2, query);
 		if (rows01 != null && rows01.size() > 0) {
 			rows.addAll(rows01);
@@ -1634,9 +1634,9 @@ public class ProcessFactory {
 		this.limitStartDate(query);
 
 		List<Object> rows = new java.util.ArrayList<Object>();
-		List<Object> rows01 = SqlMapContainer.getContainer().getList(
+		List<Object> rows01 = SqlMapFactory.getInstance().getList(
 				statementId, query);
-		List<Object> rows02 = SqlMapContainer.getContainer().getList(
+		List<Object> rows02 = SqlMapFactory.getInstance().getList(
 				statementId2, query);
 		if (rows01 != null && rows01.size() > 0) {
 			rows.addAll(rows01);
@@ -1679,9 +1679,9 @@ public class ProcessFactory {
 		}
 
 		List<Object> rows = new java.util.ArrayList<Object>();
-		List<Object> rows01 = SqlMapContainer.getContainer().getList(
+		List<Object> rows01 = SqlMapFactory.getInstance().getList(
 				statementId, query);
-		List<Object> rows02 = SqlMapContainer.getContainer().getList(
+		List<Object> rows02 = SqlMapFactory.getInstance().getList(
 				statementId2, query);
 		if (rows01 != null && rows01.size() > 0) {
 			rows.addAll(rows01);
@@ -1723,9 +1723,9 @@ public class ProcessFactory {
 		}
 
 		List<Object> rows = new java.util.ArrayList<Object>();
-		List<Object> rows01 = SqlMapContainer.getContainer().getList(
+		List<Object> rows01 = SqlMapFactory.getInstance().getList(
 				statementId, query);
-		List<Object> rows02 = SqlMapContainer.getContainer().getList(
+		List<Object> rows02 = SqlMapFactory.getInstance().getList(
 				statementId2, query);
 		if (rows01 != null && rows01.size() > 0) {
 			rows.addAll(rows01);
@@ -1777,9 +1777,9 @@ public class ProcessFactory {
 		this.limitStartDate(query);
 
 		List<Object> rows = new java.util.ArrayList<Object>();
-		List<Object> rows01 = SqlMapContainer.getContainer().getList(
+		List<Object> rows01 = SqlMapFactory.getInstance().getList(
 				statementId, query);
-		List<Object> rows02 = SqlMapContainer.getContainer().getList(
+		List<Object> rows02 = SqlMapFactory.getInstance().getList(
 				statementId2, query);
 		if (rows01 != null && rows01.size() > 0) {
 			rows.addAll(rows01);
@@ -1825,9 +1825,9 @@ public class ProcessFactory {
 		this.limitStartDate(query);
 
 		List<Object> rows = new java.util.ArrayList<Object>();
-		List<Object> rows01 = SqlMapContainer.getContainer().getList(
+		List<Object> rows01 = SqlMapFactory.getInstance().getList(
 				statementId, query);
-		List<Object> rows02 = SqlMapContainer.getContainer().getList(
+		List<Object> rows02 = SqlMapFactory.getInstance().getList(
 				statementId2, query);
 		if (rows01 != null && rows01.size() > 0) {
 			rows.addAll(rows01);
@@ -1879,9 +1879,9 @@ public class ProcessFactory {
 		this.limitStartDate(query);
 
 		List<Object> rows = new java.util.ArrayList<Object>();
-		List<Object> rows01 = SqlMapContainer.getContainer().getList(
+		List<Object> rows01 = SqlMapFactory.getInstance().getList(
 				statementId, query);
-		List<Object> rows02 = SqlMapContainer.getContainer().getList(
+		List<Object> rows02 = SqlMapFactory.getInstance().getList(
 				statementId2, query);
 		if (rows01 != null && rows01.size() > 0) {
 			rows.addAll(rows01);
@@ -1973,7 +1973,7 @@ public class ProcessFactory {
 	public List<User> getUsers() {
 		List<User> users = new java.util.ArrayList<User>();
 		Map<String, Object> params = new java.util.HashMap<String, Object>();
-		SqlMapContainer container = SqlMapContainer.getContainer();
+		SqlMapFactory container = SqlMapFactory.getInstance();
 		try {
 			Collection<?> actors = container.getList("getUsers", params);
 			if (actors != null && actors.size() > 0) {
@@ -2008,7 +2008,7 @@ public class ProcessFactory {
 
 		this.limitStartDate(query);
 
-		List<Object> rows = SqlMapContainer.getContainer().getList(statementId,
+		List<Object> rows = SqlMapFactory.getInstance().getList(statementId,
 				query);
 		List<Long> processInstanceIds = new java.util.ArrayList<Long>();
 		if (rows != null && rows.size() > 0) {
@@ -2042,7 +2042,7 @@ public class ProcessFactory {
 
 		this.limitStartDate(query);
 
-		List<Object> rows = SqlMapContainer.getContainer().getList(statementId,
+		List<Object> rows = SqlMapFactory.getInstance().getList(statementId,
 				query);
 		List<Long> processInstanceIds = new java.util.ArrayList<Long>();
 		if (rows != null && rows.size() > 0) {
@@ -2080,7 +2080,7 @@ public class ProcessFactory {
 
 		this.limitStartDate(query);
 
-		List<Object> rows = SqlMapContainer.getContainer().getList(statementId,
+		List<Object> rows = SqlMapFactory.getInstance().getList(statementId,
 				query);
 		List<Long> processInstanceIds = new java.util.ArrayList<Long>();
 		if (rows != null && rows.size() > 0) {
@@ -2119,7 +2119,7 @@ public class ProcessFactory {
 
 		this.limitStartDate(query);
 
-		List<Object> rows = SqlMapContainer.getContainer().getList(statementId,
+		List<Object> rows = SqlMapFactory.getInstance().getList(statementId,
 				query);
 		List<Long> processInstanceIds = new java.util.ArrayList<Long>();
 		if (rows != null && rows.size() > 0) {
@@ -2151,7 +2151,7 @@ public class ProcessFactory {
 
 		this.limitStartDate(query);
 
-		List<Object> rows = SqlMapContainer.getContainer().getList(statementId,
+		List<Object> rows = SqlMapFactory.getInstance().getList(statementId,
 				query);
 		List<TaskItem> taskItems = new java.util.ArrayList<TaskItem>();
 		if (rows != null && rows.size() > 0) {
@@ -2189,7 +2189,7 @@ public class ProcessFactory {
 
 		this.limitStartDate(query);
 
-		List<Object> rows = SqlMapContainer.getContainer().getList(statementId,
+		List<Object> rows = SqlMapFactory.getInstance().getList(statementId,
 				query);
 
 		List<TaskItem> taskItems = new java.util.ArrayList<TaskItem>();
@@ -2232,7 +2232,7 @@ public class ProcessFactory {
 
 		this.limitStartDate(query);
 
-		List<Object> rows = SqlMapContainer.getContainer().getList(statementId,
+		List<Object> rows = SqlMapFactory.getInstance().getList(statementId,
 				query);
 
 		List<TaskItem> taskItems = new java.util.ArrayList<TaskItem>();
@@ -2280,7 +2280,7 @@ public class ProcessFactory {
 
 		this.limitStartDate(query);
 
-		List<Object> rows = SqlMapContainer.getContainer().getList(statementId,
+		List<Object> rows = SqlMapFactory.getInstance().getList(statementId,
 				query);
 
 		List<TaskItem> taskItems = new java.util.ArrayList<TaskItem>();
@@ -2320,9 +2320,9 @@ public class ProcessFactory {
 
 		this.limitStartDate(query);
 
-		List<Object> rows01 = SqlMapContainer.getContainer().getList(
+		List<Object> rows01 = SqlMapFactory.getInstance().getList(
 				statementId, query);
-		List<Object> rows02 = SqlMapContainer.getContainer().getList(
+		List<Object> rows02 = SqlMapFactory.getInstance().getList(
 				statementId2, query);
 
 		List<Object> rows = new java.util.ArrayList<Object>();

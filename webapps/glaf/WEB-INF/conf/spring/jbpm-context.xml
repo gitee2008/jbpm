@@ -5,12 +5,14 @@
 
 	<bean id="sqlMapClient" class="com.glaf.jbpm.db.mybatis2.SqlMapClientFactoryBean"
 		scope="singleton">
+		<!-- <property name="configLocation"
+			value="WEB-INF/conf/resources/sqlmap/context/system-sqlmap-config.xml" /> -->
 		<property name="configLocations">
-			<value>classpath:resources/sqlmap/context/**/*-config.xml</value>
+			<value>WEB-INF/conf/resources/sqlmap/context/system-sqlmap-config.xml</value>
 		</property>
 		<property name="mappingLocations">
 			<list>
-				<value>classpath:resources/sqlmap/mapping/**/*.xml</value>
+				<value>WEB-INF/conf/resources/sqlmap/mapping/**/*.xml</value>
 				<value>classpath:com/glaf/jbpm/mapping/jbpm-task.sqlmap.xml</value>
 			</list>
 		</property>

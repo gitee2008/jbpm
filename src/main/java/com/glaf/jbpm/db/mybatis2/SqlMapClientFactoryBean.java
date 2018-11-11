@@ -71,42 +71,37 @@ import com.ibatis.sqlmap.engine.impl.SqlMapExecutorDelegate;
  * @see SqlMapClientTemplate#setSqlMapClient
  * @see SqlMapClientTemplate#setDataSource
  */
-public class SqlMapClientFactoryBean implements FactoryBean<SqlMapClient>,
-		InitializingBean {
+public class SqlMapClientFactoryBean implements FactoryBean<SqlMapClient>, InitializingBean {
 	/**
 	 * Inner class to avoid hard-coded iBATIS 2.3.2 dependency (XmlParserState
 	 * class).
 	 */
 	private static class SqlMapParserFactory {
 
-		public static SqlMapParser createSqlMapParser(
-				SqlMapConfigParser configParser) {
+		public static SqlMapParser createSqlMapParser(SqlMapConfigParser configParser) {
 			// Ideally: XmlParserState state = configParser.getState();
 			// Should raise an enhancement request with iBATIS...
 			XmlParserState state = null;
 			try {
-				Field stateField = SqlMapConfigParser.class
-						.getDeclaredField("state");
+				Field stateField = SqlMapConfigParser.class.getDeclaredField("state");
 				stateField.setAccessible(true);
 				state = (XmlParserState) stateField.get(configParser);
 			} catch (Exception ex) {
-				throw new IllegalStateException(
-						"iBATIS 2.3.2 'state' field not found in SqlMapConfigParser class - "
-								+ "please upgrade to IBATIS 2.3.2 or higher in order to use the new 'mappingLocations' feature. "
-								+ ex);
+				throw new IllegalStateException("iBATIS 2.3.2 'state' field not found in SqlMapConfigParser class - "
+						+ "please upgrade to IBATIS 2.3.2 or higher in order to use the new 'mappingLocations' feature. "
+						+ ex);
 			}
 			return new SqlMapParser(state);
 		}
 	}
 
-	protected static final Log logger = LogFactory
-			.getLog(SqlMapClientFactoryBean.class);
+	protected static final Log logger = LogFactory.getLog(SqlMapClientFactoryBean.class);
 
 	private static final ThreadLocal<LobHandler> configTimeLobHandlerHolder = new ThreadLocal<LobHandler>();
 
 	/**
-	 * Return the LobHandler for the currently configured iBATIS SqlMapClient,
-	 * to be used by TypeHandler implementations like ClobStringTypeHandler.
+	 * Return the LobHandler for the currently configured iBATIS SqlMapClient, to be
+	 * used by TypeHandler implementations like ClobStringTypeHandler.
 	 * <p>
 	 * This instance will be set before initialization of the corresponding
 	 * SqlMapClient, and reset immediately afterwards. It is thus only available
@@ -146,8 +141,8 @@ public class SqlMapClientFactoryBean implements FactoryBean<SqlMapClient>,
 		}
 
 		try {
-			this.sqlMapClient = buildSqlMapClient(this.configLocations,
-					this.mappingLocations, this.sqlMapClientProperties);
+			this.sqlMapClient = buildSqlMapClient(this.configLocations, this.mappingLocations,
+					this.sqlMapClientProperties);
 		}
 
 		finally {
@@ -158,17 +153,16 @@ public class SqlMapClientFactoryBean implements FactoryBean<SqlMapClient>,
 		}
 
 		SqlMapClient c = getObject();
-		//logger.debug("SqlMapClient impl class:" + c.getClass().getName());
+		// logger.debug("SqlMapClient impl class:" + c.getClass().getName());
 		if (sqlExecutor != null && c instanceof SqlMapClientImpl) {
 			SqlMapClientImpl client = (SqlMapClientImpl) c;
 			SqlMapExecutorDelegate delegate = client.getDelegate();
 			try {
 				logger.debug("start inject sqlExecutor ...");
-				ReflectUtils
-						.setFieldValue(delegate, "sqlExecutor", sqlExecutor);
+				ReflectUtils.setFieldValue(delegate, "sqlExecutor", sqlExecutor);
 				logger.debug("sqlExecutor injected.");
-				logger.info("[iBATIS] success set ibatis SqlMapClient.sqlExecutor = "
-						+ sqlExecutor.getClass().getName());
+				logger.info(
+						"[iBATIS] success set ibatis SqlMapClient.sqlExecutor = " + sqlExecutor.getClass().getName());
 			} catch (Exception ex) {
 				logger.error("[iBATIS] error,cannot set ibatis SqlMapClient.sqlExecutor = "
 						+ sqlExecutor.getClass().getName() + " cause:" + ex);
@@ -180,50 +174,41 @@ public class SqlMapClientFactoryBean implements FactoryBean<SqlMapClient>,
 	 * Build a SqlMapClient instance based on the given standard configuration.
 	 * <p>
 	 * The default implementation uses the standard iBATIS
-	 * {@link SqlMapClientBuilder} API to build a SqlMapClient instance based on
-	 * an InputStream (if possible, on iBATIS 2.3 and higher) or on a Reader (on
-	 * iBATIS up to version 2.2).
+	 * {@link SqlMapClientBuilder} API to build a SqlMapClient instance based on an
+	 * InputStream (if possible, on iBATIS 2.3 and higher) or on a Reader (on iBATIS
+	 * up to version 2.2).
 	 * 
-	 * @param configLocations
-	 *            the config files to load from
-	 * @param properties
-	 *            the SqlMapClient properties (if any)
+	 * @param configLocations the config files to load from
+	 * @param properties      the SqlMapClient properties (if any)
 	 * @return the SqlMapClient instance (never <code>null</code>)
-	 * @throws IOException
-	 *             if loading the config file failed
+	 * @throws IOException if loading the config file failed
 	 * @see com.ibatis.sqlmap.client.SqlMapClientBuilder#buildSqlMapClient
 	 */
-	protected SqlMapClient buildSqlMapClient(Resource[] configLocations,
-			Resource[] mappingLocations, Properties properties)
-			throws IOException {
+	protected SqlMapClient buildSqlMapClient(Resource[] configLocations, Resource[] mappingLocations,
+			Properties properties) throws IOException {
 
 		if (ObjectUtils.isEmpty(configLocations)) {
-			throw new IllegalArgumentException(
-					"At least 1 'configLocation' entry is required");
+			throw new IllegalArgumentException("At least 1 'configLocation' entry is required");
 		}
 
 		SqlMapClient client = null;
 		SqlMapConfigParser configParser = new SqlMapConfigParser();
 		for (Resource configLocation : configLocations) {
-			InputStream is = configLocation.getInputStream();
 			try {
+				InputStream is = configLocation.getInputStream();
 				client = configParser.parse(is, properties);
 			} catch (RuntimeException ex) {
-				throw new NestedIOException("Failed to parse config resource: "
-						+ configLocation, ex.getCause());
+				throw new NestedIOException("Failed to parse config resource: " + configLocation, ex.getCause());
 			}
 		}
 
 		if (mappingLocations != null) {
-			SqlMapParser mapParser = SqlMapParserFactory
-					.createSqlMapParser(configParser);
+			SqlMapParser mapParser = SqlMapParserFactory.createSqlMapParser(configParser);
 			for (Resource mappingLocation : mappingLocations) {
 				try {
 					mapParser.parse(mappingLocation.getInputStream());
 				} catch (NodeletException ex) {
-					throw new NestedIOException(
-							"Failed to parse mapping resource: "
-									+ mappingLocation, ex);
+					throw new NestedIOException("Failed to parse mapping resource: " + mappingLocation, ex);
 				}
 			}
 		}
@@ -236,8 +221,7 @@ public class SqlMapClientFactoryBean implements FactoryBean<SqlMapClient>,
 	}
 
 	public Class<? extends SqlMapClient> getObjectType() {
-		return (this.sqlMapClient != null ? this.sqlMapClient.getClass()
-				: SqlMapClient.class);
+		return (this.sqlMapClient != null ? this.sqlMapClient.getClass() : SqlMapClient.class);
 	}
 
 	public SqlExecutor getSqlExecutor() {
@@ -249,27 +233,26 @@ public class SqlMapClientFactoryBean implements FactoryBean<SqlMapClient>,
 	}
 
 	/**
-	 * Set the location of the iBATIS SqlMapClient config file. A typical value
-	 * is "WEB-INF/sql-map-config.xml".
+	 * Set the location of the iBATIS SqlMapClient config file. A typical value is
+	 * "WEB-INF/sql-map-config.xml".
 	 * 
 	 * @see #setConfigLocations
 	 */
 	public void setConfigLocation(Resource configLocation) {
-		this.configLocations = (configLocation != null ? new Resource[] { configLocation }
-				: null);
+		this.configLocations = (configLocation != null ? new Resource[] { configLocation } : null);
 	}
 
 	/**
-	 * Set multiple locations of iBATIS SqlMapClient config files that are going
-	 * to be merged into one unified configuration at runtime.
+	 * Set multiple locations of iBATIS SqlMapClient config files that are going to
+	 * be merged into one unified configuration at runtime.
 	 */
 	public void setConfigLocations(Resource[] configLocations) {
 		this.configLocations = configLocations;
 	}
 
 	/**
-	 * Set the LobHandler to be used by the SqlMapClient. Will be exposed at
-	 * config time for TypeHandler implementations.
+	 * Set the LobHandler to be used by the SqlMapClient. Will be exposed at config
+	 * time for TypeHandler implementations.
 	 * 
 	 * @see #getConfigTimeLobHandler
 	 * @see com.ibatis.sqlmap.engine.type.TypeHandler
@@ -286,9 +269,9 @@ public class SqlMapClientFactoryBean implements FactoryBean<SqlMapClient>,
 	 * into the SqlMapClient configuration at runtime.
 	 * <p>
 	 * This is an alternative to specifying "&lt;sqlMap&gt;" entries in a
-	 * sql-map-client config file. This property being based on Spring's
-	 * resource abstraction also allows for specifying resource patterns here:
-	 * e.g. "/myApp/*-map.xml".
+	 * sql-map-client config file. This property being based on Spring's resource
+	 * abstraction also allows for specifying resource patterns here: e.g.
+	 * "/myApp/*-map.xml".
 	 * <p>
 	 * Note that this feature requires iBATIS 2.3.2; it will not work with any
 	 * previous iBATIS version.
@@ -304,8 +287,8 @@ public class SqlMapClientFactoryBean implements FactoryBean<SqlMapClient>,
 	/**
 	 * Set optional properties to be passed into the SqlMapClientBuilder, as
 	 * alternative to a <code>&lt;properties&gt;</code> tag in the
-	 * sql-map-config.xml file. Will be used to resolve placeholders in the
-	 * config file.
+	 * sql-map-config.xml file. Will be used to resolve placeholders in the config
+	 * file.
 	 * 
 	 * @see #setConfigLocation
 	 * @see com.ibatis.sqlmap.client.SqlMapClientBuilder#buildSqlMapClient(java.io.InputStream,

@@ -110,8 +110,8 @@
   <table id="mydatagrid" lay-filter="mydatagrid"></table>
  
   <script type="text/html" id="tool_function">
-    <!-- <a class="layui-btn layui-btn-xs" lay-event="pause">挂起</a>
-    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="renew">恢复</a> -->
+    <a class="layui-btn layui-btn-xs" lay-event="pause">挂起</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="renew">恢复</a>
   </script>
 
 </div>

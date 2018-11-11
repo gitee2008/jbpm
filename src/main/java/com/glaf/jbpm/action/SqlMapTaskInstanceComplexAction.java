@@ -45,7 +45,7 @@ import org.jbpm.taskmgmt.exe.TaskMgmtInstance;
 
 import com.glaf.core.identity.User;
 import com.glaf.core.util.StringTools;
-import com.glaf.jbpm.db.mybatis2.SqlMapContainer;
+import com.glaf.jbpm.db.mybatis2.SqlMapFactory;
 import com.glaf.jbpm.el.DefaultExpressionEvaluator;
 import com.glaf.jbpm.util.Constant;
 
@@ -230,7 +230,7 @@ public class SqlMapTaskInstanceComplexAction implements ActionHandler {
 
 		logger.debug("queryId:" + queryId);
 
-		SqlMapContainer container = SqlMapContainer.getContainer();
+		SqlMapFactory container = SqlMapFactory.getInstance();
 
 		Task task = null;
 

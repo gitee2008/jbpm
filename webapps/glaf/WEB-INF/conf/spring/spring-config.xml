@@ -20,6 +20,7 @@
 	<import resource="spring-ehcache.xml" />
 	<import resource="spring-freemarker.xml" />
 	<import resource="spring-scheduler.xml" />
+	<import resource="jbpm-context.xml" />
 	
 	<!-- <import resource="spring-redis.xml" /> -->
 

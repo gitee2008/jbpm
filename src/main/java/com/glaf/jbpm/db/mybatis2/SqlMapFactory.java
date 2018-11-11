@@ -26,25 +26,26 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import com.glaf.core.context.ContextFactory;
 import com.glaf.core.dao.EntityDAO;
 import com.glaf.core.jdbc.DBConnectionFactory;
 import com.glaf.core.util.JdbcUtils;
 import com.glaf.core.util.LogUtils;
-import com.glaf.jbpm.context.JbpmBeanFactory;
+ 
 
-public class SqlMapContainer {
+public class SqlMapFactory {
 	protected final static Log logger = LogFactory
-			.getLog(SqlMapContainer.class);
+			.getLog(SqlMapFactory.class);
 
-	private static SqlMapContainer container = new SqlMapContainer();
+	private static SqlMapFactory container = new SqlMapFactory();
 
-	public final static SqlMapContainer getContainer() {
+	public final static SqlMapFactory getInstance() {
 		return container;
 	}
 
 	private EntityDAO entityDAO;
 
-	private SqlMapContainer() {
+	private SqlMapFactory() {
 
 	}
 
@@ -132,7 +133,7 @@ public class SqlMapContainer {
 
 	public EntityDAO getEntityDAO() {
 		if (entityDAO == null) {
-			entityDAO = (EntityDAO) JbpmBeanFactory.getBean("sqlMapClientDAO");
+			entityDAO = (EntityDAO) ContextFactory.getBean("sqlMapClientDAO");
 		}
 		return entityDAO;
 	}
