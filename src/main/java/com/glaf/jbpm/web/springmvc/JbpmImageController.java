@@ -31,7 +31,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.glaf.core.util.IOUtils;
-import com.glaf.core.util.ResponseUtils;
 import com.glaf.jbpm.config.JbpmProcessConfig;
 import com.glaf.jbpm.context.Context;
 import com.glaf.jbpm.factory.ProcessFactory;
