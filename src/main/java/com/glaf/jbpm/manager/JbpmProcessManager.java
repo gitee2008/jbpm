@@ -48,6 +48,7 @@ import com.glaf.core.util.JsonUtils;
 import com.glaf.core.util.LogUtils;
 import com.glaf.core.util.Paging;
 import com.glaf.core.util.UUID32;
+
 import com.glaf.jbpm.context.ProcessContext;
 import com.glaf.jbpm.dao.JbpmEntityDAO;
 import com.glaf.jbpm.dao.JbpmTaskDAO;
@@ -59,8 +60,7 @@ import com.glaf.jbpm.util.Constant;
 import com.glaf.jbpm.util.ThreadVariable;
 
 public class JbpmProcessManager {
-	protected final static Log logger = LogFactory
-			.getLog(JbpmProcessManager.class);
+	protected final static Log logger = LogFactory.getLog(JbpmProcessManager.class);
 
 	private JbpmTaskDAO jbpmTaskDAO;
 
@@ -95,16 +95,13 @@ public class JbpmProcessManager {
 
 		if (processInstanceId > 0) {
 
-			processInstance = jbpmContext
-					.loadProcessInstanceForUpdate(processInstanceId);
+			processInstance = jbpmContext.loadProcessInstanceForUpdate(processInstanceId);
 
 			if (processInstance.hasEnded()) {
-				throw new JbpmException("processInstance'"
-						+ processInstance.getId() + "' has ended");
+				throw new JbpmException("processInstance'" + processInstance.getId() + "' has ended");
 			}
 
-			Collection<TaskInstance> taskInstances = processInstance
-					.getTaskMgmtInstance().getTaskInstances();
+			Collection<TaskInstance> taskInstances = processInstance.getTaskMgmtInstance().getTaskInstances();
 			if (taskInstances != null && taskInstances.size() > 0) {
 				Iterator<TaskInstance> iterator = taskInstances.iterator();
 				while (iterator.hasNext()) {
@@ -152,20 +149,17 @@ public class JbpmProcessManager {
 		jbpmContext.setActorId(actorId);
 
 		if (taskInstanceId != null && taskInstanceId > 0) {
-			taskInstance = jbpmContext
-					.loadTaskInstanceForUpdate(taskInstanceId);
+			taskInstance = jbpmContext.loadTaskInstanceForUpdate(taskInstanceId);
 		}
 
-		if (taskInstance == null && processInstanceId != null
-				&& processInstanceId > 0) {
+		if (taskInstance == null && processInstanceId != null && processInstanceId > 0) {
 
 			ProcessQuery query = new ProcessQuery();
 			query.setActorId(actorId);
 			query.setProcessInstanceId(processInstanceId);
 			query.setTaskType("running");
 
-			final List<TaskItem> taskItems = jbpmTaskDAO.getTaskItems(
-					jbpmContext, query);
+			final List<TaskItem> taskItems = jbpmTaskDAO.getTaskItems(jbpmContext, query);
 			if (taskItems != null && taskItems.size() > 0) {
 				Collections.sort(taskItems);
 				final Iterator<TaskItem> iter = taskItems.iterator();
@@ -175,8 +169,7 @@ public class JbpmProcessManager {
 					if (id != null) {
 						taskInstanceId = id;
 						if (taskInstanceId > 0) {
-							taskInstance = jbpmContext
-									.loadTaskInstanceForUpdate(taskInstanceId);
+							taskInstance = jbpmContext.loadTaskInstanceForUpdate(taskInstanceId);
 							if (taskInstance != null) {
 								break;
 							}
@@ -193,8 +186,7 @@ public class JbpmProcessManager {
 				query.setActorIds(agentIds);
 				query.setProcessInstanceId(processInstanceId);
 				query.setTaskType("running");
-				final List<TaskItem> taskItems = jbpmTaskDAO.getTaskItems(
-						jbpmContext, query);
+				final List<TaskItem> taskItems = jbpmTaskDAO.getTaskItems(jbpmContext, query);
 				if (taskItems != null && taskItems.size() > 0) {
 					Collections.sort(taskItems);
 					final Iterator<TaskItem> iter = taskItems.iterator();
@@ -204,8 +196,7 @@ public class JbpmProcessManager {
 						if (id != null) {
 							taskInstanceId = id;
 							if (taskInstanceId > 0) {
-								taskInstance = jbpmContext
-										.loadTaskInstanceForUpdate(taskInstanceId);
+								taskInstance = jbpmContext.loadTaskInstanceForUpdate(taskInstanceId);
 								if (taskInstance != null) {
 									break;
 								}
@@ -217,19 +208,16 @@ public class JbpmProcessManager {
 		}
 
 		if (taskInstance == null) {
-			throw new JbpmException("taskInstance '" + taskInstanceId
-					+ "' is not found");
+			throw new JbpmException("taskInstance '" + taskInstanceId + "' is not found");
 		}
 
 		if (taskInstance.hasEnded()) {
-			throw new JbpmException("taskInstance '" + taskInstance.getId()
-					+ "' has ended");
+			throw new JbpmException("taskInstance '" + taskInstance.getId() + "' has ended");
 		}
 
 		processInstance = taskInstance.getToken().getProcessInstance();
 		if (processInstance.hasEnded()) {
-			throw new JbpmException("processInstance'"
-					+ processInstance.getId() + "' has ended");
+			throw new JbpmException("processInstance'" + processInstance.getId() + "' has ended");
 		}
 
 		Map<String, Object> dataMap = new java.util.HashMap<String, Object>();
@@ -277,10 +265,8 @@ public class JbpmProcessManager {
 			Iterator<DataField> iter = dataFields.iterator();
 			while (iter.hasNext()) {
 				DataField dataField = iter.next();
-				if (StringUtils.isNotEmpty(dataField.getName())
-						&& dataField.getValue() != null) {
-					contextInstance.setVariable(dataField.getName(),
-							dataField.getValue());
+				if (StringUtils.isNotEmpty(dataField.getName()) && dataField.getValue() != null) {
+					contextInstance.setVariable(dataField.getName(), dataField.getValue());
 					dataMap.put(dataField.getName(), dataField.getValue());
 					logger.debug("dataField:" + dataField);
 					ThreadVariable.addDataField(dataField);
@@ -288,8 +274,7 @@ public class JbpmProcessManager {
 			}
 		}
 
-		String isAgree = (String) contextInstance
-				.getVariable(Constant.IS_AGREE);
+		String isAgree = (String) contextInstance.getVariable(Constant.IS_AGREE);
 		if (StringUtils.isEmpty(isAgree)) {
 			contextInstance.setVariable(Constant.IS_AGREE, "true");
 		}
@@ -394,8 +379,7 @@ public class JbpmProcessManager {
 	 * @param paramMap
 	 * @return
 	 */
-	public Paging getPageProcessInstances(JbpmContext jbpmContext, int pageNo,
-			int pageSize, ProcessQuery query) {
+	public Paging getPageProcessInstances(JbpmContext jbpmContext, int pageNo, int pageSize, ProcessQuery query) {
 		Map<String, Object> params = new java.util.HashMap<String, Object>();
 
 		SqlExecutor countExecutor = new SqlExecutor();
@@ -430,14 +414,12 @@ public class JbpmProcessManager {
 		}
 
 		if (query.getAfterProcessStartDate() != null) {
-			params.put("afterProcessStartDate",
-					query.getAfterProcessStartDate());
+			params.put("afterProcessStartDate", query.getAfterProcessStartDate());
 			whereSQL.append(" and ( pi.start >= :afterProcessStartDate )");
 		}
 
 		if (query.getBeforeProcessStartDate() != null) {
-			params.put("beforeProcessStartDate",
-					query.getBeforeProcessStartDate());
+			params.put("beforeProcessStartDate", query.getBeforeProcessStartDate());
 			whereSQL.append(" and ( pi.start <= :beforeProcessStartDate )");
 		}
 
@@ -470,19 +452,17 @@ public class JbpmProcessManager {
 		queryExecutor.setSql(querySQL.toString());
 		queryExecutor.setParameter(params);
 
-		if (LogUtils.isDebug()) {
-			logger.debug(queryExecutor.getSql());
-			logger.debug(queryExecutor.getParameter());
-		}
+		// if (LogUtils.isDebug()) {
+		logger.debug(queryExecutor.getSql());
+		logger.debug(queryExecutor.getParameter());
+		// }
 
-		Paging page = jbpmEntityDAO.getPage(jbpmContext, pageNo, pageSize,
-				countExecutor, queryExecutor);
+		Paging page = jbpmEntityDAO.getPage(jbpmContext, pageNo, pageSize, countExecutor, queryExecutor);
 
 		return page;
 	}
 
-	public Map<String, VariableInstance> getVariableMap(
-			JbpmContext jbpmContext, Collection<Long> processInstanceIds) {
+	public Map<String, VariableInstance> getVariableMap(JbpmContext jbpmContext, Collection<Long> processInstanceIds) {
 		SqlExecutor queryExecutor = new SqlExecutor();
 		Map<String, Object> params = new java.util.HashMap<String, Object>();
 		params.put("name", Constant.JSON_VARIABLE_MAP);
@@ -512,8 +492,7 @@ public class JbpmProcessManager {
 		queryExecutor.setSql(buffer.toString());
 		queryExecutor.setParameter(params);
 
-		List<?> variableInstances = jbpmEntityDAO.getList(jbpmContext,
-				queryExecutor);
+		List<?> variableInstances = jbpmEntityDAO.getList(jbpmContext, queryExecutor);
 
 		Map<String, VariableInstance> variableMap = new java.util.HashMap<String, VariableInstance>();
 		if (variableInstances != null && variableInstances.size() > 0) {
@@ -536,11 +515,9 @@ public class JbpmProcessManager {
 	public void resume(JbpmContext jbpmContext, Long processInstanceId) {
 		if (processInstanceId != null && processInstanceId > 0) {
 			logger.debug("准备恢复的流程实例编号：" + processInstanceId);
-			ProcessInstance processInstance = jbpmContext
-					.loadProcessInstanceForUpdate(processInstanceId);
+			ProcessInstance processInstance = jbpmContext.loadProcessInstanceForUpdate(processInstanceId);
 			if (processInstance.hasEnded()) {
-				throw new JbpmException("processInstance'"
-						+ processInstance.getId() + "' has ended");
+				throw new JbpmException("processInstance'" + processInstance.getId() + "' has ended");
 			}
 			/**
 			 * 只把未处理完的任务恢复
@@ -595,8 +572,7 @@ public class JbpmProcessManager {
 		graphSession = jbpmContext.getGraphSession();
 
 		if (StringUtils.isNotEmpty(processName)) {
-			processDefinition = graphSession
-					.findLatestProcessDefinition(processName);
+			processDefinition = graphSession.findLatestProcessDefinition(processName);
 		}
 
 		if (processDefinition == null) {
@@ -623,10 +599,8 @@ public class JbpmProcessManager {
 			final Iterator<DataField> iter = dataFields.iterator();
 			while (iter.hasNext()) {
 				DataField dataField = iter.next();
-				if (StringUtils.isNotEmpty(dataField.getName())
-						&& dataField.getValue() != null) {
-					contextInstance.setVariable(dataField.getName(),
-							dataField.getValue());
+				if (StringUtils.isNotEmpty(dataField.getName()) && dataField.getValue() != null) {
+					contextInstance.setVariable(dataField.getName(), dataField.getValue());
 					dataMap.put(dataField.getName(), dataField.getValue());
 					ThreadVariable.addDataField(dataField);
 				}
@@ -710,11 +684,9 @@ public class JbpmProcessManager {
 	public void suspend(JbpmContext jbpmContext, Long processInstanceId) {
 		if (processInstanceId != null && processInstanceId > 0) {
 			logger.debug("准备挂起的流程实例编号：" + processInstanceId);
-			ProcessInstance processInstance = jbpmContext
-					.loadProcessInstanceForUpdate(processInstanceId);
+			ProcessInstance processInstance = jbpmContext.loadProcessInstanceForUpdate(processInstanceId);
 			if (processInstance.hasEnded()) {
-				throw new JbpmException("processInstance'"
-						+ processInstance.getId() + "' has ended");
+				throw new JbpmException("processInstance'" + processInstance.getId() + "' has ended");
 			}
 			/**
 			 * 只把任务挂起

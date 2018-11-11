@@ -127,9 +127,11 @@ public class JbpmProcessController {
 					json.put("startIndex", startIndex++);
 					rowsJSON.add(json);
 				}
+				result.put("rows", rowsJSON);
 			}
 		} catch (Exception ex) {
-			logger.debug(ex);
+			logger.error(ex);
+			ex.printStackTrace();
 		} finally {
 			Context.close(jbpmContext);
 		}

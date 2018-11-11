@@ -62,8 +62,7 @@ import com.glaf.jbpm.util.Constant;
 @Controller("/jbpm/task")
 @RequestMapping("/jbpm/task")
 public class JbpmTaskController {
-	protected final static Log logger = LogFactory
-			.getLog(JbpmTaskController.class);
+	protected final static Log logger = LogFactory.getLog(JbpmTaskController.class);
 
 	protected final static String TASK_ACTION = "redirect:/jbpm/task";
 
@@ -72,27 +71,21 @@ public class JbpmTaskController {
 	}
 
 	@RequestMapping("/activityInstances")
-	public ModelAndView activityInstances(HttpServletRequest request,
-			ModelMap modelMap) {
+	public ModelAndView activityInstances(HttpServletRequest request, ModelMap modelMap) {
 		Map<String, Object> paramMap = RequestUtils.getParameterMap(request);
-		Long processInstanceId = ParamUtils.getLong(paramMap,
-				"processInstanceId");
+		Long processInstanceId = ParamUtils.getLong(paramMap, "processInstanceId");
 		ProcessInstance processInstance;
 		JbpmContext jbpmContext = null;
 		try {
-			Map<String, User> userMap = ProcessFactory.getContainer()
-					.getUserMap();
+			Map<String, User> userMap = ProcessFactory.getContainer().getUserMap();
 			if (processInstanceId != null) {
 				List<TaskItem> taskItems = ProcessFactory.getContainer()
 						.getTaskItemsByProcessInstanceId(processInstanceId);
-				jbpmContext = ProcessFactory.getContainer()
-						.createJbpmContext();
-				processInstance = jbpmContext.getProcessInstance(Long
-						.valueOf(processInstanceId));
+				jbpmContext = ProcessFactory.getContainer().createJbpmContext();
+				processInstance = jbpmContext.getProcessInstance(Long.valueOf(processInstanceId));
 				if (processInstance != null) {
 					Map<String, Object> variables = new java.util.HashMap<String, Object>();
-					variables.putAll(processInstance.getContextInstance()
-							.getVariables());
+					variables.putAll(processInstance.getContextInstance().getVariables());
 					modelMap.put("processInstance", processInstance);
 					modelMap.put("variables", variables);
 					modelMap.put("taskItems", taskItems);
@@ -132,83 +125,54 @@ public class JbpmTaskController {
 		Set<String> actorIds = new HashSet<String>();
 		JbpmContext jbpmContext = null;
 		try {
-			Map<String, User> userMap = ProcessFactory.getContainer()
-					.getUserMap();
+			Map<String, User> userMap = ProcessFactory.getContainer().getUserMap();
 			jbpmContext = ProcessFactory.getContainer().createJbpmContext();
-			if (StringUtils.isNotEmpty(processInstanceId)
-					&& StringUtils.isNumeric(processInstanceId)) {
-				ProcessInstance processInstance = jbpmContext
-						.getProcessInstance(Long.parseLong(processInstanceId));
+			if (StringUtils.isNotEmpty(processInstanceId) && StringUtils.isNumeric(processInstanceId)) {
+				ProcessInstance processInstance = jbpmContext.getProcessInstance(Long.parseLong(processInstanceId));
 				if (processInstance != null) {
-					TaskMgmtInstance tmi = processInstance
-							.getTaskMgmtInstance();
-					Collection<TaskInstance> taskInstances = tmi
-							.getUnfinishedTasks(processInstance.getRootToken());
+					TaskMgmtInstance tmi = processInstance.getTaskMgmtInstance();
+					Collection<TaskInstance> taskInstances = tmi.getUnfinishedTasks(processInstance.getRootToken());
 					if (taskInstances != null && taskInstances.size() > 0) {
 						Iterator<TaskInstance> iter = taskInstances.iterator();
 						while (iter.hasNext()) {
 							TaskInstance taskInstance = iter.next();
-							if (StringUtils.equals(taskName,
-									taskInstance.getName())) {
-								taskNameBuffer.append("<option value=\"")
-										.append(taskInstance.getName())
-										.append("\" selected>")
-										.append(taskInstance.getName())
-										.append('[')
-										.append(taskInstance.getDescription())
-										.append("]</option>");
-								if (StringUtils.isNotEmpty(taskInstance
-										.getActorId())) {
+							if (StringUtils.equals(taskName, taskInstance.getName())) {
+								taskNameBuffer.append("<option value=\"").append(taskInstance.getName())
+										.append("\" selected>").append(taskInstance.getName()).append('[')
+										.append(taskInstance.getDescription()).append("]</option>");
+								if (StringUtils.isNotEmpty(taskInstance.getActorId())) {
 									actorIds.add(taskInstance.getActorId());
 								} else {
-									Set<PooledActor> pooledActors = taskInstance
-											.getPooledActors();
-									if (pooledActors != null
-											&& pooledActors.size() > 0) {
-										Iterator<PooledActor> iter2 = pooledActors
-												.iterator();
+									Set<PooledActor> pooledActors = taskInstance.getPooledActors();
+									if (pooledActors != null && pooledActors.size() > 0) {
+										Iterator<PooledActor> iter2 = pooledActors.iterator();
 										while (iter2.hasNext()) {
 											PooledActor actor = iter2.next();
-											String pooledActorId = actor
-													.getActorId();
+											String pooledActorId = actor.getActorId();
 											actorIds.add(pooledActorId);
 										}
 									}
 								}
 							} else {
-								taskNameBuffer.append("<option value=\"")
-										.append(taskInstance.getName())
-										.append("\">")
-										.append(taskInstance.getName())
-										.append('[')
-										.append(taskInstance.getDescription())
-										.append("]</option>");
+								taskNameBuffer.append("<option value=\"").append(taskInstance.getName()).append("\">")
+										.append(taskInstance.getName()).append('[')
+										.append(taskInstance.getDescription()).append("]</option>");
 							}
 						}
 
 						if (userMap != null && userMap.size() > 0) {
-							Set<Entry<String, User>> entrySet = userMap
-									.entrySet();
+							Set<Entry<String, User>> entrySet = userMap.entrySet();
 							for (Entry<String, User> entry : entrySet) {
 								String name = entry.getKey();
 								User user = entry.getValue();
 								if (name != null && user != null) {
 									if (actorIds.contains(user.getActorId())) {
-										taskUserBuffer
-												.append("<option value=\"")
-												.append(user.getActorId())
-												.append("\">")
-												.append(user.getActorId())
-												.append('[')
-												.append(user.getName())
-												.append("]</option>");
+										taskUserBuffer.append("<option value=\"").append(user.getActorId())
+												.append("\">").append(user.getActorId()).append('[')
+												.append(user.getName()).append("]</option>");
 									} else {
-										userBuffer.append("<option value=\"")
-												.append(user.getActorId())
-												.append("\">")
-												.append(user.getActorId())
-												.append('[')
-												.append(user.getName())
+										userBuffer.append("<option value=\"").append(user.getActorId()).append("\">")
+												.append(user.getActorId()).append('[').append(user.getName())
 												.append("]</option>");
 									}
 								}
@@ -254,18 +218,14 @@ public class JbpmTaskController {
 		try {
 			ProcessQuery query = new ProcessQuery();
 			Tools.populate(query, params);
-			Map<String, User> userMap = ProcessFactory.getContainer()
-					.getUserMap();
+			Map<String, User> userMap = ProcessFactory.getContainer().getUserMap();
 
 			if (StringUtils.equals(actionType, "finished")) {
-				taskItems = ProcessFactory.getContainer().getWorkedTaskItems(
-						query);
+				taskItems = ProcessFactory.getContainer().getWorkedTaskItems(query);
 			} else {
-				taskItems = ProcessFactory.getContainer().getXYTaskItems(
-						query);
+				taskItems = ProcessFactory.getContainer().getXYTaskItems(query);
 			}
-			if (userMap != null && userMap.size() > 0 && taskItems != null
-					&& taskItems.size() > 0) {
+			if (userMap != null && userMap.size() > 0 && taskItems != null && taskItems.size() > 0) {
 				Iterator<TaskItem> iter = taskItems.iterator();
 				while (iter.hasNext()) {
 					TaskItem ti = iter.next();
@@ -316,8 +276,7 @@ public class JbpmTaskController {
 	@RequestMapping("/query")
 	public ModelAndView query(ModelMap modelMap, HttpServletRequest request) {
 		try {
-			Map<String, User> userMap = ProcessFactory.getContainer()
-					.getUserMap();
+			Map<String, User> userMap = ProcessFactory.getContainer().getUserMap();
 			modelMap.put("userMap", userMap);
 		} catch (Exception ex) {
 			if (LogUtils.isDebug()) {
@@ -344,8 +303,7 @@ public class JbpmTaskController {
 	@ResponseBody
 	public void reassign(ModelMap modelMap, HttpServletRequest request) {
 		Map<String, Object> paramMap = RequestUtils.getParameterMap(request);
-		Long processInstanceId = ParamUtils.getLong(paramMap,
-				"processInstanceId");
+		Long processInstanceId = ParamUtils.getLong(paramMap, "processInstanceId");
 		Long taskInstanceId = ParamUtils.getLong(paramMap, "taskInstanceId");
 		String actorIdXY = request.getParameter("actorIdXY");
 		String taskName = request.getParameter("taskName");
@@ -367,12 +325,10 @@ public class JbpmTaskController {
 
 		if (actorIds.size() > 0) {
 			if (taskInstanceId != null && taskInstanceId > 0) {
-				ProcessFactory.getContainer().reassignTask(taskInstanceId,
-						actorIds);
+				ProcessFactory.getContainer().reassignTask(taskInstanceId, actorIds);
 			}
 			if (processInstanceId != null && StringUtils.isNotEmpty(taskName)) {
-				ProcessFactory.getContainer().reassignTask(processInstanceId,
-						taskName, actorIds);
+				ProcessFactory.getContainer().reassignTask(processInstanceId, taskName, actorIds);
 			}
 		}
 	}
@@ -381,8 +337,7 @@ public class JbpmTaskController {
 	@ResponseBody
 	public void resume(ModelMap modelMap, HttpServletRequest request) {
 		Map<String, Object> paramMap = RequestUtils.getParameterMap(request);
-		Long processInstanceId = ParamUtils.getLong(paramMap,
-				"processInstanceId");
+		Long processInstanceId = ParamUtils.getLong(paramMap, "processInstanceId");
 		if (processInstanceId != null) {
 			ProcessFactory.getContainer().resume(processInstanceId);
 		}
@@ -393,8 +348,7 @@ public class JbpmTaskController {
 	@ResponseBody
 	public void suspend(HttpServletRequest request, ModelMap modelMap) {
 		Map<String, Object> paramMap = RequestUtils.getParameterMap(request);
-		Long processInstanceId = ParamUtils.getLong(paramMap,
-				"processInstanceId");
+		Long processInstanceId = ParamUtils.getLong(paramMap, "processInstanceId");
 		if (processInstanceId != null) {
 			ProcessFactory.getContainer().suspend(processInstanceId);
 		}
@@ -403,60 +357,50 @@ public class JbpmTaskController {
 	@RequestMapping("/task")
 	public ModelAndView task(HttpServletRequest request, ModelMap modelMap) {
 		Map<String, Object> paramMap = RequestUtils.getParameterMap(request);
-		Long processInstanceId = ParamUtils.getLong(paramMap,
-				"processInstanceId");
+		Long processInstanceId = ParamUtils.getLong(paramMap, "processInstanceId");
 		logger.debug("processInstanceId=" + processInstanceId);
 		ProcessInstance processInstance = null;
 		ProcessDefinition processDefinition = null;
 		JbpmContext jbpmContext = null;
+		User user = null;
 		try {
-			Map<String, User> userMap = ProcessFactory.getContainer()
-					.getUserMap();
+			Map<String, User> userMap = ProcessFactory.getContainer().getUserMap();
 			if (processInstanceId != null && processInstanceId > 0) {
 				List<TaskItem> taskItems = ProcessFactory.getContainer()
 						.getTaskItemsByProcessInstanceId(processInstanceId);
 
-				jbpmContext = ProcessFactory.getContainer()
-						.createJbpmContext();
+				jbpmContext = ProcessFactory.getContainer().createJbpmContext();
 
 				Map<String, Object> params = new java.util.HashMap<String, Object>();
 				params.put("processInstanceId", processInstanceId);
 
-				processInstance = jbpmContext.getProcessInstance(Long
-						.valueOf(processInstanceId));
+				processInstance = jbpmContext.getProcessInstance(processInstanceId);
 
 				if (processInstance != null) {
 					processDefinition = processInstance.getProcessDefinition();
-					logger.debug(processDefinition.getName() + "-"
-							+ processDefinition.getDescription());
+					logger.debug(processDefinition.getName() + "-" + processDefinition.getDescription());
 
 					Map<String, Object> variables = new java.util.HashMap<String, Object>();
-					String json = (String) processInstance.getContextInstance()
-							.getVariable(Constant.JSON_VARIABLE_MAP);
+					String json = (String) processInstance.getContextInstance().getVariable(Constant.JSON_VARIABLE_MAP);
 					logger.debug(json);
 					if (StringUtils.isNotEmpty(json)) {
-						Map<String, Object> jsonMap = com.glaf.core.util.JsonUtils
-								.decode(json);
+						Map<String, Object> jsonMap = com.glaf.core.util.JsonUtils.decode(json);
 						if (jsonMap != null) {
 							variables.putAll(jsonMap);
 						}
 					}
 
-					TaskMgmtInstance tmi = processInstance
-							.getTaskMgmtInstance();
+					TaskMgmtInstance tmi = processInstance.getTaskMgmtInstance();
 					List<TaskItem> finishedTaskItems = new java.util.ArrayList<TaskItem>();
 					Collection<?> taskInstances = tmi.getTaskInstances();
 					if (taskInstances != null && taskInstances.size() > 0) {
-						JbpmTaskManager jbpmTaskManager = ProcessFactory
-								.getContainer().getJbpmTaskManager();
-						Map<Long, ActivityInstance> workedMap = jbpmTaskManager
-								.getActivityInstanceMap(jbpmContext,
-										processInstanceId);
+						JbpmTaskManager jbpmTaskManager = ProcessFactory.getContainer().getJbpmTaskManager();
+						Map<Long, ActivityInstance> workedMap = jbpmTaskManager.getActivityInstanceMap(jbpmContext,
+								processInstanceId);
 						Iterator<?> iterator = taskInstances.iterator();
 						while (iterator.hasNext()) {
 							TaskInstance ti = (TaskInstance) iterator.next();
-							if (ti.hasEnded()
-									&& StringUtils.isNotEmpty(ti.getActorId())) {
+							if (ti.hasEnded() && StringUtils.isNotEmpty(ti.getActorId())) {
 								TaskItem item = new TaskItem();
 								item.setTaskInstanceId(ti.getId());
 								item.setActorId(ti.getActorId());
@@ -465,18 +409,26 @@ public class JbpmTaskController {
 								item.setEndDate(ti.getEnd());
 								item.setTaskDescription(ti.getDescription());
 								item.setTaskName(ti.getName());
-								ActivityInstance activityInstance = workedMap
-										.get(ti.getId());
+								user = userMap.get(ti.getActorId());
+								if (user != null) {
+									item.setActorName(user.getName());
+								}
+								ActivityInstance activityInstance = workedMap.get(ti.getId());
 								if (activityInstance != null) {
-									item.setIsAgree(activityInstance
-											.getIsAgree());
-									item.setOpinion(activityInstance
-											.getContent());
+									item.setIsAgree(activityInstance.getIsAgree());
+									item.setOpinion(activityInstance.getContent());
 									item.setRowId(activityInstance.getRowId());
 									item.setJson(activityInstance.getVariable());
 								}
 								finishedTaskItems.add(item);
 							}
+						}
+					}
+
+					for (TaskItem ti : taskItems) {
+						user = userMap.get(ti.getActorId());
+						if (user != null) {
+							ti.setActorName(user.getName());
 						}
 					}
 
@@ -487,6 +439,10 @@ public class JbpmTaskController {
 					modelMap.put("variables", variables);
 					modelMap.put("taskItems", taskItems);
 					modelMap.put("userMap", userMap);
+
+					if (!processInstance.hasEnded()) {
+						modelMap.put("processInstanceRunning", true);
+					}
 				}
 			}
 		} catch (Throwable ex) {
@@ -518,41 +474,34 @@ public class JbpmTaskController {
 	}
 
 	@RequestMapping("/taskInstances")
-	public ModelAndView taskInstances(ModelMap modelMap,
-			HttpServletRequest request) {
+	public ModelAndView taskInstances(ModelMap modelMap, HttpServletRequest request) {
 		String actorId = request.getParameter("actorId");
 		String actionType = request.getParameter("actionType");
 		String processName = request.getParameter("processName");
 		List<TaskItem> taskItems = null;
 
-		Map<String, User> userMap = ProcessFactory.getContainer()
-				.getUserMap();
+		Map<String, User> userMap = ProcessFactory.getContainer().getUserMap();
 
 		if (StringUtils.equals(actionType, "running")) {
 			if (StringUtils.isNotEmpty(processName)) {
 				if (StringUtils.isNotEmpty(actorId)) {
-					taskItems = ProcessFactory.getContainer()
-							.getTaskItemsByProcessName(processName, actorId);
+					taskItems = ProcessFactory.getContainer().getTaskItemsByProcessName(processName, actorId);
 				} else {
-					taskItems = ProcessFactory.getContainer()
-							.getTaskItemsByProcessName(processName);
+					taskItems = ProcessFactory.getContainer().getTaskItemsByProcessName(processName);
 				}
 			} else {
 				if (StringUtils.isNotEmpty(actorId)) {
-					taskItems = ProcessFactory.getContainer().getTaskItems(
-							actorId);
+					taskItems = ProcessFactory.getContainer().getTaskItems(actorId);
 				}
 			}
 		} else if (StringUtils.equals(actionType, "finished")) {
 			if (StringUtils.isNotEmpty(processName)) {
 				if (StringUtils.isNotEmpty(actorId)) {
-					taskItems = ProcessFactory.getContainer()
-							.getWorkedTaskItems(processName, actorId);
+					taskItems = ProcessFactory.getContainer().getWorkedTaskItems(processName, actorId);
 				}
 			} else {
 				if (StringUtils.isNotEmpty(actorId)) {
-					taskItems = ProcessFactory.getContainer()
-							.getWorkedTaskItems(actorId);
+					taskItems = ProcessFactory.getContainer().getWorkedTaskItems(actorId);
 				}
 			}
 		}
@@ -582,14 +531,12 @@ public class JbpmTaskController {
 	@RequestMapping("/taskItems")
 	public ModelAndView taskItems(ModelMap modelMap, HttpServletRequest request) {
 		String actorId = RequestUtils.getActorId(request);
-		java.util.Map<String, Object> paramMap = RequestUtils
-				.getParameterMap(request);
+		java.util.Map<String, Object> paramMap = RequestUtils.getParameterMap(request);
 		String processName = ParamUtils.getString(paramMap, "processName");
 		List<TaskItem> taskItems = null;
 
 		if (StringUtils.isNotEmpty(processName)) {
-			taskItems = ProcessFactory.getContainer()
-					.getTaskItemsByProcessName(processName, actorId);
+			taskItems = ProcessFactory.getContainer().getTaskItemsByProcessName(processName, actorId);
 		} else {
 			taskItems = ProcessFactory.getContainer().getTaskItems(actorId);
 		}
@@ -621,8 +568,7 @@ public class JbpmTaskController {
 	}
 
 	@RequestMapping("/taskListJson")
-	public ModelAndView taskListJson(ModelMap modelMap,
-			HttpServletRequest request) {
+	public ModelAndView taskListJson(ModelMap modelMap, HttpServletRequest request) {
 		Map<String, Object> params = RequestUtils.getParameterMap(request);
 		String actionType = ParamUtils.getString(params, "actionType", "");
 		logger.debug("params->" + params);
@@ -631,17 +577,14 @@ public class JbpmTaskController {
 		try {
 			ProcessQuery query = new ProcessQuery();
 			Tools.populate(query, params);
-			Map<String, User> userMap = ProcessFactory.getContainer()
-					.getUserMap();
+			Map<String, User> userMap = ProcessFactory.getContainer().getUserMap();
 
 			if (StringUtils.equals(actionType, "finished")) {
-				taskItems = ProcessFactory.getContainer().getWorkedTaskItems(
-						query);
+				taskItems = ProcessFactory.getContainer().getWorkedTaskItems(query);
 			} else {
 				taskItems = ProcessFactory.getContainer().getTaskItems(query);
 			}
-			if (userMap != null && userMap.size() > 0 && taskItems != null
-					&& taskItems.size() > 0) {
+			if (userMap != null && userMap.size() > 0 && taskItems != null && taskItems.size() > 0) {
 				Iterator<TaskItem> iter = taskItems.iterator();
 				while (iter.hasNext()) {
 					TaskItem ti = iter.next();

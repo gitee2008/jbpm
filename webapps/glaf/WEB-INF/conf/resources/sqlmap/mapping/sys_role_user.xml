@@ -28,7 +28,7 @@
 			<isPropertyAvailable prepend="AND" property="roleId">
 				<isNotEmpty prepend="" property="roleId">
 
-					r.ID = #roleId#
+					r.CODE = #roleId#
 
 				</isNotEmpty>
 			</isPropertyAvailable>
@@ -37,7 +37,7 @@
 				<isNotNull prepend="" property="roleIds">
 					<iterate prepend="" property="roleIds" open="(" close=")"
 						conjunction="OR">
-						( r.ID = #roleIds[]# )
+						( r.CODE = #roleIds[]# )
 					</iterate>
 				</isNotNull>
 			</isPropertyAvailable>
