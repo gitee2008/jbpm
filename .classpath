@@ -107,9 +107,6 @@
 	<classpathentry kind="lib" path="webapps/glaf/WEB-INF/lib/jxls.jar"/>
 	<classpathentry kind="lib" path="webapps/glaf/WEB-INF/lib/kryo.jar"/>
 	<classpathentry kind="lib" path="webapps/glaf/WEB-INF/lib/lettuce-core.jar"/>
-	<classpathentry kind="lib" path="webapps/glaf/WEB-INF/lib/log4j-api.jar"/>
-	<classpathentry kind="lib" path="webapps/glaf/WEB-INF/lib/log4j-core.jar"/>
-	<classpathentry kind="lib" path="webapps/glaf/WEB-INF/lib/log4j-slf4j-impl.jar"/>
 	<classpathentry kind="lib" path="webapps/glaf/WEB-INF/lib/log4j.jar"/>
 	<classpathentry kind="lib" path="webapps/glaf/WEB-INF/lib/logback-classic.jar"/>
 	<classpathentry kind="lib" path="webapps/glaf/WEB-INF/lib/logback-core.jar"/>
@@ -170,7 +167,6 @@
 	<classpathentry kind="lib" path="lib/servlet-api.jar"/>
 	<classpathentry kind="lib" path="webapps/glaf/WEB-INF/lib/consul-api.jar"/>
 	<classpathentry kind="lib" path="webapps/glaf/WEB-INF/lib/imgscalr-lib.jar"/>
-	<classpathentry kind="lib" path="webapps/glaf/WEB-INF/lib/byte-buddy.jar"/>
 	<classpathentry kind="lib" path="webapps/glaf/WEB-INF/lib/jai-imageio-core.jar"/>
 	<classpathentry kind="lib" path="webapps/glaf/WEB-INF/lib/jsqlparser.jar"/>
 	<classpathentry kind="lib" path="webapps/glaf/WEB-INF/lib/zxing-core.jar"/>

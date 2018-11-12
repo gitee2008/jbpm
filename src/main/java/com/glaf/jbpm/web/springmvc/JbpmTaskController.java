@@ -50,6 +50,7 @@ import com.glaf.core.identity.User;
 import com.glaf.core.util.LogUtils;
 import com.glaf.core.util.ParamUtils;
 import com.glaf.core.util.RequestUtils;
+import com.glaf.core.util.ResponseUtils;
 import com.glaf.core.util.Tools;
 import com.glaf.jbpm.context.Context;
 import com.glaf.jbpm.factory.ProcessFactory;
@@ -119,7 +120,7 @@ public class JbpmTaskController {
 	@RequestMapping("/chooseUser")
 	public ModelAndView chooseUser(ModelMap modelMap, HttpServletRequest request) {
 		String processInstanceId = request.getParameter("processInstanceId");
-		logger.debug("processInstanceId="+processInstanceId);
+		logger.debug("processInstanceId=" + processInstanceId);
 		String taskName = request.getParameter("taskName");
 		StringBuffer taskNameBuffer = new StringBuffer();
 		StringBuffer userBuffer = new StringBuffer();
@@ -183,7 +184,8 @@ public class JbpmTaskController {
 					}
 				}
 
-				logger.debug(taskNameBuffer.toString());
+				// logger.debug(taskNameBuffer.toString());
+				request.setAttribute("processInstanceId", processInstanceId);
 				request.setAttribute("selectedScript", taskUserBuffer.toString());
 				request.setAttribute("noselectedScript", userBuffer.toString());
 				request.setAttribute("taskNameScript", taskNameBuffer.toString());
@@ -299,7 +301,7 @@ public class JbpmTaskController {
 
 	@RequestMapping("/reassign")
 	@ResponseBody
-	public void reassign(ModelMap modelMap, HttpServletRequest request) {
+	public byte[] reassign(ModelMap modelMap, HttpServletRequest request) {
 		Map<String, Object> paramMap = RequestUtils.getParameterMap(request);
 		Long processInstanceId = ParamUtils.getLong(paramMap, "processInstanceId");
 		Long taskInstanceId = ParamUtils.getLong(paramMap, "taskInstanceId");
@@ -322,13 +324,20 @@ public class JbpmTaskController {
 		}
 
 		if (actorIds.size() > 0) {
-			if (taskInstanceId != null && taskInstanceId > 0) {
-				ProcessFactory.getContainer().reassignTask(taskInstanceId, actorIds);
-			}
-			if (processInstanceId != null && StringUtils.isNotEmpty(taskName)) {
-				ProcessFactory.getContainer().reassignTask(processInstanceId, taskName, actorIds);
+			try {
+				if (taskInstanceId != null && taskInstanceId > 0) {
+					ProcessFactory.getContainer().reassignTask(taskInstanceId, actorIds);
+					return ResponseUtils.responseResult(true);
+				}
+				if (processInstanceId != null && StringUtils.isNotEmpty(taskName)) {
+					ProcessFactory.getContainer().reassignTask(processInstanceId, taskName, actorIds);
+					return ResponseUtils.responseResult(true);
+				}
+			} catch (Exception ex) {
+				logger.error(ex);
 			}
 		}
+		return ResponseUtils.responseResult(false);
 	}
 
 	@RequestMapping("/task")
@@ -412,6 +421,7 @@ public class JbpmTaskController {
 					Collections.sort(finishedTaskItems);
 					modelMap.put("finishedTaskItems", finishedTaskItems);
 					modelMap.put("processInstance", processInstance);
+					modelMap.put("processInstanceId", processInstance.getId());
 					modelMap.put("processDefinition", processDefinition);
 					modelMap.put("variables", variables);
 					modelMap.put("taskItems", taskItems);
