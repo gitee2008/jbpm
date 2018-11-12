@@ -166,16 +166,16 @@
 <div align="center"><br />
 <#if processInstanceRunning?exists>
  <input type="button" value="暂停任务" id="suspend" name="suspend"
-	class="btn" onclick="javascript:suspendX();" />
+	class="btn btnGray" onclick="javascript:suspendX();" />
  <input type="button"
-	value="恢复任务" id="resume" name="resume" class="btn"
+	value="恢复任务" id="resume" name="resume" class="btn btnGray"
 	onclick="javascript:resumeX();" /> 
  <input type="button" value="重新分派任务"
-	id="reassignx" name="reassignx" class="btn"
+	id="reassignx" name="reassignx" class="btn btnGray"
 	onclick="javascript:chooseUserXY();" />  
 </#if>
  <input type="button"
-	value="关闭" id="close" name="close" class="btn"
+	value="关闭" id="close" name="close" class="btn btnGray"
 	onclick="javascript:window.close();" /> 
 <br/>
 <br/>

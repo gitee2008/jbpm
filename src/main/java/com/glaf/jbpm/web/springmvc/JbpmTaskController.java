@@ -119,6 +119,7 @@ public class JbpmTaskController {
 	@RequestMapping("/chooseUser")
 	public ModelAndView chooseUser(ModelMap modelMap, HttpServletRequest request) {
 		String processInstanceId = request.getParameter("processInstanceId");
+		logger.debug("processInstanceId="+processInstanceId);
 		String taskName = request.getParameter("taskName");
 		StringBuffer taskNameBuffer = new StringBuffer();
 		StringBuffer userBuffer = new StringBuffer();
@@ -182,15 +183,14 @@ public class JbpmTaskController {
 					}
 				}
 
-				modelMap.put("selectedScript", taskUserBuffer.toString());
-				modelMap.put("noselectedScript", userBuffer.toString());
-				modelMap.put("taskNameScript", taskNameBuffer.toString());
+				logger.debug(taskNameBuffer.toString());
+				request.setAttribute("selectedScript", taskUserBuffer.toString());
+				request.setAttribute("noselectedScript", userBuffer.toString());
+				request.setAttribute("taskNameScript", taskNameBuffer.toString());
 			}
 		} catch (Exception ex) {
-			if (LogUtils.isDebug()) {
-				logger.debug(ex);
-				ex.printStackTrace();
-			}
+			logger.error(ex);
+			ex.printStackTrace();
 		} finally {
 			Context.close(jbpmContext);
 		}
@@ -214,7 +214,6 @@ public class JbpmTaskController {
 		Map<String, Object> params = RequestUtils.getParameterMap(request);
 		String actionType = ParamUtils.getString(params, "actionType", "");
 		logger.debug("params->" + params);
-
 		List<TaskItem> taskItems = null;
 		try {
 			ProcessQuery query = new ProcessQuery();
@@ -238,10 +237,8 @@ public class JbpmTaskController {
 			}
 			modelMap.put("taskItems", taskItems);
 		} catch (Exception ex) {
-			if (LogUtils.isDebug()) {
-				logger.debug(ex);
-				ex.printStackTrace();
-			}
+			logger.error(ex);
+			ex.printStackTrace();
 		}
 
 		String jx_view = request.getParameter("jx_view");
@@ -333,7 +330,6 @@ public class JbpmTaskController {
 			}
 		}
 	}
-
 
 	@RequestMapping("/task")
 	public ModelAndView task(HttpServletRequest request, ModelMap modelMap) {
