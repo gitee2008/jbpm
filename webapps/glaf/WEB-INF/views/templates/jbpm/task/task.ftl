@@ -10,7 +10,7 @@
 			 var params = jQuery("#iForm").formSerialize();
 			  jQuery.ajax({
 				   type: "POST",
-				   url: '${request.contextPath}/jbpm/task/suspend',
+				   url: '${request.contextPath}/jbpm/processInstances/suspend',
 				   data: params,
 				   dataType:  'json',
 				   error: function(data){
@@ -29,7 +29,7 @@
               var params = jQuery("#iForm").formSerialize();
 			  jQuery.ajax({
 				   type: "POST",
-				   url: '${request.contextPath}/jbpm/task/resume',
+				   url: '${request.contextPath}/jbpm/processInstances/resume',
 				   data: params,
 				   dataType:  'json',
 				   error: function(data){

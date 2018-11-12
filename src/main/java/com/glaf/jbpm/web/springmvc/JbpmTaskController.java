@@ -334,26 +334,6 @@ public class JbpmTaskController {
 		}
 	}
 
-	@RequestMapping("/resume")
-	@ResponseBody
-	public void resume(ModelMap modelMap, HttpServletRequest request) {
-		Map<String, Object> paramMap = RequestUtils.getParameterMap(request);
-		Long processInstanceId = ParamUtils.getLong(paramMap, "processInstanceId");
-		if (processInstanceId != null) {
-			ProcessFactory.getContainer().resume(processInstanceId);
-		}
-
-	}
-
-	@RequestMapping("/suspend")
-	@ResponseBody
-	public void suspend(HttpServletRequest request, ModelMap modelMap) {
-		Map<String, Object> paramMap = RequestUtils.getParameterMap(request);
-		Long processInstanceId = ParamUtils.getLong(paramMap, "processInstanceId");
-		if (processInstanceId != null) {
-			ProcessFactory.getContainer().suspend(processInstanceId);
-		}
-	}
 
 	@RequestMapping("/task")
 	public ModelAndView task(HttpServletRequest request, ModelMap modelMap) {

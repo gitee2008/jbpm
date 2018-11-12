@@ -46,6 +46,7 @@ import com.glaf.core.util.DateUtils;
 import com.glaf.core.util.Paging;
 import com.glaf.core.util.ParamUtils;
 import com.glaf.core.util.RequestUtils;
+import com.glaf.core.util.ResponseUtils;
 import com.glaf.core.util.Tools;
 import com.glaf.jbpm.context.Context;
 import com.glaf.jbpm.factory.ProcessFactory;
@@ -117,14 +118,23 @@ public class JbpmProcessController {
 					JSONObject json = new JSONObject();
 					json.put("id", processInstance.getId());
 					json.put("key", processInstance.getKey());
+					if (processInstance.isSuspended()) {
+						json.put("isSuspended", "true");
+						json.put("isEnd", "false");
+					} else {
+						json.put("isEnd", "false");
+						json.put("isSuspended", "false");
+					}
 					if (processInstance.getStart() != null) {
 						json.put("startDate", DateUtils.getDateTime(processInstance.getStart()));
 					}
 					if (processInstance.getEnd() != null) {
+						json.put("isEnd", "true");
+						json.put("isSuspended", "false");
 						json.put("endDate", DateUtils.getDateTime(processInstance.getEnd()));
 					}
 					json.put("version", processInstance.getVersion());
-					json.put("startIndex", startIndex++);
+					json.put("startIndex", ++startIndex);
 					rowsJSON.add(json);
 				}
 				result.put("rows", rowsJSON);
@@ -173,5 +183,41 @@ public class JbpmProcessController {
 		}
 
 		return new ModelAndView("/jbpm/process/list", modelMap);
+	}
+
+	@RequestMapping("/resume")
+	@ResponseBody
+	public byte[] resume(HttpServletRequest request) {
+		Map<String, Object> paramMap = RequestUtils.getParameterMap(request);
+		long processInstanceId = ParamUtils.getLong(paramMap, "processInstanceId");
+		logger.debug("processInstanceId="+processInstanceId);
+		if (processInstanceId > 0) {
+			try {
+				ProcessFactory.getContainer().resume(processInstanceId);
+				logger.info("流程" + processInstanceId + "已经恢复。");
+				return ResponseUtils.responseResult(true);
+			} catch (Exception ex) {
+				logger.error(ex);
+			}
+		}
+		return ResponseUtils.responseResult(false);
+	}
+
+	@RequestMapping("/suspend")
+	@ResponseBody
+	public byte[] suspend(HttpServletRequest request) {
+		Map<String, Object> paramMap = RequestUtils.getParameterMap(request);
+		long processInstanceId = ParamUtils.getLong(paramMap, "processInstanceId");
+		logger.debug("processInstanceId="+processInstanceId);
+		if (processInstanceId > 0) {
+			try {
+				ProcessFactory.getContainer().suspend(processInstanceId);
+				logger.info("流程" + processInstanceId + "已经挂起。");
+				return ResponseUtils.responseResult(true);
+			} catch (Exception ex) {
+				logger.error(ex);
+			}
+		}
+		return ResponseUtils.responseResult(false);
 	}
 }
