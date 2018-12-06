@@ -32,16 +32,14 @@ import org.apache.commons.logging.LogFactory;
 import org.dom4j.Element;
 import org.jbpm.instantiation.FieldInstantiator;
 import org.jbpm.instantiation.Instantiator;
-import org.jbpm.util.ClassLoaderUtil;
 
+import com.glaf.core.util.ClassUtils;
 import com.glaf.core.util.DateUtils;
 
-public class CustomFieldInstantiator extends FieldInstantiator implements
-		Instantiator {
-	private static final Log logger = LogFactory
-			.getLog(CustomFieldInstantiator.class);
+public class CustomFieldInstantiator extends FieldInstantiator implements Instantiator {
+	private static final Log logger = LogFactory.getLog(CustomFieldInstantiator.class);
 
-	public static Object getValue(Class<?> type, Element propertyElement) {
+	public static Object getValue(Class type, Element propertyElement) {
 		Object value = null;
 		if (type == String.class) {
 			value = propertyElement.getText();
@@ -64,32 +62,24 @@ public class CustomFieldInstantiator extends FieldInstantiator implements
 		} else if (type.isAssignableFrom(java.util.Date.class)) {
 			value = DateUtils.toDate(propertyElement.getTextTrim());
 		} else if (type.isAssignableFrom(List.class)) {
-			value = getCollectionValue(propertyElement,
-					new java.util.ArrayList<Object>());
+			value = getCollectionValue(propertyElement, new java.util.ArrayList<Object>());
 		} else if (type.isAssignableFrom(Set.class)) {
-			value = getCollectionValue(propertyElement,
-					new LinkedHashSet<Object>());
+			value = getCollectionValue(propertyElement, new LinkedHashSet<Object>());
 		} else if (type.isAssignableFrom(Collection.class)) {
-			value = getCollectionValue(propertyElement,
-					new java.util.ArrayList<Object>());
+			value = getCollectionValue(propertyElement, new java.util.ArrayList<Object>());
 		} else if (type.isAssignableFrom(Map.class)) {
-			value = getMapValue(propertyElement,
-					new LinkedHashMap<Object, Object>());
+			value = getMapValue(propertyElement, new LinkedHashMap<Object, Object>());
 		} else if (type == Element.class) {
 			value = propertyElement;
 		} else {
 			try {
-				Constructor<?> constructor = type
-						.getConstructor(new Class[] { String.class });
+				Constructor<?> constructor = type.getConstructor(new Class[] { String.class });
 				if ((propertyElement.isTextOnly()) && (constructor != null)) {
-					value = constructor
-							.newInstance(new Object[] { propertyElement
-									.getTextTrim() });
+					value = constructor.newInstance(new Object[] { propertyElement.getTextTrim() });
 				}
 			} catch (Exception ex) {
-				logger.error("couldn't parse the bean property value '"
-						+ propertyElement.asXML() + "' to a '" + type.getName()
-						+ "'");
+				logger.error("couldn't parse the bean property value '" + propertyElement.asXML() + "' to a '"
+						+ type.getName() + "'");
 				throw new RuntimeException(ex);
 			}
 		}
@@ -97,17 +87,16 @@ public class CustomFieldInstantiator extends FieldInstantiator implements
 		return value;
 	}
 
-	private static Object getMapValue(Element mapElement,
-			Map<Object, Object> map) {
+	private static Object getMapValue(Element mapElement, Map<Object, Object> map) {
 		Class<?> keyClass = String.class;
 		String keyType = mapElement.attributeValue("key-type");
 		if (keyType != null) {
-			keyClass = ClassLoaderUtil.classForName(keyType);
+			keyClass = ClassUtils.classForName(keyType);
 		}
 		Class<?> valueClass = String.class;
 		String valueType = mapElement.attributeValue("value-type");
 		if (valueType != null) {
-			valueClass = ClassLoaderUtil.classForName(valueType);
+			valueClass = ClassUtils.classForName(valueType);
 		}
 		Iterator<?> iter = mapElement.elementIterator();
 		while (iter.hasNext()) {
@@ -117,23 +106,21 @@ public class CustomFieldInstantiator extends FieldInstantiator implements
 			Class<?> clazz = null;
 			String className = element.attributeValue("value-type");
 			if (className != null) {
-				clazz = ClassLoaderUtil.classForName(className);
+				clazz = ClassUtils.classForName(className);
 			}
 			if (clazz == null) {
 				clazz = valueClass;
 			}
-			map.put(getValue(keyClass, keyElement),
-					getValue(clazz, valueElement));
+			map.put(getValue(keyClass, keyElement), getValue(clazz, valueElement));
 		}
 		return map;
 	}
 
-	private static Object getCollectionValue(Element collectionElement,
-			Collection<Object> collection) {
+	private static Object getCollectionValue(Element collectionElement, Collection<Object> collection) {
 		Class<?> elementClass = String.class;
 		String elementType = collectionElement.attributeValue("element-type");
 		if (elementType != null) {
-			elementClass = ClassLoaderUtil.classForName(elementType);
+			elementClass = ClassUtils.classForName(elementType);
 		}
 		Iterator<?> iter = collectionElement.elementIterator();
 		while (iter.hasNext()) {

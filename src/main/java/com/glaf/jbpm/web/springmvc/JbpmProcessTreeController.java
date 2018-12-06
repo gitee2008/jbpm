@@ -18,7 +18,6 @@
 
 package com.glaf.jbpm.web.springmvc;
 
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -45,8 +44,7 @@ import com.glaf.jbpm.factory.ProcessFactory;
 @Controller("/jbpm/tree")
 @RequestMapping("/jbpm/tree")
 public class JbpmProcessTreeController {
-	protected final static Log logger = LogFactory
-			.getLog(JbpmProcessTreeController.class);
+	protected final static Log logger = LogFactory.getLog(JbpmProcessTreeController.class);
 
 	@RequestMapping("/exttree")
 	public ModelAndView exttree(HttpServletRequest request) {
@@ -85,18 +83,14 @@ public class JbpmProcessTreeController {
 			jbpmContext = ProcessFactory.getContainer().createJbpmContext();
 			graphSession = jbpmContext.getGraphSession();
 			if (StringUtils.isNotEmpty(process_name)) {
-				result = graphSession
-						.findAllProcessDefinitionVersions(process_name);
+				result = graphSession.findAllProcessDefinitionVersions(process_name);
 			} else {
 				result = graphSession.findAllProcessDefinitions();
 			}
-			if (StringUtils.isNotEmpty(processDefinitionId)
-					&& StringUtils.isNumeric(processDefinitionId)) {
-				ProcessDefinition pd = graphSession.getProcessDefinition(Long
-						.parseLong(processDefinitionId));
+			if (StringUtils.isNotEmpty(processDefinitionId) && StringUtils.isNumeric(processDefinitionId)) {
+				ProcessDefinition pd = graphSession.getProcessDefinition(Long.parseLong(processDefinitionId));
 				if (pd != null) {
-					Map<String, Task> tasks = pd.getTaskMgmtDefinition()
-							.getTasks();
+					Map<String, Task> tasks = pd.getTaskMgmtDefinition().getTasks();
 					if (tasks != null) {
 						List<Task> rows = new java.util.ArrayList<Task>();
 						Iterator<Task> iterator = tasks.values().iterator();
@@ -132,8 +126,7 @@ public class JbpmProcessTreeController {
 
 	@RequestMapping
 	public ModelAndView list(HttpServletRequest request, ModelMap modelMap) {
-		String processDefinitionId = request
-				.getParameter("processDefinitionId");
+		String processDefinitionId = request.getParameter("processDefinitionId");
 		String processName = request.getParameter("processName");
 		List<ProcessDefinition> result = null;
 		GraphSession graphSession = null;
@@ -141,16 +134,11 @@ public class JbpmProcessTreeController {
 		try {
 			jbpmContext = ProcessFactory.getContainer().createJbpmContext();
 			graphSession = jbpmContext.getGraphSession();
-			if (StringUtils.isNotEmpty(processDefinitionId)
-					&& StringUtils.isNumeric(processDefinitionId)) {
-				Collection<Long> processDefinitionIds = new java.util.ArrayList<Long>();
-				processDefinitionIds.add(Long.parseLong(processDefinitionId));
-				result = graphSession
-						.findProcessDefinitions(processDefinitionIds);
+			if (StringUtils.isNotEmpty(processDefinitionId) && StringUtils.isNumeric(processDefinitionId)) {
+
 			} else {
 				if (StringUtils.isNotEmpty(processName)) {
-					result = graphSession
-							.findAllProcessDefinitionVersions(processName);
+					result = graphSession.findAllProcessDefinitionVersions(processName);
 				} else {
 					result = graphSession.findAllProcessDefinitions();
 				}

@@ -114,7 +114,7 @@ public class ForEachFork implements ActionHandler {
 
 		// first, create a new token and execution context for each item in list
 		for (int i = 0; i < node.getLeavingTransitions().size(); i++) {
-			Transition transition = node.getLeavingTransitions().get(i);
+			Transition transition = (Transition)node.getLeavingTransitions().get(i);
 
 			for (int iVar = 0; iVar < forEachColl.size(); iVar++) {
 				// create child token to represent new path
