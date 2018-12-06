@@ -36,9 +36,12 @@ import org.jbpm.instantiation.Instantiator;
 import com.glaf.core.util.ClassUtils;
 import com.glaf.core.util.DateUtils;
 
+@SuppressWarnings("rawtypes")
 public class CustomFieldInstantiator extends FieldInstantiator implements Instantiator {
 	private static final Log logger = LogFactory.getLog(CustomFieldInstantiator.class);
 
+	
+	@SuppressWarnings("unchecked")
 	public static Object getValue(Class type, Element propertyElement) {
 		Object value = null;
 		if (type == String.class) {
