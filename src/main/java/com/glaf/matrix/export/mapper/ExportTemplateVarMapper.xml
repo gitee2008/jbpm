@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper
+	namespace="com.glaf.matrix.export.mapper.ExportTemplateVarMapper">
+
+	<resultMap id="exportTemplateVarResultMap"
+		type="com.glaf.matrix.export.domain.ExportTemplateVar">
+		<id property="id" column="ID_" jdbcType="VARCHAR" />
+		<result property="expId" column="EXPID_" jdbcType="VARCHAR" />
+		<result property="deploymentId" column="DEPLOYMENTID_"
+			jdbcType="VARCHAR" />
+		<result property="name" column="NAME_" jdbcType="VARCHAR" />
+		<result property="title" column="TITLE_" jdbcType="VARCHAR" />
+		<result property="varTemplate" column="VAR_TEMPLATE_"
+			jdbcType="VARCHAR" />
+		<result property="locked" column="LOCKED_" jdbcType="INTEGER" />
+		<result property="createBy" column="CREATEBY_"
+			jdbcType="VARCHAR" />
+		<result property="createTime" column="CREATETIME_"
+			jdbcType="TIMESTAMP" />
+	</resultMap>
+
+
+	<insert id="insertExportTemplateVar"
+		parameterType="com.glaf.matrix.export.domain.ExportTemplateVar">
+		insert into SYS_EXPORT_TPL_VAR
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			ID_
+			<if test="expId != null">
+				,EXPID_
+			</if>
+			<if test="deploymentId != null">
+				,DEPLOYMENTID_
+			</if>
+			<if test="name != null">
+				,NAME_
+			</if>
+			<if test="title != null">
+				,TITLE_
+			</if>
+			<if test="varTemplate != null">
+				,VAR_TEMPLATE_
+			</if>
+			<if test="locked != null">
+				,LOCKED_
+			</if>
+			<if test="createBy != null">
+				,CREATEBY_
+			</if>
+			<if test="createTime != null">
+				,CREATETIME_
+			</if>
+		</trim>
+
+		<trim prefix=" values (" suffix=")" suffixOverrides=",">
+			#{id, jdbcType=VARCHAR}
+
+			<if test="expId != null">
+				,#{expId, jdbcType=VARCHAR}
+			</if>
+			<if test="deploymentId != null">
+				,#{deploymentId, jdbcType=VARCHAR}
+			</if>
+			<if test="name != null">
+				,#{name, jdbcType=VARCHAR}
+			</if>
+			<if test="title != null">
+				,#{title, jdbcType=VARCHAR}
+			</if>
+			<if test="varTemplate != null">
+				,#{varTemplate, jdbcType=VARCHAR}
+			</if>
+			<if test="locked != null">
+				,#{locked, jdbcType=INTEGER}
+			</if>
+			<if test="createBy != null">
+				,#{createBy, jdbcType=VARCHAR}
+			</if>
+			<if test="createTime != null">
+				,#{createTime, jdbcType=TIMESTAMP}
+			</if>
+		</trim>
+	</insert>
+
+
+	<update id="updateExportTemplateVar"
+		parameterType="com.glaf.matrix.export.domain.ExportTemplateVar">
+		update SYS_EXPORT_TPL_VAR
+		set
+		<trim prefix="" suffix="" suffixOverrides=",">
+			<if test="name != null">
+				NAME_ = #{name, jdbcType=VARCHAR},
+			</if>
+			<if test="title != null">
+				TITLE_ = #{title, jdbcType=VARCHAR},
+			</if>
+			<if test="varTemplate != null">
+				VAR_TEMPLATE_ = #{varTemplate, jdbcType=VARCHAR},
+			</if>
+			<if test="locked != null">
+				LOCKED_ = #{locked, jdbcType=INTEGER},
+			</if>
+		</trim>
+		where
+		ID_ = #{id, jdbcType=VARCHAR}
+
+	</update>
+
+
+	<delete id="deleteExportTemplateVarById" parameterType="string">
+		delete
+		from
+		SYS_EXPORT_TPL_VAR
+		where ID_ = #{id}
+	</delete>
+
+
+	<select id="getExportTemplateVarById" parameterType="string"
+		resultMap="exportTemplateVarResultMap">
+		select * from SYS_EXPORT_TPL_VAR where ID_ = #{id}
+	</select>
+
+
+	<select id="getExportTemplateVars"
+		parameterType="com.glaf.matrix.export.query.ExportTemplateVarQuery"
+		resultMap="exportTemplateVarResultMap">
+		select E.*
+		<include refid="selectExportTemplateVarsSql" />
+		<choose>
+			<when test="orderBy != null">
+				order by ${orderBy}
+			</when>
+			<otherwise>
+				order by E.NAME_ asc
+			</otherwise>
+		</choose>
+	</select>
+
+
+	<select id="getExportTemplateVarCount"
+		parameterType="com.glaf.matrix.export.query.ExportTemplateVarQuery"
+		resultType="int">
+		select count(*)
+		<include refid="selectExportTemplateVarsSql" />
+	</select>
+
+
+	<sql id="selectExportTemplateVarsSql">
+
+		from SYS_EXPORT_TPL_VAR E
+
+		<where>
+			1 = 1
+
+			<if test="expId != null">
+				and E.EXPID_ = #{expId}
+			</if>
+
+			<if test="expIds != null and expIds.size() &gt; 0">
+				and E.EXPID_ IN
+				<foreach item="x_expId" index="index" collection="expIds"
+					open="(" separator="," close=")">
+					#{x_expId}
+				</foreach>
+			</if>
+
+			<if test="deploymentId != null and deploymentId != '' ">
+				and E.DEPLOYMENTID_ = #{deploymentId}
+			</if>
+
+			<if test="deploymentIds != null and deploymentIds.size() &gt; 0">
+				and E.DEPLOYMENTID_ IN
+				<foreach item="x_deploymentId" index="index"
+					collection="deploymentIds" open="(" separator="," close=")">
+					#{x_deploymentId}
+				</foreach>
+			</if>
+
+			<if test="locked != null">
+				and E.LOCKED_ = #{locked}
+			</if>
+
+			<if test="createBy != null and createBy != '' ">
+				and E.CREATEBY_ = #{createBy}
+			</if>
+
+			<if test="createTimeGreaterThanOrEqual != null">
+				and E.CREATETIME_ &gt;= #{createTimeGreaterThanOrEqual}
+			</if>
+
+			<if test="createTimeLessThanOrEqual != null">
+				and E.CREATETIME_ &lt;= #{createTimeLessThanOrEqual}
+			</if>
+
+		</where>
+	</sql>
+
+</mapper>

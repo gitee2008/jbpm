@@ -41,9 +41,9 @@ import com.glaf.core.domain.Database;
 import com.glaf.core.entity.SqlExecutor;
 import com.glaf.core.jdbc.DBConnectionFactory;
 import com.glaf.core.service.IDatabaseService;
-import com.glaf.core.util.LowerLinkedMap;
 import com.glaf.core.util.DBUtils;
 import com.glaf.core.util.JdbcUtils;
+import com.glaf.core.util.LowerLinkedMap;
 import com.glaf.core.util.QueryUtils;
 
 import com.glaf.matrix.export.domain.XmlExport;
@@ -68,12 +68,9 @@ public class ExportDataHandler implements DataHandler {
 	/**
 	 * 增加数据节点
 	 * 
-	 * @param xmlExport
-	 *            导出定义
-	 * @param dataMap
-	 *            数据集合
-	 * @param databaseId
-	 *            数据库编号
+	 * @param xmlExport  导出定义
+	 * @param dataMap    数据集合
+	 * @param databaseId 数据库编号
 	 */
 	@Override
 	public void addChild(XmlExport xmlExport, Map<String, Object> dataMap, long databaseId) {

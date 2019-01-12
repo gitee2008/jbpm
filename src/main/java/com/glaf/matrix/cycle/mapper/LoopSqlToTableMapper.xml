@@ -1,0 +1,492 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper
+	namespace="com.glaf.matrix.cycle.mapper.LoopSqlToTableMapper">
+
+	<resultMap id="loopSqlToTableResultMap"
+		type="com.glaf.matrix.cycle.domain.LoopSqlToTable">
+		<id property="id" column="ID_" jdbcType="VARCHAR" />
+		<result property="name" column="NAME_" jdbcType="VARCHAR" />
+		<result property="title" column="TITLE_" jdbcType="VARCHAR" />
+		<result property="type" column="TYPE_" jdbcType="VARCHAR" />
+		<result property="sourceDatabaseId" column="SOURCEDATABASEID_"
+			jdbcType="VARCHAR" />
+		<result property="primaryKey" column="PRIMARYKEY_"
+			jdbcType="VARCHAR" />
+		<result property="sql" column="SQL_" jdbcType="VARCHAR" />
+		<result property="targetTableName" column="TARGETTABLENAME_"
+			jdbcType="VARCHAR" />
+		<result property="targetDatabaseId" column="TARGETDATABASEID_"
+			jdbcType="VARCHAR" />
+		<result property="recentlyDay" column="RECENTLYDAY_"
+			jdbcType="INTEGER" />
+		<result property="startDate" column="STARTDATE_"
+			jdbcType="TIMESTAMP" />
+		<result property="stopDate" column="STOPDATE_"
+			jdbcType="TIMESTAMP" />
+		<result property="deleteFetch" column="DELETEFETCH_"
+			jdbcType="VARCHAR" />
+		<result property="skipError" column="SKIPERROR_"
+			jdbcType="VARCHAR" />
+		<result property="batchFlag" column="BATCHFLAG_"
+			jdbcType="VARCHAR" />
+		<result property="scheduleFlag" column="SCHEDULEFLAG_"
+			jdbcType="VARCHAR" />
+		<result property="syncStatus" column="SYNCSTATUS_"
+			jdbcType="INTEGER" />
+		<result property="syncTime" column="SYNCTIME_"
+			jdbcType="TIMESTAMP" />
+		<result property="sortNo" column="SORTNO_" jdbcType="INTEGER" />
+		<result property="locked" column="LOCKED_" jdbcType="INTEGER" />
+		<result property="createBy" column="CREATEBY_"
+			jdbcType="VARCHAR" />
+		<result property="createTime" column="CREATETIME_"
+			jdbcType="TIMESTAMP" />
+		<result property="updateBy" column="UPDATEBY_"
+			jdbcType="VARCHAR" />
+		<result property="updateTime" column="UPDATETIME_"
+			jdbcType="TIMESTAMP" />
+	</resultMap>
+
+
+	<insert id="insertLoopSqlToTable"
+		parameterType="com.glaf.matrix.cycle.domain.LoopSqlToTable">
+		insert into SYS_LOOP_SQL_TO_TABLE
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			ID_
+			<if test="name != null">
+				,NAME_
+			</if>
+			<if test="title != null">
+				,TITLE_
+			</if>
+			<if test="type != null">
+				,TYPE_
+			</if>
+			<if test="sourceDatabaseId != null">
+				,SOURCEDATABASEID_
+			</if>
+			<if test="primaryKey != null">
+				,PRIMARYKEY_
+			</if>
+			<if test="sql != null">
+				,SQL_
+			</if>
+			<if test="targetTableName != null">
+				,TARGETTABLENAME_
+			</if>
+			<if test="targetDatabaseId != null">
+				,TARGETDATABASEID_
+			</if>
+			<if test="recentlyDay != null">
+				,RECENTLYDAY_
+			</if>
+			<if test="startDate != null">
+				,STARTDATE_
+			</if>
+			<if test="stopDate != null">
+				,STOPDATE_
+			</if>
+			<if test="deleteFetch != null">
+				,DELETEFETCH_
+			</if>
+			<if test="skipError != null">
+				,SKIPERROR_
+			</if>
+			<if test="batchFlag != null">
+				,BATCHFLAG_
+			</if>
+			<if test="scheduleFlag != null">
+				,SCHEDULEFLAG_
+			</if>
+			<if test="syncStatus != null">
+				,SYNCSTATUS_
+			</if>
+			<if test="syncTime != null">
+				,SYNCTIME_
+			</if>
+			<if test="sortNo != null">
+				,SORTNO_
+			</if>
+			<if test="locked != null">
+				,LOCKED_
+			</if>
+			<if test="createBy != null">
+				,CREATEBY_
+			</if>
+			<if test="createTime != null">
+				,CREATETIME_
+			</if>
+			<if test="updateBy != null">
+				,UPDATEBY_
+			</if>
+			<if test="updateTime != null">
+				,UPDATETIME_
+			</if>
+		</trim>
+
+		<trim prefix=" values (" suffix=")" suffixOverrides=",">
+			#{id, jdbcType=VARCHAR}
+
+			<if test="name != null">
+				,#{name, jdbcType=VARCHAR}
+			</if>
+			<if test="title != null">
+				,#{title, jdbcType=VARCHAR}
+			</if>
+			<if test="type != null">
+				,#{type, jdbcType=VARCHAR}
+			</if>
+			<if test="sourceDatabaseId != null">
+				,#{sourceDatabaseId, jdbcType=VARCHAR}
+			</if>
+			<if test="primaryKey != null">
+				,#{primaryKey, jdbcType=VARCHAR}
+			</if>
+			<if test="sql != null">
+				,#{sql, jdbcType=VARCHAR}
+			</if>
+			<if test="targetTableName != null">
+				,#{targetTableName, jdbcType=VARCHAR}
+			</if>
+			<if test="targetDatabaseId != null">
+				,#{targetDatabaseId, jdbcType=VARCHAR}
+			</if>
+			<if test="recentlyDay != null">
+				,#{recentlyDay, jdbcType=INTEGER}
+			</if>
+			<if test="startDate != null">
+				,#{startDate, jdbcType=TIMESTAMP}
+			</if>
+			<if test="stopDate != null">
+				,#{stopDate, jdbcType=TIMESTAMP}
+			</if>
+			<if test="deleteFetch != null">
+				,#{deleteFetch, jdbcType=VARCHAR}
+			</if>
+			<if test="skipError != null">
+				,#{skipError, jdbcType=VARCHAR}
+			</if>
+			<if test="batchFlag != null">
+				,#{batchFlag, jdbcType=VARCHAR}
+			</if>
+			<if test="scheduleFlag != null">
+				,#{scheduleFlag, jdbcType=VARCHAR}
+			</if>
+			<if test="syncStatus != null">
+				,#{syncStatus, jdbcType=INTEGER}
+			</if>
+			<if test="syncTime != null">
+				,#{syncTime, jdbcType=TIMESTAMP}
+			</if>
+			<if test="sortNo != null">
+				,#{sortNo, jdbcType=INTEGER}
+			</if>
+			<if test="locked != null">
+				,#{locked, jdbcType=INTEGER}
+			</if>
+			<if test="createBy != null">
+				,#{createBy, jdbcType=VARCHAR}
+			</if>
+			<if test="createTime != null">
+				,#{createTime, jdbcType=TIMESTAMP}
+			</if>
+			<if test="updateBy != null">
+				,#{updateBy, jdbcType=VARCHAR}
+			</if>
+			<if test="updateTime != null">
+				,#{updateTime, jdbcType=TIMESTAMP}
+			</if>
+		</trim>
+	</insert>
+
+
+	<insert id="bulkInsertLoopSqlToTable"
+		parameterType="java.util.List">
+		insert into SYS_LOOP_SQL_TO_TABLE (
+		ID_
+		,NAME_
+		,TITLE_
+		,TYPE_
+		,SOURCEDATABASEID_
+		,PRIMARYKEY_
+		,SQL_
+		,TARGETTABLENAME_
+		,TARGETDATABASEID_
+		,RECENTLYDAY_
+		,STARTDATE_
+		,STOPDATE_
+		,DELETEFETCH_
+		,SKIPERROR_
+		,BATCHFLAG_
+		,SCHEDULEFLAG_
+		,SYNCSTATUS_
+		,SYNCTIME_
+		,SORTNO_
+		,LOCKED_
+		,CREATEBY_
+		,CREATETIME_
+		,UPDATEBY_
+		,UPDATETIME_
+		) values
+		<foreach collection="list" item="loopSqlToTable"
+			index="index" separator=",">
+			(
+			#{loopSqlToTable.id, jdbcType=VARCHAR}
+			,#{loopSqlToTable.name, jdbcType=VARCHAR}
+			,#{loopSqlToTable.title,
+			jdbcType=VARCHAR}
+			,#{loopSqlToTable.type, jdbcType=VARCHAR}
+			,#{loopSqlToTable.sourceDatabaseId, jdbcType=VARCHAR}
+			,#{loopSqlToTable.primaryKey, jdbcType=VARCHAR}
+			,#{loopSqlToTable.sql, jdbcType=VARCHAR}
+			,#{loopSqlToTable.targetTableName, jdbcType=VARCHAR}
+			,#{loopSqlToTable.targetDatabaseId, jdbcType=VARCHAR}
+			,#{loopSqlToTable.recentlyDay, jdbcType=INTEGER}
+			,#{loopSqlToTable.startDate, jdbcType=TIMESTAMP}
+			,#{loopSqlToTable.stopDate, jdbcType=TIMESTAMP}
+			,#{loopSqlToTable.deleteFetch, jdbcType=VARCHAR}
+			,#{loopSqlToTable.skipError, jdbcType=VARCHAR}
+			,#{loopSqlToTable.batchFlag, jdbcType=VARCHAR}
+			,#{loopSqlToTable.scheduleFlag, jdbcType=VARCHAR}
+			,#{loopSqlToTable.syncStatus, jdbcType=INTEGER}
+			,#{loopSqlToTable.syncTime, jdbcType=TIMESTAMP}
+			,#{loopSqlToTable.sortNo, jdbcType=INTEGER}
+			,#{loopSqlToTable.locked, jdbcType=INTEGER}
+			,#{loopSqlToTable.createBy, jdbcType=VARCHAR}
+			,#{loopSqlToTable.createTime, jdbcType=TIMESTAMP}
+			,#{loopSqlToTable.updateBy, jdbcType=VARCHAR}
+			,#{loopSqlToTable.updateTime, jdbcType=TIMESTAMP}
+			)
+		</foreach>
+	</insert>
+
+
+	<insert id="bulkInsertLoopSqlToTable_oracle"
+		parameterType="java.util.List">
+		INSERT ALL
+		<foreach collection="list" item="loopSqlToTable"
+			index="index">
+			insert into SYS_LOOP_SQL_TO_TABLE (
+			ID_
+			,NAME_
+			,TITLE_
+			,TYPE_
+			,SOURCEDATABASEID_
+			,PRIMARYKEY_
+			,SQL_
+			,TARGETTABLENAME_
+			,TARGETDATABASEID_
+			,RECENTLYDAY_
+			,STARTDATE_
+			,STOPDATE_
+			,DELETEFETCH_
+			,SKIPERROR_
+			,BATCHFLAG_
+			,SCHEDULEFLAG_
+			,SYNCSTATUS_
+			,SYNCTIME_
+			,SORTNO_
+			,LOCKED_
+			,CREATEBY_
+			,CREATETIME_
+			,UPDATEBY_
+			,UPDATETIME_
+			) values (
+			#{loopSqlToTable.id,
+			jdbcType=VARCHAR}
+			,#{loopSqlToTable.name,
+			jdbcType=VARCHAR}
+			,#{loopSqlToTable.title, jdbcType=VARCHAR}
+			,#{loopSqlToTable.type,
+			jdbcType=VARCHAR}
+			,#{loopSqlToTable.sourceDatabaseId,
+			jdbcType=VARCHAR}
+			,#{loopSqlToTable.primaryKey, jdbcType=VARCHAR}
+			,#{loopSqlToTable.sql, jdbcType=VARCHAR}
+			,#{loopSqlToTable.targetTableName, jdbcType=VARCHAR}
+			,#{loopSqlToTable.targetDatabaseId, jdbcType=VARCHAR}
+			,#{loopSqlToTable.recentlyDay, jdbcType=INTEGER}
+			,#{loopSqlToTable.startDate, jdbcType=TIMESTAMP}
+			,#{loopSqlToTable.stopDate, jdbcType=TIMESTAMP}
+			,#{loopSqlToTable.deleteFetch, jdbcType=VARCHAR}
+			,#{loopSqlToTable.skipError, jdbcType=VARCHAR}
+			,#{loopSqlToTable.batchFlag, jdbcType=VARCHAR}
+			,#{loopSqlToTable.scheduleFlag, jdbcType=VARCHAR}
+			,#{loopSqlToTable.syncStatus, jdbcType=INTEGER}
+			,#{loopSqlToTable.syncTime, jdbcType=TIMESTAMP}
+			,#{loopSqlToTable.sortNo, jdbcType=INTEGER}
+			,#{loopSqlToTable.locked, jdbcType=INTEGER}
+			,#{loopSqlToTable.createBy, jdbcType=VARCHAR}
+			,#{loopSqlToTable.createTime, jdbcType=TIMESTAMP}
+			,#{loopSqlToTable.updateBy, jdbcType=VARCHAR}
+			,#{loopSqlToTable.updateTime, jdbcType=TIMESTAMP}
+			)
+		</foreach>
+		SELECT * FROM dual
+	</insert>
+
+
+	<update id="updateLoopSqlToTable"
+		parameterType="com.glaf.matrix.cycle.domain.LoopSqlToTable">
+		update SYS_LOOP_SQL_TO_TABLE
+		set
+		<trim prefix="" suffix="" suffixOverrides=",">
+			<if test="name != null">
+				NAME_ = #{name, jdbcType=VARCHAR},
+			</if>
+			<if test="title != null">
+				TITLE_ = #{title, jdbcType=VARCHAR},
+			</if>
+			<if test="type != null">
+				TYPE_ = #{type, jdbcType=VARCHAR},
+			</if>
+			<if test="sourceDatabaseId != null">
+				SOURCEDATABASEID_ = #{sourceDatabaseId,
+				jdbcType=VARCHAR},
+			</if>
+			<if test="primaryKey != null">
+				PRIMARYKEY_ = #{primaryKey, jdbcType=VARCHAR},
+			</if>
+			<if test="sql != null">
+				SQL_ = #{sql, jdbcType=VARCHAR},
+			</if>
+			<if test="targetTableName != null">
+				TARGETTABLENAME_ = #{targetTableName, jdbcType=VARCHAR},
+			</if>
+			<if test="targetDatabaseId != null">
+				TARGETDATABASEID_ = #{targetDatabaseId,
+				jdbcType=VARCHAR},
+			</if>
+			<if test="deleteFetch != null">
+				DELETEFETCH_ = #{deleteFetch, jdbcType=VARCHAR},
+			</if>
+			<if test="skipError != null">
+				SKIPERROR_ = #{skipError, jdbcType=VARCHAR},
+			</if>
+			<if test="batchFlag != null">
+				BATCHFLAG_ = #{batchFlag, jdbcType=VARCHAR},
+			</if>
+			<if test="scheduleFlag != null">
+				SCHEDULEFLAG_ = #{scheduleFlag, jdbcType=VARCHAR},
+			</if>
+			<if test="sortNo != null">
+				SORTNO_ = #{sortNo, jdbcType=INTEGER},
+			</if>
+			<if test="locked != null">
+				LOCKED_ = #{locked, jdbcType=INTEGER},
+			</if>
+			<if test="updateBy != null">
+				UPDATEBY_ = #{updateBy, jdbcType=VARCHAR},
+			</if>
+			<if test="updateTime != null">
+				UPDATETIME_ = #{updateTime, jdbcType=TIMESTAMP},
+			</if>
+			RECENTLYDAY_ = #{recentlyDay, jdbcType=INTEGER},
+			STARTDATE_ =
+			#{startDate, jdbcType=TIMESTAMP},
+			STOPDATE_ = #{stopDate,
+			jdbcType=TIMESTAMP}
+		</trim>
+		where
+		ID_ = #{id, jdbcType=VARCHAR}
+
+	</update>
+
+
+	<update id="updateLoopSqlToTableSyncStatus"
+		parameterType="com.glaf.matrix.cycle.domain.LoopSqlToTable">
+		update SYS_LOOP_SQL_TO_TABLE
+		set
+		SYNCSTATUS_ =
+		#{syncStatus, jdbcType=INTEGER},
+		SYNCTIME_ = #{syncTime,
+		jdbcType=TIMESTAMP}
+		where
+		ID_ = #{id, jdbcType=VARCHAR}
+
+	</update>
+
+
+	<delete id="deleteLoopSqlToTableById" parameterType="string">
+		delete from
+		SYS_LOOP_SQL_TO_TABLE
+		where ID_ = #{id}
+	</delete>
+
+
+	<select id="getLoopSqlToTableById" parameterType="string"
+		resultMap="loopSqlToTableResultMap">
+		select * from SYS_LOOP_SQL_TO_TABLE where ID_ = #{id}
+	</select>
+
+
+	<select id="getLoopSqlToTables"
+		parameterType="com.glaf.matrix.cycle.query.LoopSqlToTableQuery"
+		resultMap="loopSqlToTableResultMap">
+		select distinct E.*
+		<include refid="selectLoopSqlToTablesSql" />
+		<choose>
+			<when test="orderBy != null">
+				order by ${orderBy}
+			</when>
+			<otherwise>
+				order by E.CREATETIME_ desc
+			</otherwise>
+		</choose>
+	</select>
+
+
+	<select id="getLoopSqlToTableCount"
+		parameterType="com.glaf.matrix.cycle.query.LoopSqlToTableQuery"
+		resultType="int">
+		select count(*)
+		<include refid="selectLoopSqlToTablesSql" />
+	</select>
+
+
+	<sql id="selectLoopSqlToTablesSql">
+
+		from SYS_LOOP_SQL_TO_TABLE E
+
+		<where>
+			1 = 1
+
+			<if test="nameLike != null and nameLike != '' ">
+				and E.NAME_ like #{nameLike}
+			</if>
+
+			<if test="titleLike != null and titleLike != '' ">
+				and E.TITLE_ like #{titleLike}
+			</if>
+
+			<if test="type != null and type != '' ">
+				and E.TYPE_ = #{type}
+			</if>
+
+			<if test="scheduleFlag != null and scheduleFlag != '' ">
+				and E.SCHEDULEFLAG_ = #{scheduleFlag}
+			</if>
+
+			<if test="locked != null">
+				and E.LOCKED_ = #{locked}
+			</if>
+
+			<if test="createBy != null and createBy != '' ">
+				and E.CREATEBY_ = #{createBy}
+			</if>
+
+			<if test="createTimeGreaterThanOrEqual != null">
+				and E.CREATETIME_ &gt;= #{createTimeGreaterThanOrEqual}
+			</if>
+
+			<if test="createTimeLessThanOrEqual != null">
+				and E.CREATETIME_ &lt;= #{createTimeLessThanOrEqual}
+			</if>
+
+		</where>
+	</sql>
+
+</mapper>

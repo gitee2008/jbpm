@@ -1,25 +1,6 @@
-/*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package com.glaf.matrix.export.web.springmvc;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
@@ -38,15 +19,17 @@ import org.springframework.web.servlet.ModelAndView;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.glaf.core.config.ViewProperties;
+import com.glaf.core.identity.User;
 import com.glaf.core.security.LoginContext;
 import com.glaf.core.util.Paging;
 import com.glaf.core.util.ParamUtils;
 import com.glaf.core.util.RequestUtils;
 import com.glaf.core.util.ResponseUtils;
 import com.glaf.core.util.Tools;
-import com.glaf.matrix.export.domain.XmlExportItem;
-import com.glaf.matrix.export.query.XmlExportItemQuery;
-import com.glaf.matrix.export.service.XmlExportItemService;
+
+import com.glaf.matrix.export.domain.ExportTemplateVar;
+import com.glaf.matrix.export.query.ExportTemplateVarQuery;
+import com.glaf.matrix.export.service.ExportTemplateVarService;
 
 /**
  * 
@@ -54,14 +37,14 @@ import com.glaf.matrix.export.service.XmlExportItemService;
  *
  */
 
-@Controller("/matrix/xmlExportItem")
-@RequestMapping("/matrix/xmlExportItem")
-public class XmlExportItemController {
-	protected static final Log logger = LogFactory.getLog(XmlExportItemController.class);
+@Controller("/matrix/exportTemplateVar")
+@RequestMapping("/matrix/exportTemplateVar")
+public class ExportTemplateVarController {
+	protected static final Log logger = LogFactory.getLog(ExportTemplateVarController.class);
 
-	protected XmlExportItemService xmlExportItemService;
+	protected ExportTemplateVarService exportTemplateVarService;
 
-	public XmlExportItemController() {
+	public ExportTemplateVarController() {
 
 	}
 
@@ -76,20 +59,21 @@ public class XmlExportItemController {
 			while (token.hasMoreTokens()) {
 				String x = token.nextToken();
 				if (StringUtils.isNotEmpty(x)) {
-					XmlExportItem xmlExportItem = xmlExportItemService.getXmlExportItem(x);
-					if (xmlExportItem != null
-							&& (StringUtils.equals(xmlExportItem.getCreateBy(), loginContext.getActorId())
+					ExportTemplateVar exportTemplateVar = exportTemplateVarService.getExportTemplateVar(x);
+					if (exportTemplateVar != null
+							&& (StringUtils.equals(exportTemplateVar.getCreateBy(), loginContext.getActorId())
 									|| loginContext.isSystemAdministrator())) {
-						xmlExportItemService.deleteById(xmlExportItem.getId());
+						exportTemplateVarService.deleteById(exportTemplateVar.getId());
 					}
 				}
 			}
 			return ResponseUtils.responseResult(true);
 		} else if (id != null) {
-			XmlExportItem xmlExportItem = xmlExportItemService.getXmlExportItem(id);
-			if (xmlExportItem != null && (StringUtils.equals(xmlExportItem.getCreateBy(), loginContext.getActorId())
-					|| loginContext.isSystemAdministrator())) {
-				xmlExportItemService.deleteById(xmlExportItem.getId());
+			ExportTemplateVar exportTemplateVar = exportTemplateVarService.getExportTemplateVar(id);
+			if (exportTemplateVar != null
+					&& (StringUtils.equals(exportTemplateVar.getCreateBy(), loginContext.getActorId())
+							|| loginContext.isSystemAdministrator())) {
+				exportTemplateVarService.deleteById(exportTemplateVar.getId());
 				return ResponseUtils.responseResult(true);
 			}
 		}
@@ -100,28 +84,23 @@ public class XmlExportItemController {
 	public ModelAndView edit(HttpServletRequest request, ModelMap modelMap) {
 		RequestUtils.setRequestParameterToAttribute(request);
 
-		XmlExportItem xmlExportItem = xmlExportItemService.getXmlExportItem(RequestUtils.getString(request, "id"));
-		if (xmlExportItem != null) {
-			request.setAttribute("xmlExportItem", xmlExportItem);
+		ExportTemplateVar exportTemplateVar = exportTemplateVarService
+				.getExportTemplateVar(RequestUtils.getString(request, "id"));
+		if (exportTemplateVar != null) {
+			request.setAttribute("exportTemplateVar", exportTemplateVar);
 		}
-
-		List<Integer> sortNoList = new ArrayList<Integer>();
-		for (int i = 1; i < 50; i++) {
-			sortNoList.add(i);
-		}
-		request.setAttribute("sortNoList", sortNoList);
 
 		String view = request.getParameter("view");
 		if (StringUtils.isNotEmpty(view)) {
 			return new ModelAndView(view, modelMap);
 		}
 
-		String x_view = ViewProperties.getString("xmlExportItem.edit");
+		String x_view = ViewProperties.getString("exportTemplateVar.edit");
 		if (StringUtils.isNotEmpty(x_view)) {
 			return new ModelAndView(x_view, modelMap);
 		}
 
-		return new ModelAndView("/matrix/xmlExportItem/edit", modelMap);
+		return new ModelAndView("/matrix/exportTemplateVar/edit", modelMap);
 	}
 
 	@RequestMapping("/json")
@@ -129,14 +108,18 @@ public class XmlExportItemController {
 	public byte[] json(HttpServletRequest request, ModelMap modelMap) throws IOException {
 		LoginContext loginContext = RequestUtils.getLoginContext(request);
 		Map<String, Object> params = RequestUtils.getParameterMap(request);
-		XmlExportItemQuery query = new XmlExportItemQuery();
+		ExportTemplateVarQuery query = new ExportTemplateVarQuery();
 		Tools.populate(query, params);
 		query.deleteFlag(0);
 		query.setActorId(loginContext.getActorId());
 		query.setLoginContext(loginContext);
-
-		String expId = RequestUtils.getString(request, "expId");
-		query.expId(expId);
+		/**
+		 * 此处业务逻辑需自行调整
+		 */
+		if (!loginContext.isSystemAdministrator()) {
+			String actorId = loginContext.getActorId();
+			query.createBy(actorId);
+		}
 
 		int start = 0;
 		int limit = 10;
@@ -158,7 +141,7 @@ public class XmlExportItemController {
 		}
 
 		JSONObject result = new JSONObject();
-		int total = xmlExportItemService.getXmlExportItemCountByQueryCriteria(query);
+		int total = exportTemplateVarService.getExportTemplateVarCountByQueryCriteria(query);
 		if (total > 0) {
 			result.put("total", total);
 			result.put("totalCount", total);
@@ -175,18 +158,18 @@ public class XmlExportItemController {
 				}
 			}
 
-			List<XmlExportItem> list = xmlExportItemService.getXmlExportItemsByQueryCriteria(start, limit, query);
+			List<ExportTemplateVar> list = exportTemplateVarService.getExportTemplateVarsByQueryCriteria(start, limit,
+					query);
 
 			if (list != null && !list.isEmpty()) {
 				JSONArray rowsJSON = new JSONArray();
 
 				result.put("rows", rowsJSON);
 
-				for (XmlExportItem xmlExportItem : list) {
-					JSONObject rowJSON = xmlExportItem.toJsonObject();
-					rowJSON.put("id", xmlExportItem.getId());
-					rowJSON.put("rowId", xmlExportItem.getId());
-					rowJSON.put("xmlExportItemId", xmlExportItem.getId());
+				for (ExportTemplateVar exportTemplateVar : list) {
+					JSONObject rowJSON = exportTemplateVar.toJsonObject();
+					rowJSON.put("id", exportTemplateVar.getId());
+					rowJSON.put("itemId", exportTemplateVar.getId());
 					rowJSON.put("startIndex", ++start);
 					rowsJSON.add(rowJSON);
 				}
@@ -209,7 +192,7 @@ public class XmlExportItemController {
 			return new ModelAndView(view, modelMap);
 		}
 
-		return new ModelAndView("/matrix/xmlExportItem/list", modelMap);
+		return new ModelAndView("/matrix/exportTemplateVar/list", modelMap);
 	}
 
 	@RequestMapping("/query")
@@ -219,37 +202,29 @@ public class XmlExportItemController {
 		if (StringUtils.isNotEmpty(view)) {
 			return new ModelAndView(view, modelMap);
 		}
-		String x_view = ViewProperties.getString("xmlExportItem.query");
+		String x_view = ViewProperties.getString("exportTemplateVar.query");
 		if (StringUtils.isNotEmpty(x_view)) {
 			return new ModelAndView(x_view, modelMap);
 		}
-		return new ModelAndView("/matrix/xmlExportItem/query", modelMap);
+		return new ModelAndView("/matrix/exportTemplateVar/query", modelMap);
 	}
 
 	@ResponseBody
 	@RequestMapping("/save")
 	public byte[] save(HttpServletRequest request) {
-		LoginContext loginContext = RequestUtils.getLoginContext(request);
-		if (!loginContext.isSystemAdministrator()) {
-			return ResponseUtils.responseJsonResult(false, "只有管理员才能操作");
-		}
-		String actorId = loginContext.getActorId();
+		User user = RequestUtils.getUser(request);
+		String actorId = user.getActorId();
 		Map<String, Object> params = RequestUtils.getParameterMap(request);
-		XmlExportItem xmlExportItem = new XmlExportItem();
+		ExportTemplateVar exportTemplateVar = new ExportTemplateVar();
 		try {
-			Tools.populate(xmlExportItem, params);
-			xmlExportItem.setExpId(RequestUtils.getString(request, "expId"));
-			xmlExportItem.setName(request.getParameter("name"));
-			xmlExportItem.setTitle(request.getParameter("title"));
-			xmlExportItem.setExpression(request.getParameter("expression"));
-			xmlExportItem.setDefaultValue(request.getParameter("defaultValue"));
-			xmlExportItem.setDataType(request.getParameter("dataType"));
-			xmlExportItem.setRequired(request.getParameter("required"));
-			xmlExportItem.setTagFlag(request.getParameter("tagFlag"));
-			xmlExportItem.setSortNo(RequestUtils.getInt(request, "sortNo"));
-			xmlExportItem.setLocked(RequestUtils.getInt(request, "locked"));
-			xmlExportItem.setCreateBy(actorId);
-			this.xmlExportItemService.save(xmlExportItem);
+			Tools.populate(exportTemplateVar, params);
+			exportTemplateVar.setExpId(RequestUtils.getString(request, "expId"));
+			exportTemplateVar.setDeploymentId(request.getParameter("deploymentId"));
+			exportTemplateVar.setTitle(request.getParameter("title"));
+			exportTemplateVar.setVarTemplate(request.getParameter("varTemplate"));
+			exportTemplateVar.setLocked(RequestUtils.getInt(request, "locked"));
+			exportTemplateVar.setCreateBy(actorId);
+			this.exportTemplateVarService.save(exportTemplateVar);
 
 			return ResponseUtils.responseJsonResult(true);
 		} catch (Exception ex) {
@@ -259,9 +234,9 @@ public class XmlExportItemController {
 		return ResponseUtils.responseJsonResult(false);
 	}
 
-	@javax.annotation.Resource(name = "com.glaf.matrix.export.service.xmlExportItemService")
-	public void setXmlExportItemService(XmlExportItemService xmlExportItemService) {
-		this.xmlExportItemService = xmlExportItemService;
+	@javax.annotation.Resource(name = "com.glaf.matrix.export.service.exportTemplateVarService")
+	public void setExportTemplateVarService(ExportTemplateVarService exportTemplateVarService) {
+		this.exportTemplateVarService = exportTemplateVarService;
 	}
 
 }

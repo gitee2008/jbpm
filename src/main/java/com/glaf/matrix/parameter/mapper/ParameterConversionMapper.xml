@@ -1,0 +1,360 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper
+	namespace="com.glaf.matrix.parameter.mapper.ParameterConversionMapper">
+
+	<resultMap id="parameterConversionResultMap"
+		type="com.glaf.matrix.parameter.domain.ParameterConversion">
+		<id property="id" column="ID_" jdbcType="VARCHAR" />
+		<result property="key" column="KEY_" jdbcType="VARCHAR" />
+		<result property="title" column="TITLE_" jdbcType="VARCHAR" />
+		<result property="sourceName" column="SOURCENAME_"
+			jdbcType="VARCHAR" />
+		<result property="sourceType" column="SOURCETYPE_"
+			jdbcType="VARCHAR" />
+		<result property="sourceListFlag" column="SOURCELISTFLAG_"
+			jdbcType="VARCHAR" />
+		<result property="targetName" column="TARGETNAME_"
+			jdbcType="VARCHAR" />
+		<result property="targetType" column="TARGETTYPE_"
+			jdbcType="VARCHAR" />
+		<result property="targetListFlag" column="TARGETLISTFLAG_"
+			jdbcType="VARCHAR" />
+		<result property="delimiter" column="DELIMITER_"
+			jdbcType="VARCHAR" />
+		<result property="convertCondition" column="CONVERTCONDITION_"
+			jdbcType="VARCHAR" />
+		<result property="convertType" column="CONVERTTYPE_"
+			jdbcType="VARCHAR" />
+		<result property="convertExpression"
+			column="CONVERTEXPRESSION_" jdbcType="VARCHAR" />
+		<result property="convertTemplate" column="CONVERTTEMPLATE_"
+			jdbcType="VARCHAR" />
+		<result property="createBy" column="CREATEBY_"
+			jdbcType="VARCHAR" />
+		<result property="createTime" column="CREATETIME_"
+			jdbcType="TIMESTAMP" />
+	</resultMap>
+
+
+	<insert id="insertParameterConversion"
+		parameterType="com.glaf.matrix.parameter.domain.ParameterConversion">
+		insert into SYS_PARAMETER_CONVERSION
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			ID_
+			<if test="key != null">
+				,KEY_
+			</if>
+			<if test="title != null">
+				,TITLE_
+			</if>
+			<if test="sourceName != null">
+				,SOURCENAME_
+			</if>
+			<if test="sourceType != null">
+				,SOURCETYPE_
+			</if>
+			<if test="sourceListFlag != null">
+				,SOURCELISTFLAG_
+			</if>
+			<if test="targetName != null">
+				,TARGETNAME_
+			</if>
+			<if test="targetType != null">
+				,TARGETTYPE_
+			</if>
+			<if test="targetListFlag != null">
+				,TARGETLISTFLAG_
+			</if>
+			<if test="delimiter != null">
+				,DELIMITER_
+			</if>
+			<if test="convertCondition != null">
+				,CONVERTCONDITION_
+			</if>
+			<if test="convertType != null">
+				,CONVERTTYPE_
+			</if>
+			<if test="convertExpression != null">
+				,CONVERTEXPRESSION_
+			</if>
+			<if test="convertTemplate != null">
+				,CONVERTTEMPLATE_
+			</if>
+			<if test="createBy != null">
+				,CREATEBY_
+			</if>
+			<if test="createTime != null">
+				,CREATETIME_
+			</if>
+		</trim>
+
+		<trim prefix=" values (" suffix=")" suffixOverrides=",">
+			#{id, jdbcType=VARCHAR}
+
+			<if test="key != null">
+				,#{key, jdbcType=VARCHAR}
+			</if>
+			<if test="title != null">
+				,#{title, jdbcType=VARCHAR}
+			</if>
+			<if test="sourceName != null">
+				,#{sourceName, jdbcType=VARCHAR}
+			</if>
+			<if test="sourceType != null">
+				,#{sourceType, jdbcType=VARCHAR}
+			</if>
+			<if test="sourceListFlag != null">
+				,#{sourceListFlag, jdbcType=VARCHAR}
+			</if>
+			<if test="targetName != null">
+				,#{targetName, jdbcType=VARCHAR}
+			</if>
+			<if test="targetType != null">
+				,#{targetType, jdbcType=VARCHAR}
+			</if>
+			<if test="targetListFlag != null">
+				,#{targetListFlag, jdbcType=VARCHAR}
+			</if>
+			<if test="delimiter != null">
+				,#{delimiter, jdbcType=VARCHAR}
+			</if>
+			<if test="convertCondition != null">
+				,#{convertCondition, jdbcType=VARCHAR}
+			</if>
+			<if test="convertType != null">
+				,#{convertType, jdbcType=VARCHAR}
+			</if>
+			<if test="convertExpression != null">
+				,#{convertExpression, jdbcType=VARCHAR}
+			</if>
+			<if test="convertTemplate != null">
+				,#{convertTemplate, jdbcType=VARCHAR}
+			</if>
+			<if test="createBy != null">
+				,#{createBy, jdbcType=VARCHAR}
+			</if>
+			<if test="createTime != null">
+				,#{createTime, jdbcType=TIMESTAMP}
+			</if>
+		</trim>
+	</insert>
+
+
+	<insert id="bulkInsertParameterConversion"
+		parameterType="java.util.List">
+		insert into SYS_PARAMETER_CONVERSION (
+		ID_
+		,KEY_
+		,TITLE_
+		,SOURCENAME_
+		,SOURCETYPE_
+		,SOURCELISTFLAG_
+		,TARGETNAME_
+		,TARGETTYPE_
+		,TARGETLISTFLAG_
+		,DELIMITER_
+		,CONVERTCONDITION_
+		,CONVERTTYPE_
+		,CONVERTEXPRESSION_
+		,CONVERTTEMPLATE_
+		,CREATEBY_
+		,CREATETIME_
+		) values
+		<foreach collection="list" item="parameterConversion"
+			index="index" separator=",">
+			(
+			#{parameterConversion.id, jdbcType=VARCHAR}
+			,#{parameterConversion.key, jdbcType=VARCHAR}
+			,#{parameterConversion.title, jdbcType=VARCHAR}
+			,#{parameterConversion.sourceName, jdbcType=VARCHAR}
+			,#{parameterConversion.sourceType, jdbcType=VARCHAR}
+			,#{parameterConversion.sourceListFlag, jdbcType=VARCHAR}
+			,#{parameterConversion.targetName, jdbcType=VARCHAR}
+			,#{parameterConversion.targetType, jdbcType=VARCHAR}
+			,#{parameterConversion.targetListFlag, jdbcType=VARCHAR}
+			,#{parameterConversion.delimiter, jdbcType=VARCHAR}
+			,#{parameterConversion.convertCondition, jdbcType=VARCHAR}
+			,#{parameterConversion.convertType, jdbcType=VARCHAR}
+			,#{parameterConversion.convertExpression, jdbcType=VARCHAR}
+			,#{parameterConversion.convertTemplate, jdbcType=VARCHAR}
+			,#{parameterConversion.createBy, jdbcType=VARCHAR}
+			,#{parameterConversion.createTime, jdbcType=TIMESTAMP}
+			)
+		</foreach>
+	</insert>
+
+
+	<insert id="bulkInsertParameterConversion_oracle"
+		parameterType="java.util.List">
+		INSERT ALL
+		<foreach collection="list" item="parameterConversion"
+			index="index">
+			insert into SYS_PARAMETER_CONVERSION (
+			ID_
+			,KEY_
+			,TITLE_
+			,SOURCENAME_
+			,SOURCETYPE_
+			,SOURCELISTFLAG_
+			,TARGETNAME_
+			,TARGETTYPE_
+			,TARGETLISTFLAG_
+			,DELIMITER_
+			,CONVERTCONDITION_
+			,CONVERTTYPE_
+			,CONVERTEXPRESSION_
+			,CONVERTTEMPLATE_
+			,CREATEBY_
+			,CREATETIME_
+			)
+			values (
+			#{parameterConversion.id,
+			jdbcType=VARCHAR}
+			,#{parameterConversion.key, jdbcType=VARCHAR}
+			,#{parameterConversion.title, jdbcType=VARCHAR}
+			,#{parameterConversion.sourceName, jdbcType=VARCHAR}
+			,#{parameterConversion.sourceType, jdbcType=VARCHAR}
+			,#{parameterConversion.sourceListFlag, jdbcType=VARCHAR}
+			,#{parameterConversion.targetName, jdbcType=VARCHAR}
+			,#{parameterConversion.targetType, jdbcType=VARCHAR}
+			,#{parameterConversion.targetListFlag, jdbcType=VARCHAR}
+			,#{parameterConversion.delimiter, jdbcType=VARCHAR}
+			,#{parameterConversion.convertCondition, jdbcType=VARCHAR}
+			,#{parameterConversion.convertType, jdbcType=VARCHAR}
+			,#{parameterConversion.convertExpression, jdbcType=VARCHAR}
+			,#{parameterConversion.convertTemplate, jdbcType=VARCHAR}
+			,#{parameterConversion.createBy, jdbcType=VARCHAR}
+			,#{parameterConversion.createTime, jdbcType=TIMESTAMP}
+			)
+		</foreach>
+		SELECT * FROM dual
+	</insert>
+
+
+	<update id="updateParameterConversion"
+		parameterType="com.glaf.matrix.parameter.domain.ParameterConversion">
+		update SYS_PARAMETER_CONVERSION
+		set
+		<trim prefix="" suffix="" suffixOverrides=",">
+			<if test="title != null">
+				TITLE_ = #{title, jdbcType=VARCHAR},
+			</if>
+			<if test="sourceName != null">
+				SOURCENAME_ = #{sourceName, jdbcType=VARCHAR},
+			</if>
+			<if test="sourceType != null">
+				SOURCETYPE_ = #{sourceType, jdbcType=VARCHAR},
+			</if>
+			<if test="sourceListFlag != null">
+				SOURCELISTFLAG_ = #{sourceListFlag, jdbcType=VARCHAR},
+			</if>
+			<if test="targetName != null">
+				TARGETNAME_ = #{targetName, jdbcType=VARCHAR},
+			</if>
+			<if test="targetType != null">
+				TARGETTYPE_ = #{targetType, jdbcType=VARCHAR},
+			</if>
+			<if test="targetListFlag != null">
+				TARGETLISTFLAG_ = #{targetListFlag, jdbcType=VARCHAR},
+			</if>
+			<if test="delimiter != null">
+				DELIMITER_ = #{delimiter, jdbcType=VARCHAR},
+			</if>
+			<if test="convertCondition != null">
+				CONVERTCONDITION_ = #{convertCondition,
+				jdbcType=VARCHAR},
+			</if>
+			<if test="convertType != null">
+				CONVERTTYPE_ = #{convertType, jdbcType=VARCHAR},
+			</if>
+			<if test="convertExpression != null">
+				CONVERTEXPRESSION_ = #{convertExpression,
+				jdbcType=VARCHAR},
+			</if>
+			<if test="convertTemplate != null">
+				CONVERTTEMPLATE_ = #{convertTemplate, jdbcType=VARCHAR},
+			</if>
+		</trim>
+		where
+		ID_ = #{id, jdbcType=VARCHAR}
+
+	</update>
+
+
+	<delete id="deleteParameterConversionById"
+		parameterType="string">
+		delete from SYS_PARAMETER_CONVERSION
+		where ID_ = #{id}
+	</delete>
+
+
+	<select id="getParameterConversionById" parameterType="string"
+		resultMap="parameterConversionResultMap">
+		select * from SYS_PARAMETER_CONVERSION where ID_ = #{id}
+	</select>
+
+
+	<select id="getParameterConversionsByKey" parameterType="string"
+		resultMap="parameterConversionResultMap">
+		select * from SYS_PARAMETER_CONVERSION where KEY_ = #{key}
+	</select>
+
+
+	<select id="getParameterConversions"
+		parameterType="com.glaf.matrix.parameter.query.ParameterConversionQuery"
+		resultMap="parameterConversionResultMap">
+		select distinct E.*
+		<include refid="selectParameterConversionsSql" />
+		<choose>
+			<when test="orderBy != null">
+				order by ${orderBy}
+			</when>
+			<otherwise>
+				order by E.CREATETIME_ desc
+			</otherwise>
+		</choose>
+	</select>
+
+
+	<select id="getParameterConversionCount"
+		parameterType="com.glaf.matrix.parameter.query.ParameterConversionQuery"
+		resultType="int">
+		select count(*)
+		<include refid="selectParameterConversionsSql" />
+	</select>
+
+
+	<sql id="selectParameterConversionsSql">
+
+		from SYS_PARAMETER_CONVERSION E
+
+		<where>
+			1 = 1
+
+			<if test="key != null and key != '' ">
+				and E.KEY_ = #{key}
+			</if>
+
+			<if test="titleLike != null and titleLike != '' ">
+				and E.TITLE_ like #{titleLike}
+			</if>
+
+			<if test="createBy != null and createBy != '' ">
+				and E.CREATEBY_ = #{createBy}
+			</if>
+
+			<if test="createTimeGreaterThanOrEqual != null">
+				and E.CREATETIME_ &gt;= #{createTimeGreaterThanOrEqual}
+			</if>
+
+			<if test="createTimeLessThanOrEqual != null">
+				and E.CREATETIME_ &lt;= #{createTimeLessThanOrEqual}
+			</if>
+
+		</where>
+	</sql>
+
+</mapper>

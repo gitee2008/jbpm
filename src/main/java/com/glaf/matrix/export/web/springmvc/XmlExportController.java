@@ -61,7 +61,6 @@ import com.glaf.core.base.TreeModel;
 import com.glaf.core.config.DatabaseConnectionConfig;
 import com.glaf.core.config.ViewProperties;
 import com.glaf.core.domain.Database;
-import com.glaf.core.identity.User;
 import com.glaf.core.security.LoginContext;
 import com.glaf.core.service.IDatabaseService;
 import com.glaf.core.tree.helper.JacksonTreeHelper;
@@ -676,8 +675,11 @@ public class XmlExportController {
 	@ResponseBody
 	@RequestMapping("/save")
 	public byte[] save(HttpServletRequest request) {
-		User user = RequestUtils.getUser(request);
-		String actorId = user.getActorId();
+		LoginContext loginContext = RequestUtils.getLoginContext(request);
+		if (!loginContext.isSystemAdministrator()) {
+			return ResponseUtils.responseJsonResult(false, "只有管理员才能操作");
+		}
+		String actorId = loginContext.getActorId();
 		Map<String, Object> params = RequestUtils.getParameterMap(request);
 		XmlExport xmlExport = new XmlExport();
 		try {
@@ -717,8 +719,11 @@ public class XmlExportController {
 	@ResponseBody
 	@RequestMapping("/saveAs")
 	public byte[] saveAs(HttpServletRequest request) {
-		User user = RequestUtils.getUser(request);
-		String actorId = user.getActorId();
+		LoginContext loginContext = RequestUtils.getLoginContext(request);
+		if (!loginContext.isSystemAdministrator()) {
+			return ResponseUtils.responseJsonResult(false, "只有管理员才能操作");
+		}
+		String actorId = loginContext.getActorId();
 		try {
 			String expId = RequestUtils.getString(request, "expId");
 			if (expId != null) {

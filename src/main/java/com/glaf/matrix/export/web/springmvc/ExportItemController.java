@@ -1,25 +1,6 @@
-/*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package com.glaf.matrix.export.web.springmvc;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
@@ -44,9 +25,10 @@ import com.glaf.core.util.ParamUtils;
 import com.glaf.core.util.RequestUtils;
 import com.glaf.core.util.ResponseUtils;
 import com.glaf.core.util.Tools;
-import com.glaf.matrix.export.domain.XmlExportItem;
-import com.glaf.matrix.export.query.XmlExportItemQuery;
-import com.glaf.matrix.export.service.XmlExportItemService;
+
+import com.glaf.matrix.export.domain.ExportItem;
+import com.glaf.matrix.export.query.ExportItemQuery;
+import com.glaf.matrix.export.service.ExportItemService;
 
 /**
  * 
@@ -54,14 +36,14 @@ import com.glaf.matrix.export.service.XmlExportItemService;
  *
  */
 
-@Controller("/matrix/xmlExportItem")
-@RequestMapping("/matrix/xmlExportItem")
-public class XmlExportItemController {
-	protected static final Log logger = LogFactory.getLog(XmlExportItemController.class);
+@Controller("/matrix/exportItem")
+@RequestMapping("/matrix/exportItem")
+public class ExportItemController {
+	protected static final Log logger = LogFactory.getLog(ExportItemController.class);
 
-	protected XmlExportItemService xmlExportItemService;
+	protected ExportItemService exportItemService;
 
-	public XmlExportItemController() {
+	public ExportItemController() {
 
 	}
 
@@ -76,20 +58,19 @@ public class XmlExportItemController {
 			while (token.hasMoreTokens()) {
 				String x = token.nextToken();
 				if (StringUtils.isNotEmpty(x)) {
-					XmlExportItem xmlExportItem = xmlExportItemService.getXmlExportItem(x);
-					if (xmlExportItem != null
-							&& (StringUtils.equals(xmlExportItem.getCreateBy(), loginContext.getActorId())
-									|| loginContext.isSystemAdministrator())) {
-						xmlExportItemService.deleteById(xmlExportItem.getId());
+					ExportItem exportItem = exportItemService.getExportItem(x);
+					if (exportItem != null && (StringUtils.equals(exportItem.getCreateBy(), loginContext.getActorId())
+							|| loginContext.isSystemAdministrator())) {
+						exportItemService.deleteById(exportItem.getId());
 					}
 				}
 			}
 			return ResponseUtils.responseResult(true);
 		} else if (id != null) {
-			XmlExportItem xmlExportItem = xmlExportItemService.getXmlExportItem(id);
-			if (xmlExportItem != null && (StringUtils.equals(xmlExportItem.getCreateBy(), loginContext.getActorId())
+			ExportItem exportItem = exportItemService.getExportItem(id);
+			if (exportItem != null && (StringUtils.equals(exportItem.getCreateBy(), loginContext.getActorId())
 					|| loginContext.isSystemAdministrator())) {
-				xmlExportItemService.deleteById(xmlExportItem.getId());
+				exportItemService.deleteById(exportItem.getId());
 				return ResponseUtils.responseResult(true);
 			}
 		}
@@ -100,28 +81,22 @@ public class XmlExportItemController {
 	public ModelAndView edit(HttpServletRequest request, ModelMap modelMap) {
 		RequestUtils.setRequestParameterToAttribute(request);
 
-		XmlExportItem xmlExportItem = xmlExportItemService.getXmlExportItem(RequestUtils.getString(request, "id"));
-		if (xmlExportItem != null) {
-			request.setAttribute("xmlExportItem", xmlExportItem);
+		ExportItem exportItem = exportItemService.getExportItem(RequestUtils.getString(request, "id"));
+		if (exportItem != null) {
+			request.setAttribute("exportItem", exportItem);
 		}
-
-		List<Integer> sortNoList = new ArrayList<Integer>();
-		for (int i = 1; i < 50; i++) {
-			sortNoList.add(i);
-		}
-		request.setAttribute("sortNoList", sortNoList);
 
 		String view = request.getParameter("view");
 		if (StringUtils.isNotEmpty(view)) {
 			return new ModelAndView(view, modelMap);
 		}
 
-		String x_view = ViewProperties.getString("xmlExportItem.edit");
+		String x_view = ViewProperties.getString("exportItem.edit");
 		if (StringUtils.isNotEmpty(x_view)) {
 			return new ModelAndView(x_view, modelMap);
 		}
 
-		return new ModelAndView("/matrix/xmlExportItem/edit", modelMap);
+		return new ModelAndView("/matrix/exportItem/edit", modelMap);
 	}
 
 	@RequestMapping("/json")
@@ -129,14 +104,18 @@ public class XmlExportItemController {
 	public byte[] json(HttpServletRequest request, ModelMap modelMap) throws IOException {
 		LoginContext loginContext = RequestUtils.getLoginContext(request);
 		Map<String, Object> params = RequestUtils.getParameterMap(request);
-		XmlExportItemQuery query = new XmlExportItemQuery();
+		ExportItemQuery query = new ExportItemQuery();
 		Tools.populate(query, params);
 		query.deleteFlag(0);
 		query.setActorId(loginContext.getActorId());
 		query.setLoginContext(loginContext);
-
-		String expId = RequestUtils.getString(request, "expId");
-		query.expId(expId);
+		/**
+		 * 此处业务逻辑需自行调整
+		 */
+		if (!loginContext.isSystemAdministrator()) {
+			String actorId = loginContext.getActorId();
+			query.createBy(actorId);
+		}
 
 		int start = 0;
 		int limit = 10;
@@ -158,7 +137,7 @@ public class XmlExportItemController {
 		}
 
 		JSONObject result = new JSONObject();
-		int total = xmlExportItemService.getXmlExportItemCountByQueryCriteria(query);
+		int total = exportItemService.getExportItemCountByQueryCriteria(query);
 		if (total > 0) {
 			result.put("total", total);
 			result.put("totalCount", total);
@@ -175,18 +154,17 @@ public class XmlExportItemController {
 				}
 			}
 
-			List<XmlExportItem> list = xmlExportItemService.getXmlExportItemsByQueryCriteria(start, limit, query);
+			List<ExportItem> list = exportItemService.getExportItemsByQueryCriteria(start, limit, query);
 
 			if (list != null && !list.isEmpty()) {
 				JSONArray rowsJSON = new JSONArray();
 
 				result.put("rows", rowsJSON);
 
-				for (XmlExportItem xmlExportItem : list) {
-					JSONObject rowJSON = xmlExportItem.toJsonObject();
-					rowJSON.put("id", xmlExportItem.getId());
-					rowJSON.put("rowId", xmlExportItem.getId());
-					rowJSON.put("xmlExportItemId", xmlExportItem.getId());
+				for (ExportItem exportItem : list) {
+					JSONObject rowJSON = exportItem.toJsonObject();
+					rowJSON.put("id", exportItem.getId());
+					rowJSON.put("itemId", exportItem.getId());
 					rowJSON.put("startIndex", ++start);
 					rowsJSON.add(rowJSON);
 				}
@@ -209,7 +187,7 @@ public class XmlExportItemController {
 			return new ModelAndView(view, modelMap);
 		}
 
-		return new ModelAndView("/matrix/xmlExportItem/list", modelMap);
+		return new ModelAndView("/matrix/exportItem/list", modelMap);
 	}
 
 	@RequestMapping("/query")
@@ -219,11 +197,11 @@ public class XmlExportItemController {
 		if (StringUtils.isNotEmpty(view)) {
 			return new ModelAndView(view, modelMap);
 		}
-		String x_view = ViewProperties.getString("xmlExportItem.query");
+		String x_view = ViewProperties.getString("exportItem.query");
 		if (StringUtils.isNotEmpty(x_view)) {
 			return new ModelAndView(x_view, modelMap);
 		}
-		return new ModelAndView("/matrix/xmlExportItem/query", modelMap);
+		return new ModelAndView("/matrix/exportItem/query", modelMap);
 	}
 
 	@ResponseBody
@@ -235,21 +213,34 @@ public class XmlExportItemController {
 		}
 		String actorId = loginContext.getActorId();
 		Map<String, Object> params = RequestUtils.getParameterMap(request);
-		XmlExportItem xmlExportItem = new XmlExportItem();
+		ExportItem exportItem = new ExportItem();
 		try {
-			Tools.populate(xmlExportItem, params);
-			xmlExportItem.setExpId(RequestUtils.getString(request, "expId"));
-			xmlExportItem.setName(request.getParameter("name"));
-			xmlExportItem.setTitle(request.getParameter("title"));
-			xmlExportItem.setExpression(request.getParameter("expression"));
-			xmlExportItem.setDefaultValue(request.getParameter("defaultValue"));
-			xmlExportItem.setDataType(request.getParameter("dataType"));
-			xmlExportItem.setRequired(request.getParameter("required"));
-			xmlExportItem.setTagFlag(request.getParameter("tagFlag"));
-			xmlExportItem.setSortNo(RequestUtils.getInt(request, "sortNo"));
-			xmlExportItem.setLocked(RequestUtils.getInt(request, "locked"));
-			xmlExportItem.setCreateBy(actorId);
-			this.xmlExportItemService.save(xmlExportItem);
+			Tools.populate(exportItem, params);
+			exportItem.setExpId(RequestUtils.getString(request, "expId"));
+			exportItem.setDeploymentId(request.getParameter("deploymentId"));
+			exportItem.setTitle(request.getParameter("title"));
+			exportItem.setDatasetId(request.getParameter("datasetId"));
+			exportItem.setSql(request.getParameter("sql"));
+			exportItem.setRecursionSql(request.getParameter("recursionSql"));
+			exportItem.setRecursionColumns(request.getParameter("recursionColumns"));
+			exportItem.setPrimaryKey(request.getParameter("primaryKey"));
+			exportItem.setExpression(request.getParameter("expression"));
+			exportItem.setFileFlag(request.getParameter("fileFlag"));
+			exportItem.setFilePathColumn(request.getParameter("filePathColumn"));
+			exportItem.setFileNameColumn(request.getParameter("fileNameColumn"));
+			exportItem.setImageMergeFlag(request.getParameter("imageMergeFlag"));
+			exportItem.setImageMergeDirection(request.getParameter("imageMergeDirection"));
+			exportItem.setImageMergeTargetType(request.getParameter("imageMergeTargetType"));
+			exportItem.setImageWidth(RequestUtils.getInt(request, "imageWidth"));
+			exportItem.setImageHeight(RequestUtils.getInt(request, "imageHeight"));
+			exportItem.setRootPath(request.getParameter("rootPath"));
+			exportItem.setPageSize(RequestUtils.getInt(request, "pageSize"));
+			exportItem.setVarTemplate(request.getParameter("varTemplate"));
+			exportItem.setVariantFlag(request.getParameter("variantFlag"));
+			exportItem.setSortNo(RequestUtils.getInt(request, "sortNo"));
+			exportItem.setLocked(RequestUtils.getInt(request, "locked"));
+			exportItem.setCreateBy(actorId);
+			this.exportItemService.save(exportItem);
 
 			return ResponseUtils.responseJsonResult(true);
 		} catch (Exception ex) {
@@ -259,9 +250,9 @@ public class XmlExportItemController {
 		return ResponseUtils.responseJsonResult(false);
 	}
 
-	@javax.annotation.Resource(name = "com.glaf.matrix.export.service.xmlExportItemService")
-	public void setXmlExportItemService(XmlExportItemService xmlExportItemService) {
-		this.xmlExportItemService = xmlExportItemService;
+	@javax.annotation.Resource(name = "com.glaf.matrix.export.service.exportItemService")
+	public void setExportItemService(ExportItemService exportItemService) {
+		this.exportItemService = exportItemService;
 	}
 
 }
