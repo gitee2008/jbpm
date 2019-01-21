@@ -48,17 +48,17 @@ import com.glaf.base.modules.sys.service.TreePermissionService;
 public class TreePermissionServiceImpl implements TreePermissionService {
 	protected final Logger logger = LoggerFactory.getLogger(getClass());
 
-	protected EntityDAO entityDAO;
+	private EntityDAO entityDAO;
 
-	protected IdGenerator idGenerator;
+	private IdGenerator idGenerator;
 
-	protected JdbcTemplate jdbcTemplate;
+	private JdbcTemplate jdbcTemplate;
 
-	protected SqlSessionTemplate sqlSessionTemplate;
+	private SqlSessionTemplate sqlSessionTemplate;
 
-	protected TreePermissionMapper treePermissionMapper;
+	private TreePermissionMapper treePermissionMapper;
 
-	protected ITableDataService tableDataService;
+	private ITableDataService tableDataService;
 
 	public TreePermissionServiceImpl() {
 
@@ -153,8 +153,7 @@ public class TreePermissionServiceImpl implements TreePermissionService {
 		if (id == null) {
 			return null;
 		}
-		TreePermission treePermission = treePermissionMapper.getTreePermissionById(id);
-		return treePermission;
+		return treePermissionMapper.getTreePermissionById(id);
 	}
 
 	/**
@@ -173,13 +172,11 @@ public class TreePermissionServiceImpl implements TreePermissionService {
 	 */
 	public List<TreePermission> getTreePermissionsByQueryCriteria(int start, int pageSize, TreePermissionQuery query) {
 		RowBounds rowBounds = new RowBounds(start, pageSize);
-		List<TreePermission> rows = sqlSessionTemplate.selectList("getTreePermissions", query, rowBounds);
-		return rows;
+		return sqlSessionTemplate.selectList("getTreePermissions", query, rowBounds);
 	}
 
 	public List<TreePermission> list(TreePermissionQuery query) {
-		List<TreePermission> list = treePermissionMapper.getTreePermissions(query);
-		return list;
+		return treePermissionMapper.getTreePermissions(query);
 	}
 
 	@Transactional

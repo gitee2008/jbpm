@@ -18,99 +18,98 @@
 
 package com.glaf.core.service;
 
-import java.util.List;
-
-import org.springframework.transaction.annotation.Transactional;
-
 import com.glaf.core.domain.Scheduler;
 import com.glaf.core.query.SchedulerQuery;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Transactional(readOnly = true)
 public interface ISysSchedulerService {
 
-	/**
-	 * 删除调度任务
-	 * 
-	 * @param scheduler
-	 */
-	@Transactional
-	void deleteScheduler(String taskId);
+    /**
+     * 删除调度任务
+     *
+     * @param taskId
+     */
+    @Transactional
+    void deleteScheduler(String taskId);
 
-	/**
-	 * 获取全部调度任务
-	 * 
-	 * @return
-	 */
-	List<Scheduler> getAllSchedulers();
+    /**
+     * 获取全部调度任务
+     *
+     * @return
+     */
+    List<Scheduler> getAllSchedulers();
 
-	/**
-	 * 根据任务编号获取调度任务
-	 * 
-	 * @param taskId
-	 * @return
-	 */
-	Scheduler getSchedulerByTaskId(String taskId);
+    /**
+     * 根据任务编号获取调度任务
+     *
+     * @param taskId
+     * @return
+     */
+    Scheduler getSchedulerByTaskId(String taskId);
 
-	/**
-	 * 根据查询参数获取记录总数
-	 * 
-	 * @return
-	 */
-	int getSchedulerCountByQueryCriteria(SchedulerQuery query);
+    /**
+     * 根据查询参数获取记录总数
+     *
+     * @return
+     */
+    int getSchedulerCountByQueryCriteria(SchedulerQuery query);
 
-	/**
-	 * 根据任务类型获取调度任务
-	 * 
-	 * @param taskType
-	 * @return
-	 */
-	List<Scheduler> getSchedulers(String taskType);
+    /**
+     * 根据任务类型获取调度任务
+     *
+     * @param taskType
+     * @return
+     */
+    List<Scheduler> getSchedulers(String taskType);
 
-	/**
-	 * 根据查询参数获取一页的数据
-	 * 
-	 * @return
-	 */
-	List<Scheduler> getSchedulersByQueryCriteria(int start, int pageSize,
-			SchedulerQuery query);
+    /**
+     * 根据查询参数获取一页的数据
+     *
+     * @return
+     */
+    List<Scheduler> getSchedulersByQueryCriteria(int start, int pageSize,
+                                                 SchedulerQuery query);
 
-	/**
-	 * 获取用户自行定义的调度任务
-	 * 
-	 * @param createBy
-	 * @return
-	 */
-	List<Scheduler> getUserSchedulers(String createBy);
+    /**
+     * 获取用户自行定义的调度任务
+     *
+     * @param createBy
+     * @return
+     */
+    List<Scheduler> getUserSchedulers(String createBy);
 
-	/**
-	 * 根据查询参数获取记录列表
-	 * 
-	 * @return
-	 */
-	List<Scheduler> list(SchedulerQuery query);
+    /**
+     * 根据查询参数获取记录列表
+     *
+     * @return
+     */
+    List<Scheduler> list(SchedulerQuery query);
 
-	/**
-	 * 锁定调度任务
-	 * 
-	 * @param taskId
-	 * @param locked
-	 */
-	@Transactional
-	void locked(String taskId, int locked);
+    /**
+     * 锁定调度任务
+     *
+     * @param taskId
+     * @param locked
+     */
+    @Transactional
+    void locked(String taskId, int locked);
 
-	/**
-	 * 保存调度任务
-	 * 
-	 * @param model
-	 */
-	@Transactional
-	void save(Scheduler model);
+    /**
+     * 保存调度任务
+     *
+     * @param model
+     */
+    @Transactional
+    void save(Scheduler model);
 
-	/**
-	 * 修改调度任务
-	 * 
-	 * @param model
-	 */
-	@Transactional
-	void update(Scheduler model);
+    /**
+     * 修改调度任务
+     *
+     * @param model
+     */
+    @Transactional
+    void update(Scheduler model);
 }

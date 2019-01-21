@@ -18,63 +18,60 @@
 
 package com.glaf.core.service;
 
-import java.util.*;
+import com.glaf.core.domain.SchedulerExecution;
+import com.glaf.core.query.SchedulerExecutionQuery;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.glaf.core.domain.*;
-import com.glaf.core.query.*;
+import java.util.List;
 
 @Transactional(readOnly = true)
 public interface ISchedulerExecutionService {
 
-	/**
-	 * 根据主键获取一条记录
-	 * 
-	 * @return
-	 */
-	SchedulerExecution getSchedulerExecution(Long id);
+    /**
+     * 根据主键获取一条记录
+     *
+     * @return
+     */
+    SchedulerExecution getSchedulerExecution(Long id);
 
-	/**
-	 * 根据查询参数获取记录总数
-	 * 
-	 * @return
-	 */
-	int getSchedulerExecutionCountByQueryCriteria(SchedulerExecutionQuery query);
+    /**
+     * 根据查询参数获取记录总数
+     *
+     * @return
+     */
+    int getSchedulerExecutionCountByQueryCriteria(SchedulerExecutionQuery query);
 
-	/**
-	 * 获取某个调度某天某个状态的记录总数
-	 * 
-	 * @param schedulerId
-	 *            调度编号
-	 * @param runDay
-	 *            运行年月日
-	 * @param status
-	 *            状态
-	 * @return
-	 */
-	int getSchedulerExecutionCount(String schedulerId, int runDay, int status);
+    /**
+     * 获取某个调度某天某个状态的记录总数
+     *
+     * @param schedulerId 调度编号
+     * @param runDay      运行年月日
+     * @param status      状态
+     * @return
+     */
+    int getSchedulerExecutionCount(String schedulerId, int runDay, int status);
 
-	/**
-	 * 根据查询参数获取一页的数据
-	 * 
-	 * @return
-	 */
-	List<SchedulerExecution> getSchedulerExecutionsByQueryCriteria(int start,
-			int pageSize, SchedulerExecutionQuery query);
+    /**
+     * 根据查询参数获取一页的数据
+     *
+     * @return
+     */
+    List<SchedulerExecution> getSchedulerExecutionsByQueryCriteria(int start,
+                                                                   int pageSize, SchedulerExecutionQuery query);
 
-	/**
-	 * 根据查询参数获取记录列表
-	 * 
-	 * @return
-	 */
-	List<SchedulerExecution> list(SchedulerExecutionQuery query);
+    /**
+     * 根据查询参数获取记录列表
+     *
+     * @return
+     */
+    List<SchedulerExecution> list(SchedulerExecutionQuery query);
 
-	/**
-	 * 保存一条记录
-	 * 
-	 * @return
-	 */
-	@Transactional
-	void save(SchedulerExecution schedulerExecution);
+    /**
+     * 保存一条记录
+     *
+     * @return
+     */
+    @Transactional
+    void save(SchedulerExecution schedulerExecution);
 
 }

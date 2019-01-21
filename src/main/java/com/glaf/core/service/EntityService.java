@@ -18,176 +18,169 @@
 
 package com.glaf.core.service;
 
-import java.util.List;
-
-import org.springframework.transaction.annotation.Transactional;
-
 import com.glaf.core.entity.SqlExecutor;
 import com.glaf.core.util.Paging;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Transactional(readOnly = true)
 public interface EntityService {
 
-	/**
-	 * 删除记录
-	 * 
-	 * @param statementId
-	 * @param parameterObject
-	 */
-	@Transactional
-	void delete(String statementId, Object parameterObject);
+    /**
+     * 删除记录
+     *
+     * @param statementId
+     * @param parameterObject
+     */
+    @Transactional
+    void delete(String statementId, Object parameterObject);
 
-	/**
-	 * 根据主键值删除多条记录
-	 * 
-	 * @param statementId
-	 * @param rows
-	 */
-	@Transactional
-	void deleteAll(String statementId, List<Object> rows);
+    /**
+     * 根据主键值删除多条记录
+     *
+     * @param statementId
+     * @param rows
+     */
+    @Transactional
+    void deleteAll(String statementId, List<Object> rows);
 
-	/**
-	 * 根据记录主键删除记录
-	 * 
-	 * @param statementId
-	 * @param row
-	 */
-	@Transactional
-	void deleteById(String statementId, Object row);
+    /**
+     * 根据记录主键删除记录
+     *
+     * @param statementId
+     * @param row
+     */
+    @Transactional
+    void deleteById(String statementId, Object row);
 
-	/**
-	 * 执行批量更新
-	 * 
-	 * @param executors
-	 */
-	@Transactional
-	void executeBatch(List<SqlExecutor> executors);
+    /**
+     * 执行批量更新
+     *
+     * @param executors
+     */
+    @Transactional
+    void executeBatch(List<SqlExecutor> executors);
 
-	/**
-	 * 根据主键获取记录
-	 * 
-	 * @param statementId
-	 * @param parameterObject
-	 * @return
-	 */
-	Object getById(String statementId, Object parameterObject);
+    /**
+     * 根据主键获取记录
+     *
+     * @param statementId
+     * @param parameterObject
+     * @return
+     */
+    Object getById(String statementId, Object parameterObject);
 
-	/**
-	 * 获取总记录数
-	 * 
-	 * @param statementId
-	 * @param parameterObject
-	 * @return
-	 */
-	int getCount(String statementId, Object parameterObject);
+    /**
+     * 获取总记录数
+     *
+     * @param statementId
+     * @param parameterObject
+     * @return
+     */
+    int getCount(String statementId, Object parameterObject);
 
-	/**
-	 * 获取一页数据
-	 * 
-	 * @param pageNo
-	 * @param pageSize
-	 * @param queryExecutor
-	 * @return
-	 */
-	List<Object> getList(int pageNo, int pageSize, SqlExecutor queryExecutor);
+    /**
+     * 获取一页数据
+     *
+     * @param pageNo
+     * @param pageSize
+     * @param queryExecutor
+     * @return
+     */
+    List<Object> getList(int pageNo, int pageSize, SqlExecutor queryExecutor);
 
-	/**
-	 * 获取数据集
-	 * 
-	 * @param statementId
-	 * @param parameterObject
-	 * @return
-	 */
-	List<Object> getList(String statementId, Object parameterObject);
+    /**
+     * 获取数据集
+     *
+     * @param statementId
+     * @param parameterObject
+     * @return
+     */
+    List<Object> getList(String statementId, Object parameterObject);
 
-	/**
-	 * 获取某个表用户记录编号
-	 * 
-	 * @param tablename
-	 *            表名称
-	 * @param idColumn
-	 *            表主键列名
-	 * @param createBy
-	 *            创建人
-	 * @return
-	 */
-	@Transactional
-	String getNextId(String tablename, String idColumn, String createBy);
+    /**
+     * 获取某个表用户记录编号
+     *
+     * @param tablename 表名称
+     * @param idColumn  表主键列名
+     * @param createBy  创建人
+     * @return
+     */
+    @Transactional
+    String getNextId(String tablename, String idColumn, String createBy);
 
-	/**
-	 * 获取一页记录
-	 * 
-	 * @param pageNo
-	 * @param pageSize
-	 * @param countExecutor
-	 * @param queryExecutor
-	 * @return
-	 */
-	Paging getPage(int pageNo, int pageSize, SqlExecutor countExecutor, SqlExecutor queryExecutor);
+    /**
+     * 获取一页记录
+     *
+     * @param pageNo
+     * @param pageSize
+     * @param countExecutor
+     * @param queryExecutor
+     * @return
+     */
+    Paging getPage(int pageNo, int pageSize, SqlExecutor countExecutor, SqlExecutor queryExecutor);
 
-	/**
-	 * 获取单个对象
-	 * 
-	 * @param statementId
-	 * @param parameterObject
-	 * @return
-	 */
-	Object getSingleObject(String statementId, Object parameterObject);
+    /**
+     * 获取单个对象
+     *
+     * @param statementId
+     * @param parameterObject
+     * @return
+     */
+    Object getSingleObject(String statementId, Object parameterObject);
 
-	/**
-	 * 插入一条记录
-	 * 
-	 * @param statementId
-	 * @param parameterObject
-	 */
-	@Transactional
-	void insert(String statementId, Object parameterObject);
+    /**
+     * 插入一条记录
+     *
+     * @param statementId
+     * @param parameterObject
+     */
+    @Transactional
+    void insert(String statementId, Object parameterObject);
 
-	/**
-	 * 插入多条记录
-	 * 
-	 * @param statementId
-	 * @param parameterObject
-	 */
-	@Transactional
-	void insertAll(String statementId, List<Object> rows);
+    /**
+     * 插入多条记录
+     *
+     * @param statementId
+     * @param rows
+     */
+    @Transactional
+    void insertAll(String statementId, List<Object> rows);
 
- 
 
-	@Transactional
-	Long nextId();
+    @Transactional
+    Long nextId();
 
-	@Transactional
-	Long nextId(String name);
+    @Transactional
+    Long nextId(String name);
 
-	/**
-	 * 获取某个表用户记录编号
-	 * 
-	 * @param tablename
-	 *            表名称
-	 * @param idColumn
-	 *            表主键列名
-	 * @return
-	 */
-	@Transactional
-	Long nextId(String tablename, String idColumn);
+    /**
+     * 获取某个表用户记录编号
+     *
+     * @param tablename 表名称
+     * @param idColumn  表主键列名
+     * @return
+     */
+    @Transactional
+    Long nextId(String tablename, String idColumn);
 
-	/**
-	 * 修改一条记录
-	 * 
-	 * @param statementId
-	 * @param parameterObject
-	 */
-	@Transactional
-	void update(String statementId, Object parameterObject);
+    /**
+     * 修改一条记录
+     *
+     * @param statementId
+     * @param parameterObject
+     */
+    @Transactional
+    void update(String statementId, Object parameterObject);
 
-	/**
-	 * 修改多条记录
-	 * 
-	 * @param statementId
-	 * @param parameterObject
-	 */
-	@Transactional
-	void updateAll(String statementId, List<Object> rows);
+    /**
+     * 修改多条记录
+     *
+     * @param statementId
+     * @param rows
+     */
+    @Transactional
+    void updateAll(String statementId, List<Object> rows);
 
 }

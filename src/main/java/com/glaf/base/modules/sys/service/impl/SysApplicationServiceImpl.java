@@ -59,23 +59,23 @@ import com.glaf.core.util.PageResult;
 @Service("sysApplicationService")
 @Transactional(readOnly = true)
 public class SysApplicationServiceImpl implements SysApplicationService {
-	protected final static Log logger = LogFactory.getLog(SysApplicationServiceImpl.class);
+	private final static Log logger = LogFactory.getLog(SysApplicationServiceImpl.class);
 
-	protected IdGenerator idGenerator;
+	private IdGenerator idGenerator;
 
-	protected EntityService entityService;
+	private EntityService entityService;
 
-	protected SqlSessionTemplate sqlSessionTemplate;
+	private SqlSessionTemplate sqlSessionTemplate;
 
-	protected SysApplicationMapper sysApplicationMapper;
+	private SysApplicationMapper sysApplicationMapper;
 
-	protected SysAccessMapper sysAccessMapper;
+	private SysAccessMapper sysAccessMapper;
 
-	protected SysRoleService sysRoleService;
+	private SysRoleService sysRoleService;
 
-	protected SysUserService sysUserService;
+	private SysUserService sysUserService;
 
-	public SysApplicationServiceImpl() {
+	private SysApplicationServiceImpl() {
 
 	}
 
@@ -91,7 +91,7 @@ public class SysApplicationServiceImpl implements SysApplicationService {
 		}
 	}
 
-	public int count(SysApplicationQuery query) {
+	private int count(SysApplicationQuery query) {
 		return sysApplicationMapper.getSysApplicationCount(query);
 	}
 
@@ -100,7 +100,6 @@ public class SysApplicationServiceImpl implements SysApplicationService {
 		if (SystemConfig.getBoolean("use_query_cache")) {
 			CacheFactory.clear(Constants.CACHE_MENU_REGION);
 		}
-		boolean ret = false;
 
 		if (app.getId() == 0) {
 			app.setId(idGenerator.nextId("SYS_APPLICATION"));
@@ -122,8 +121,7 @@ public class SysApplicationServiceImpl implements SysApplicationService {
 		app.setCreateDate(new Date());
 		app.setNamePinyin(PinyinUtils.converterToFirstSpell(app.getName(), true));
 		sysApplicationMapper.insertSysApplication(app);
-		ret = true;
-		return ret;
+		return true;
 	}
 
 	@Transactional
@@ -162,7 +160,7 @@ public class SysApplicationServiceImpl implements SysApplicationService {
 	}
 
 	@Transactional
-	public void deleteById(long appId) {
+	private void deleteById(long appId) {
 		if (appId > 0) {
 			if (SystemConfig.getBoolean("use_query_cache")) {
 				String cacheKey = "sys_app_" + appId;
@@ -195,8 +193,7 @@ public class SysApplicationServiceImpl implements SysApplicationService {
 		query.code(code);
 		List<SysApplication> list = this.list(query);
 		if (list != null && !list.isEmpty()) {
-			SysApplication sysApplication = list.get(0);
-			return sysApplication;
+			return list.get(0);
 		}
 
 		return null;
@@ -234,8 +231,7 @@ public class SysApplicationServiceImpl implements SysApplicationService {
 
 		List<SysApplication> list = this.list(query);
 		if (list != null && !list.isEmpty()) {
-			SysApplication sysApplication = list.get(0);
-			return sysApplication;
+			return list.get(0);
 		}
 
 		return null;
@@ -346,7 +342,6 @@ public class SysApplicationServiceImpl implements SysApplicationService {
 					if (disableMap.get(t.getParentId()) != null) {
 						t.setLocked(1);
 						disableMap.put(t.getId(), t);
-						continue;
 					}
 				}
 			}
@@ -413,11 +408,7 @@ public class SysApplicationServiceImpl implements SysApplicationService {
 
 	public List<SysApplication> getSysApplicationsByQueryCriteria(int start, int pageSize, SysApplicationQuery query) {
 		RowBounds rowBounds = new RowBounds(start, pageSize);
-		List<SysApplication> list = sqlSessionTemplate.selectList("getSysApplications", query, rowBounds);
-		if (list != null && !list.isEmpty()) {
-
-		}
-		return list;
+		return sqlSessionTemplate.selectList("getSysApplications", query, rowBounds);
 	}
 
 	public List<SysApplication> getSysApplicationsByRoleCode(String roleCode) {
@@ -428,9 +419,8 @@ public class SysApplicationServiceImpl implements SysApplicationService {
 		return sysApplicationMapper.getSysApplicationsByRoleId(roleId);
 	}
 
-	public List<SysApplication> list(SysApplicationQuery query) {
-		List<SysApplication> list = sysApplicationMapper.getSysApplications(query);
-		return list;
+	private List<SysApplication> list(SysApplicationQuery query) {
+		return sysApplicationMapper.getSysApplications(query);
 	}
 
 	@Transactional
@@ -543,7 +533,7 @@ public class SysApplicationServiceImpl implements SysApplicationService {
 		query.setOrderBy(" E.SORTNO desc ");
 		List<SysApplication> list = this.list(query);
 		if (list != null && list.size() > 0) {// 有记录
-			SysApplication temp = (SysApplication) list.get(0);
+			SysApplication temp = list.get(0);
 			int i = bean.getSort();
 			bean.setSort(temp.getSort());
 			this.update(bean);// 更新bean
@@ -568,7 +558,7 @@ public class SysApplicationServiceImpl implements SysApplicationService {
 
 		List<SysApplication> list = this.list(query);
 		if (list != null && list.size() > 0) {// 有记录
-			SysApplication temp = (SysApplication) list.get(0);
+			SysApplication temp = list.get(0);
 			int i = bean.getSort();
 			bean.setSort(temp.getSort());
 			this.update(bean);// 更新bean

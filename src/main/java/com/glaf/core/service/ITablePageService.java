@@ -18,35 +18,33 @@
 
 package com.glaf.core.service;
 
-import java.util.List;
-import java.util.Map;
-
-import org.springframework.transaction.annotation.Transactional;
-
 import com.glaf.core.base.TablePage;
 import com.glaf.core.query.TablePageQuery;
-
 import com.glaf.core.util.Paging;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.Map;
 
 @Transactional(readOnly = true)
 public interface ITablePageService {
 
-	List<Map<String, Object>> getListData(String sql, Map<String, Object> params);
+    List<Map<String, Object>> getListData(String sql, Map<String, Object> params);
 
-	List<Map<String, Object>> getListData(String sql, Map<String, Object> params, int begin, int limit);
+    List<Map<String, Object>> getListData(String sql, Map<String, Object> params, int begin, int limit);
 
-	Map<String, Object> getOne(String sql, Map<String, Object> params);
+    Map<String, Object> getOne(String sql, Map<String, Object> params);
 
-	int getQueryCount(String querySql, Map<String, Object> params);
+    int getQueryCount(String querySql, Map<String, Object> params);
 
-	int getTableCount(TablePageQuery query);
+    int getTableCount(TablePageQuery query);
 
-	List<Map<String, Object>> getTableData(String tableName, int firstResult, int maxResults);
+    List<Map<String, Object>> getTableData(String tableName, int firstResult, int maxResults);
 
-	List<Map<String, Object>> getTableData(TablePageQuery query);
+    List<Map<String, Object>> getTableData(TablePageQuery query);
 
-	TablePage getTablePage(TablePageQuery tablePageQuery, int firstResult, int maxResults);
+    TablePage getTablePage(TablePageQuery tablePageQuery, int firstResult, int maxResults);
 
-	Paging getTablePaging(TablePageQuery tablePageQuery, int firstResult, int maxResults);
+    Paging getTablePaging(TablePageQuery tablePageQuery, int firstResult, int maxResults);
 
 }

@@ -55,23 +55,23 @@ import com.glaf.core.util.UUID32;
 public class GroupServiceImpl implements GroupService {
 	protected final Logger logger = LoggerFactory.getLogger(getClass());
 
-	protected EntityDAO entityDAO;
+	private EntityDAO entityDAO;
 
-	protected IdGenerator idGenerator;
+	private IdGenerator idGenerator;
 
-	protected GroupMapper groupMapper;
+	private GroupMapper groupMapper;
 
-	protected GroupUserMapper groupUserMapper;
+	private GroupUserMapper groupUserMapper;
 
-	protected GroupLeaderMapper groupLeaderMapper;
+	private GroupLeaderMapper groupLeaderMapper;
 
-	protected SqlSessionTemplate sqlSessionTemplate;
+	private SqlSessionTemplate sqlSessionTemplate;
 
 	public GroupServiceImpl() {
 
 	}
 
-	public int count(GroupQuery query) {
+	private int count(GroupQuery query) {
 		return groupMapper.getGroupCount(query);
 	}
 
@@ -184,8 +184,7 @@ public class GroupServiceImpl implements GroupService {
 
 	public List<Group> getGroupsByQueryCriteria(int start, int pageSize, GroupQuery query) {
 		RowBounds rowBounds = new RowBounds(start, pageSize);
-		List<Group> rows = sqlSessionTemplate.selectList("getGroups", query, rowBounds);
-		return rows;
+		return sqlSessionTemplate.selectList("getGroups", query, rowBounds);
 	}
 
 	/**
@@ -250,7 +249,7 @@ public class GroupServiceImpl implements GroupService {
 	/**
 	 * 通过群组ID取用户
 	 * 
-	 * @param groupId
+	 * @param query
 	 * @return
 	 */
 	public List<Group> getGroupUsersByGroupId(GroupQuery query) {
@@ -288,7 +287,7 @@ public class GroupServiceImpl implements GroupService {
 				try {
 					JSONArray jsonArray = JSON.parseArray(text);
 					return JsonUtils.arrayToList(jsonArray);
-				} catch (Exception ex) {
+				} catch (Exception ignored) {
 				}
 			}
 		}
@@ -323,8 +322,7 @@ public class GroupServiceImpl implements GroupService {
 	}
 
 	public List<Group> list(GroupQuery query) {
-		List<Group> list = groupMapper.getGroups(query);
-		return list;
+		return groupMapper.getGroups(query);
 	}
 
 	@Transactional

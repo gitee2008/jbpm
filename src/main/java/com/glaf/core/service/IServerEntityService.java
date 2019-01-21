@@ -18,99 +18,98 @@
 
 package com.glaf.core.service;
 
-import java.util.*;
-
+import com.glaf.core.domain.ServerEntity;
+import com.glaf.core.query.ServerEntityQuery;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.glaf.core.domain.*;
-import com.glaf.core.query.*;
+import java.util.List;
 
 @Transactional(readOnly = true)
 public interface IServerEntityService {
 
-	/**
-	 * 根据主键删除记录
-	 * 
-	 * @return
-	 */
-	@Transactional
-	void deleteById(Long id);
+    /**
+     * 根据主键删除记录
+     *
+     * @return
+     */
+    @Transactional
+    void deleteById(Long id);
 
-	/**
-	 * 根据主键删除多条记录
-	 * 
-	 * @return
-	 */
-	@Transactional
-	void deleteByIds(List<Long> ids);
+    /**
+     * 根据主键删除多条记录
+     *
+     * @return
+     */
+    @Transactional
+    void deleteByIds(List<Long> ids);
 
-	List<ServerEntity> getServerEntities();
+    List<ServerEntity> getServerEntities();
 
-	/**
-	 * 根据查询参数获取记录列表
-	 * 
-	 * @return
-	 */
-	List<ServerEntity> getServerEntities(String actorId);
+    /**
+     * 根据查询参数获取记录列表
+     *
+     * @return
+     */
+    List<ServerEntity> getServerEntities(String actorId);
 
-	/**
-	 * 根据查询参数获取一页的数据
-	 * 
-	 * @return
-	 */
-	List<ServerEntity> getServerEntitiesByQueryCriteria(int start, int pageSize, ServerEntityQuery query);
+    /**
+     * 根据查询参数获取一页的数据
+     *
+     * @return
+     */
+    List<ServerEntity> getServerEntitiesByQueryCriteria(int start, int pageSize, ServerEntityQuery query);
 
-	/**
-	 * 根据编码获取一条记录
-	 * 
-	 * @return
-	 */
-	ServerEntity getServerEntityByCode(String code);
+    /**
+     * 根据编码获取一条记录
+     *
+     * @return
+     */
+    ServerEntity getServerEntityByCode(String code);
 
-	/**
-	 * 根据主键获取一条记录
-	 * 
-	 * @return
-	 */
-	ServerEntity getServerEntityById(Long id);
+    /**
+     * 根据主键获取一条记录
+     *
+     * @return
+     */
+    ServerEntity getServerEntityById(Long id);
 
-	/**
-	 * 根据mapping获取一条记录
-	 * 
-	 * @return
-	 */
-	ServerEntity getServerEntityByMapping(String mapping);
+    /**
+     * 根据mapping获取一条记录
+     *
+     * @return
+     */
+    ServerEntity getServerEntityByMapping(String mapping);
 
-	/**
-	 * 根据名称获取一条记录
-	 * 
-	 * @return
-	 */
-	ServerEntity getServerEntityByName(String name);
+    /**
+     * 根据名称获取一条记录
+     *
+     * @return
+     */
+    ServerEntity getServerEntityByName(String name);
 
-	/**
-	 * 根据查询参数获取记录总数
-	 * 
-	 * @return
-	 */
-	int getServerEntityCountByQueryCriteria(ServerEntityQuery query);
+    /**
+     * 根据查询参数获取记录总数
+     *
+     * @return
+     */
+    int getServerEntityCountByQueryCriteria(ServerEntityQuery query);
 
-	/**
-	 * 根据查询参数获取记录列表
-	 * 
-	 * @return
-	 */
-	List<ServerEntity> list(ServerEntityQuery query);
+    /**
+     * 根据查询参数获取记录列表
+     *
+     * @return
+     */
+    List<ServerEntity> list(ServerEntityQuery query);
 
-	/**
-	 * 保存一条记录
-	 * 
-	 * @return
-	 */
-	@Transactional
-	void save(ServerEntity serverEntity);
+    /**
+     * 保存一条记录
+     *
+     * @return
+     */
+    @Transactional
+    void save(ServerEntity serverEntity);
 
-	@Transactional
-	void update(ServerEntity serverEntity);
+    @Transactional
+    void update(ServerEntity serverEntity);
 
 }

@@ -17,47 +17,47 @@
  */
 package com.glaf.core.service;
 
-import java.util.*;
+import com.glaf.core.domain.SysCalendar;
+import com.glaf.core.query.SysCalendarQuery;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.glaf.core.domain.*;
-import com.glaf.core.query.*;
+import java.util.List;
 
 @Transactional(readOnly = true)
 public interface ISysCalendarService {
 
-	/**
-	 * 根据主键获取一条记录
-	 * 
-	 * @return
-	 */
-	SysCalendar getSysCalendar(Long id);
+    /**
+     * 根据主键获取一条记录
+     *
+     * @return
+     */
+    SysCalendar getSysCalendar(Long id);
 
-	/**
-	 * 获取某条生产线的系统日历
-	 * 
-	 * @param productionLine
-	 * @param year
-	 * @param month
-	 * @param day
-	 * @return
-	 */
-	SysCalendar getSysCalendar(String productionLine, int year, int month,
-			int day);
+    /**
+     * 获取某条生产线的系统日历
+     *
+     * @param productionLine
+     * @param year
+     * @param month
+     * @param day
+     * @return
+     */
+    SysCalendar getSysCalendar(String productionLine, int year, int month,
+                               int day);
 
-	/**
-	 * 根据查询参数获取记录列表
-	 * 
-	 * @return
-	 */
-	List<SysCalendar> list(SysCalendarQuery query);
+    /**
+     * 根据查询参数获取记录列表
+     *
+     * @return
+     */
+    List<SysCalendar> list(SysCalendarQuery query);
 
-	/**
-	 * 保存一条记录
-	 * 
-	 * @return
-	 */
-	@Transactional
-	void save(SysCalendar sysCalendar);
+    /**
+     * 保存一条记录
+     *
+     * @return
+     */
+    @Transactional
+    void save(SysCalendar sysCalendar);
 
 }

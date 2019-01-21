@@ -98,7 +98,7 @@ public interface GroupService {
 	/**
 	 * 通过群组ID取用户
 	 * 
-	 * @param groupId
+	 * @param query
 	 * @return
 	 */
 	List<Group> getGroupUsersByGroupId(GroupQuery query);

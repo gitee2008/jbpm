@@ -18,54 +18,52 @@
 
 package com.glaf.core.service;
 
-import java.util.List;
-
-import org.springframework.transaction.annotation.Transactional;
-
 import com.glaf.core.domain.SysDataLog;
 import com.glaf.core.logging.LogStorage;
 import com.glaf.core.query.SysDataLogQuery;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Transactional(readOnly = true)
 public interface SysDataLogService extends LogStorage {
 
-	/**
-	 * 获取日志总记录数
-	 * 
-	 * @param query
-	 * @return
-	 */
-	int getSysDataLogCountByQueryCriteria(SysDataLogQuery query);
+    /**
+     * 获取日志总记录数
+     *
+     * @param query
+     * @return
+     */
+    int getSysDataLogCountByQueryCriteria(SysDataLogQuery query);
 
-	/**
-	 * 获取一页日志
-	 * 
-	 * @param start
-	 * @param pageSize
-	 * @param query
-	 * @return
-	 */
-	List<SysDataLog> getSysDataLogsByQueryCriteria(int start, int pageSize, SysDataLogQuery query);
+    /**
+     * 获取一页日志
+     *
+     * @param start
+     * @param pageSize
+     * @param query
+     * @return
+     */
+    List<SysDataLog> getSysDataLogsByQueryCriteria(int start, int pageSize, SysDataLogQuery query);
 
-	/**
-	 * 根据查询条件获取日志
-	 * 
-	 * @param query
-	 * @return
-	 */
-	List<SysDataLog> list(SysDataLogQuery query);
+    /**
+     * 根据查询条件获取日志
+     *
+     * @param query
+     * @return
+     */
+    List<SysDataLog> list(SysDataLogQuery query);
 
-	/**
-	 * 保存
-	 * 
-	 * @param bean
-	 *            SysDataLog
-	 * @return boolean
-	 */
-	@Transactional
-	void save(SysDataLog bean);
+    /**
+     * 保存
+     *
+     * @param bean SysDataLog
+     * @return boolean
+     */
+    @Transactional
+    void save(SysDataLog bean);
 
-	@Transactional
-	void saveLogs(List<SysDataLog> logs);
+    @Transactional
+    void saveLogs(List<SysDataLog> logs);
 
 }

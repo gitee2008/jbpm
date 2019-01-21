@@ -88,7 +88,7 @@ public interface SysUserService {
 	/**
 	 * 删除部门角色用户
 	 * 
-	 * @param organizationRole
+	 * @param role
 	 * @param userIds
 	 */
 	@Transactional
@@ -97,7 +97,7 @@ public interface SysUserService {
 	/**
 	 * 按名称查找对象
 	 * 
-	 * @param name
+	 * @param account
 	 *            String
 	 * @return SysUser
 	 */
@@ -106,7 +106,7 @@ public interface SysUserService {
 	/**
 	 * 按名称查找对象
 	 * 
-	 * @param name
+	 * @param account
 	 *            String
 	 * @return SysUser
 	 */
@@ -293,9 +293,7 @@ public interface SysUserService {
 
 	/**
 	 * 获取列表
-	 * 
-	 * @param organizationId
-	 *            int
+	 *
 	 * @return List
 	 */
 	List<SysUser> getSysUserWithOrganizationList();
@@ -328,7 +326,7 @@ public interface SysUserService {
 	 * 判断用户是否有权限
 	 * 
 	 * @param user
-	 * @param code
+	 * @param roleCode
 	 * @return
 	 */
 	boolean isPermission(SysUser user, String roleCode);

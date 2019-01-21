@@ -49,17 +49,17 @@ import com.glaf.base.modules.sys.service.TenantGrantService;
 public class TenantGrantServiceImpl implements TenantGrantService {
 	protected final Logger logger = LoggerFactory.getLogger(getClass());
 
-	protected EntityDAO entityDAO;
+	private EntityDAO entityDAO;
 
-	protected IdGenerator idGenerator;
+	private IdGenerator idGenerator;
 
-	protected JdbcTemplate jdbcTemplate;
+	private JdbcTemplate jdbcTemplate;
 
-	protected SqlSessionTemplate sqlSessionTemplate;
+	private SqlSessionTemplate sqlSessionTemplate;
 
-	protected TenantGrantMapper tenantGrantMapper;
+	private TenantGrantMapper tenantGrantMapper;
 
-	protected ITableDataService tableDataService;
+	private ITableDataService tableDataService;
 
 	public TenantGrantServiceImpl() {
 
@@ -123,8 +123,7 @@ public class TenantGrantServiceImpl implements TenantGrantService {
 		if (id == null) {
 			return null;
 		}
-		TenantGrant tenantGrant = tenantGrantMapper.getTenantGrantById(id);
-		return tenantGrant;
+		return tenantGrantMapper.getTenantGrantById(id);
 	}
 
 	/**
@@ -143,13 +142,11 @@ public class TenantGrantServiceImpl implements TenantGrantService {
 	 */
 	public List<TenantGrant> getTenantGrantsByQueryCriteria(int start, int pageSize, TenantGrantQuery query) {
 		RowBounds rowBounds = new RowBounds(start, pageSize);
-		List<TenantGrant> rows = sqlSessionTemplate.selectList("getTenantGrants", query, rowBounds);
-		return rows;
+		return sqlSessionTemplate.selectList("getTenantGrants", query, rowBounds);
 	}
 
 	public List<TenantGrant> list(TenantGrantQuery query) {
-		List<TenantGrant> list = tenantGrantMapper.getTenantGrants(query);
-		return list;
+		return tenantGrantMapper.getTenantGrants(query);
 	}
 
 	@Transactional

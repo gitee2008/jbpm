@@ -18,72 +18,71 @@
 
 package com.glaf.core.service;
 
-import java.util.*;
-
+import com.glaf.core.domain.SchedulerLog;
+import com.glaf.core.query.SchedulerLogQuery;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.glaf.core.domain.*;
-import com.glaf.core.query.*;
+import java.util.List;
 
 @Transactional(readOnly = true)
 public interface ISchedulerLogService {
-	
-	@Transactional
-	void bulkInsert(List<SchedulerLog> list);
 
-	/**
-	 * 根据主键删除记录
-	 * 
-	 * @return
-	 */
-	@Transactional
-	void deleteById(String id);
+    @Transactional
+    void bulkInsert(List<SchedulerLog> list);
 
-	/**
-	 * 根据主键删除多条记录
-	 * 
-	 * @return
-	 */
-	@Transactional
-	void deleteByIds(List<String> ids);
+    /**
+     * 根据主键删除记录
+     *
+     * @return
+     */
+    @Transactional
+    void deleteById(String id);
 
-	void deleteSchedulerLogByTaskId(String taskId);
+    /**
+     * 根据主键删除多条记录
+     *
+     * @return
+     */
+    @Transactional
+    void deleteByIds(List<String> ids);
 
-	/**
-	 * 根据查询参数获取记录列表
-	 * 
-	 * @return
-	 */
-	List<SchedulerLog> list(SchedulerLogQuery query);
+    void deleteSchedulerLogByTaskId(String taskId);
 
-	/**
-	 * 根据查询参数获取记录总数
-	 * 
-	 * @return
-	 */
-	int getSchedulerLogCountByQueryCriteria(SchedulerLogQuery query);
+    /**
+     * 根据查询参数获取记录列表
+     *
+     * @return
+     */
+    List<SchedulerLog> list(SchedulerLogQuery query);
 
-	/**
-	 * 根据查询参数获取一页的数据
-	 * 
-	 * @return
-	 */
-	List<SchedulerLog> getSchedulerLogsByQueryCriteria(int start, int pageSize,
-			SchedulerLogQuery query);
+    /**
+     * 根据查询参数获取记录总数
+     *
+     * @return
+     */
+    int getSchedulerLogCountByQueryCriteria(SchedulerLogQuery query);
 
-	/**
-	 * 根据主键获取一条记录
-	 * 
-	 * @return
-	 */
-	SchedulerLog getSchedulerLog(String id);
+    /**
+     * 根据查询参数获取一页的数据
+     *
+     * @return
+     */
+    List<SchedulerLog> getSchedulerLogsByQueryCriteria(int start, int pageSize,
+                                                       SchedulerLogQuery query);
 
-	/**
-	 * 保存一条记录
-	 * 
-	 * @return
-	 */
-	@Transactional
-	void save(SchedulerLog schedulerLog);
+    /**
+     * 根据主键获取一条记录
+     *
+     * @return
+     */
+    SchedulerLog getSchedulerLog(String id);
+
+    /**
+     * 保存一条记录
+     *
+     * @return
+     */
+    @Transactional
+    void save(SchedulerLog schedulerLog);
 
 }

@@ -18,67 +18,66 @@
 
 package com.glaf.core.service;
 
-import java.util.*;
-
+import com.glaf.core.domain.DictoryDefinition;
+import com.glaf.core.query.DictoryDefinitionQuery;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.glaf.core.domain.*;
-import com.glaf.core.query.*;
+import java.util.List;
 
 @Transactional(readOnly = true)
 public interface DictoryDefinitionService {
 
-	/**
-	 * 根据主键删除记录
-	 * 
-	 * @return
-	 */
-	@Transactional
-	void deleteById(Long id);
+    /**
+     * 根据主键删除记录
+     *
+     * @return
+     */
+    @Transactional
+    void deleteById(Long id);
 
-	/**
-	 * 根据查询参数获取记录列表
-	 * 
-	 * @return
-	 */
-	List<DictoryDefinition> list(DictoryDefinitionQuery query);
+    /**
+     * 根据查询参数获取记录列表
+     *
+     * @return
+     */
+    List<DictoryDefinition> list(DictoryDefinitionQuery query);
 
-	/**
-	 * 根据查询参数获取记录总数
-	 * 
-	 * @return
-	 */
-	int getDictoryDefinitionCountByQueryCriteria(DictoryDefinitionQuery query);
+    /**
+     * 根据查询参数获取记录总数
+     *
+     * @return
+     */
+    int getDictoryDefinitionCountByQueryCriteria(DictoryDefinitionQuery query);
 
-	/**
-	 * 根据查询参数获取一页的数据
-	 * 
-	 * @return
-	 */
-	List<DictoryDefinition> getDictoryDefinitionsByQueryCriteria(int start, int pageSize, DictoryDefinitionQuery query);
+    /**
+     * 根据查询参数获取一页的数据
+     *
+     * @return
+     */
+    List<DictoryDefinition> getDictoryDefinitionsByQueryCriteria(int start, int pageSize, DictoryDefinitionQuery query);
 
-	/**
-	 * 根据主键获取一条记录
-	 * 
-	 * @return
-	 */
-	DictoryDefinition getDictoryDefinition(Long id);
+    /**
+     * 根据主键获取一条记录
+     *
+     * @return
+     */
+    DictoryDefinition getDictoryDefinition(Long id);
 
-	/**
-	 * 根据节点编号获取定义信息
-	 * 
-	 * @param nodeId
-	 * @param target
-	 * @return
-	 */
-	List<DictoryDefinition> getDictoryDefinitions(Long nodeId, String target);
+    /**
+     * 根据节点编号获取定义信息
+     *
+     * @param nodeId
+     * @param target
+     * @return
+     */
+    List<DictoryDefinition> getDictoryDefinitions(Long nodeId, String target);
 
-	/**
-	 * 保存多条记录
-	 * 
-	 * @return
-	 */
-	@Transactional
-	void saveAll(Long nodeId, String target, List<DictoryDefinition> dictoryDefinitions);
+    /**
+     * 保存多条记录
+     *
+     * @return
+     */
+    @Transactional
+    void saveAll(Long nodeId, String target, List<DictoryDefinition> dictoryDefinitions);
 
 }

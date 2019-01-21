@@ -55,19 +55,19 @@ import com.glaf.core.util.UUID32;
 public class SysTenantServiceImpl implements SysTenantService {
 	protected final Logger logger = LoggerFactory.getLogger(getClass());
 
-	protected EntityDAO entityDAO;
+	private EntityDAO entityDAO;
 
-	protected IdGenerator idGenerator;
+	private IdGenerator idGenerator;
 
-	protected JdbcTemplate jdbcTemplate;
+	private JdbcTemplate jdbcTemplate;
 
-	protected SqlSessionTemplate sqlSessionTemplate;
+	private SqlSessionTemplate sqlSessionTemplate;
 
-	protected SysTenantMapper sysTenantMapper;
+	private SysTenantMapper sysTenantMapper;
 
-	protected SysOrganizationService sysOrganizationService;
+	private SysOrganizationService sysOrganizationService;
 
-	protected SysUserService sysUserService;
+	private SysUserService sysUserService;
 
 	public SysTenantServiceImpl() {
 
@@ -115,7 +115,7 @@ public class SysTenantServiceImpl implements SysTenantService {
 					if (model != null) {
 						return model;
 					}
-				} catch (Exception ex) {
+				} catch (Exception ignored) {
 				}
 			}
 		}
@@ -143,7 +143,7 @@ public class SysTenantServiceImpl implements SysTenantService {
 					if (model != null) {
 						return model;
 					}
-				} catch (Exception ex) {
+				} catch (Exception ignored) {
 				}
 			}
 		}
@@ -169,7 +169,7 @@ public class SysTenantServiceImpl implements SysTenantService {
 					if (model != null) {
 						return model;
 					}
-				} catch (Exception ex) {
+				} catch (Exception ignored) {
 				}
 			}
 		}
@@ -198,13 +198,11 @@ public class SysTenantServiceImpl implements SysTenantService {
 	 */
 	public List<SysTenant> getSysTenantsByQueryCriteria(int start, int pageSize, SysTenantQuery query) {
 		RowBounds rowBounds = new RowBounds(start, pageSize);
-		List<SysTenant> rows = sqlSessionTemplate.selectList("getSysTenants", query, rowBounds);
-		return rows;
+		return sqlSessionTemplate.selectList("getSysTenants", query, rowBounds);
 	}
 
 	public List<SysTenant> list(SysTenantQuery query) {
-		List<SysTenant> list = sysTenantMapper.getSysTenants(query);
-		return list;
+		return sysTenantMapper.getSysTenants(query);
 	}
 
 	@Transactional
@@ -295,11 +293,11 @@ public class SysTenantServiceImpl implements SysTenantService {
 				organization.setTelphone(sysTenant.getTelephone());
 				organization.setCreateBy("system");
 				sysOrganizationService.create(organization);
-			} catch (java.lang.Throwable ex) {
+			} catch (java.lang.Throwable ignored) {
 
 			}
 		}
-		String userId = String.valueOf(sysTenant.getId() + "000");
+		String userId = sysTenant.getId() + "000";
 		if (sysUserService.findByAccount(userId) == null) {
 			SysUser bean = new SysUser();
 			bean.setActorId(userId);
@@ -309,6 +307,7 @@ public class SysTenantServiceImpl implements SysTenantService {
 			bean.setEvection(0);
 			bean.setCreateBy("system");
 			bean.setCreateDate(new Date());
+			assert organization != null;
 			bean.setOrganizationId(organization.getId());
 			bean.setTenantId(sysTenant.getTenantId());
 			sysUserService.create(bean);

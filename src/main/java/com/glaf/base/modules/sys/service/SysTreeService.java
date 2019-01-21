@@ -118,8 +118,10 @@ public interface SysTreeService {
 	/**
 	 * 获取树型列表
 	 * 
-	 * @param parent
-	 *            int
+	 * @param treeList
+	 * @param parentId
+	 * @param deep
+	 *
 	 * @return List
 	 */
 	void getSysTree(List<SysTree> treeList, long parentId, int deep);
@@ -127,7 +129,7 @@ public interface SysTreeService {
 	/**
 	 * 按树编号获取树节点
 	 * 
-	 * @param tree
+	 * @param code
 	 * @return SysTree
 	 */
 	SysTree getSysTreeByCode(String code);
@@ -159,7 +161,7 @@ public interface SysTreeService {
 	/**
 	 * 获取分页列表
 	 * 
-	 * @param parent
+	 * @param parentId
 	 *            int
 	 * @param pageNo
 	 *            int
@@ -172,7 +174,7 @@ public interface SysTreeService {
 	/**
 	 * 获取全部列表
 	 * 
-	 * @param parent
+	 * @param parentId
 	 * 
 	 * @return List
 	 */
@@ -182,8 +184,8 @@ public interface SysTreeService {
 	 * 获取父节点列表，如:根目录>A>A1>A11
 	 * 
 	 * @param tree
-	 * @param int
-	 *            id
+	 * @param id
+	 *
 	 */
 	void getSysTreeParent(List<SysTree> tree, long id);
 
@@ -198,9 +200,10 @@ public interface SysTreeService {
 
 	/**
 	 * 获取树型列表
-	 * 
-	 * @param parent
-	 *            int
+	 *
+	 * @param treeList
+	 * @param parentId
+	 * @param deep
 	 * @return List
 	 */
 	void loadSysTrees(List<SysTree> treeList, long parentId, int deep);
@@ -228,8 +231,7 @@ public interface SysTreeService {
 
 	/**
 	 * 更新树的treeId字段
-	 * 
-	 * @param treeMap
+	 *
 	 */
 	@Transactional
 	void updateTreeIds();

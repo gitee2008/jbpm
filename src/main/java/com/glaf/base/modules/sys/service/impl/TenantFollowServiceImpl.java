@@ -43,15 +43,15 @@ import com.glaf.base.modules.sys.service.TenantFollowService;
 public class TenantFollowServiceImpl implements TenantFollowService {
 	protected final Logger logger = LoggerFactory.getLogger(getClass());
 
-	protected EntityDAO entityDAO;
+	private EntityDAO entityDAO;
 
-	protected IdGenerator idGenerator;
+	private IdGenerator idGenerator;
 
-	protected JdbcTemplate jdbcTemplate;
+	private JdbcTemplate jdbcTemplate;
 
-	protected SqlSessionTemplate sqlSessionTemplate;
+	private SqlSessionTemplate sqlSessionTemplate;
 
-	protected TenantFollowMapper tenantFollowMapper;
+	private TenantFollowMapper tenantFollowMapper;
 
 	public TenantFollowServiceImpl() {
 
@@ -114,8 +114,7 @@ public class TenantFollowServiceImpl implements TenantFollowService {
 		if (id <= 0) {
 			return null;
 		}
-		TenantFollow tenantFollow = tenantFollowMapper.getTenantFollowById(id);
-		return tenantFollow;
+		return tenantFollowMapper.getTenantFollowById(id);
 	}
 
 	/**
@@ -134,13 +133,11 @@ public class TenantFollowServiceImpl implements TenantFollowService {
 	 */
 	public List<TenantFollow> getTenantFollowsByQueryCriteria(int start, int pageSize, TenantFollowQuery query) {
 		RowBounds rowBounds = new RowBounds(start, pageSize);
-		List<TenantFollow> rows = sqlSessionTemplate.selectList("getTenantFollows", query, rowBounds);
-		return rows;
+		return sqlSessionTemplate.selectList("getTenantFollows", query, rowBounds);
 	}
 
 	public List<TenantFollow> list(TenantFollowQuery query) {
-		List<TenantFollow> list = tenantFollowMapper.getTenantFollows(query);
-		return list;
+		return tenantFollowMapper.getTenantFollows(query);
 	}
 
 	@Transactional

@@ -18,165 +18,158 @@
 
 package com.glaf.core.service.impl;
 
-import java.util.*;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.glaf.core.dao.EntityDAO;
+import com.glaf.core.domain.SchedulerExecution;
+import com.glaf.core.id.IdGenerator;
+import com.glaf.core.mapper.SchedulerExecutionMapper;
+import com.glaf.core.query.SchedulerExecutionQuery;
+import com.glaf.core.service.ISchedulerExecutionService;
+import com.glaf.core.util.DateUtils;
 import org.apache.ibatis.session.RowBounds;
 import org.mybatis.spring.SqlSessionTemplate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.glaf.core.id.*;
-import com.glaf.core.dao.*;
-import com.glaf.core.mapper.*;
-import com.glaf.core.domain.*;
-import com.glaf.core.query.*;
-import com.glaf.core.service.ISchedulerExecutionService;
-import com.glaf.core.util.DateUtils;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 
 @Service("schedulerExecutionService")
 @Transactional(readOnly = true)
 public class SchedulerExecutionServiceImpl implements
-		ISchedulerExecutionService {
-	protected final Logger logger = LoggerFactory.getLogger(getClass());
+        ISchedulerExecutionService {
+    protected final Logger logger = LoggerFactory.getLogger(getClass());
 
-	protected EntityDAO entityDAO;
+    private EntityDAO entityDAO;
 
-	protected IdGenerator idGenerator;
+    private IdGenerator idGenerator;
 
-	protected JdbcTemplate jdbcTemplate;
+    private JdbcTemplate jdbcTemplate;
 
-	protected SqlSessionTemplate sqlSessionTemplate;
+    private SqlSessionTemplate sqlSessionTemplate;
 
-	protected SchedulerExecutionMapper schedulerExecutionMapper;
+    private SchedulerExecutionMapper schedulerExecutionMapper;
 
-	public SchedulerExecutionServiceImpl() {
+    public SchedulerExecutionServiceImpl() {
 
-	}
+    }
 
-	public int count(SchedulerExecutionQuery query) {
-		return schedulerExecutionMapper.getSchedulerExecutionCount(query);
-	}
+    public int count(SchedulerExecutionQuery query) {
+        return schedulerExecutionMapper.getSchedulerExecutionCount(query);
+    }
 
-	public SchedulerExecution getSchedulerExecution(Long id) {
-		if (id == null) {
-			return null;
-		}
-		SchedulerExecution schedulerExecution = schedulerExecutionMapper
-				.getSchedulerExecutionById(id);
-		return schedulerExecution;
-	}
+    public SchedulerExecution getSchedulerExecution(Long id) {
+        if (id == null) {
+            return null;
+        }
+        return schedulerExecutionMapper
+                .getSchedulerExecutionById(id);
+    }
 
-	/**
-	 * 获取某个调度某天某个状态的记录总数
-	 * 
-	 * @param schedulerId
-	 *            调度编号
-	 * @param runDay
-	 *            运行年月日
-	 * @param status
-	 *            状态
-	 * @return
-	 */
-	public int getSchedulerExecutionCount(String schedulerId, int runDay,
-			int status) {
-		SchedulerExecutionQuery query = new SchedulerExecutionQuery();
-		query.schedulerId(schedulerId);
-		query.runDay(runDay);
-		query.status(status);
-		return schedulerExecutionMapper.getSchedulerExecutionCount(query);
-	}
+    /**
+     * 获取某个调度某天某个状态的记录总数
+     *
+     * @param schedulerId 调度编号
+     * @param runDay      运行年月日
+     * @param status      状态
+     * @return
+     */
+    public int getSchedulerExecutionCount(String schedulerId, int runDay,
+                                          int status) {
+        SchedulerExecutionQuery query = new SchedulerExecutionQuery();
+        query.schedulerId(schedulerId);
+        query.runDay(runDay);
+        query.status(status);
+        return schedulerExecutionMapper.getSchedulerExecutionCount(query);
+    }
 
-	/**
-	 * 根据查询参数获取记录总数
-	 * 
-	 * @return
-	 */
-	public int getSchedulerExecutionCountByQueryCriteria(
-			SchedulerExecutionQuery query) {
-		return schedulerExecutionMapper.getSchedulerExecutionCount(query);
-	}
+    /**
+     * 根据查询参数获取记录总数
+     *
+     * @return
+     */
+    public int getSchedulerExecutionCountByQueryCriteria(
+            SchedulerExecutionQuery query) {
+        return schedulerExecutionMapper.getSchedulerExecutionCount(query);
+    }
 
-	/**
-	 * 根据查询参数获取一页的数据
-	 * 
-	 * @return
-	 */
-	public List<SchedulerExecution> getSchedulerExecutionsByQueryCriteria(
-			int start, int pageSize, SchedulerExecutionQuery query) {
-		RowBounds rowBounds = new RowBounds(start, pageSize);
-		List<SchedulerExecution> rows = sqlSessionTemplate.selectList(
-				"getSchedulerExecutions", query, rowBounds);
-		return rows;
-	}
+    /**
+     * 根据查询参数获取一页的数据
+     *
+     * @return
+     */
+    public List<SchedulerExecution> getSchedulerExecutionsByQueryCriteria(
+            int start, int pageSize, SchedulerExecutionQuery query) {
+        RowBounds rowBounds = new RowBounds(start, pageSize);
+        return sqlSessionTemplate.selectList(
+                "getSchedulerExecutions", query, rowBounds);
+    }
 
-	public List<SchedulerExecution> list(SchedulerExecutionQuery query) {
-		List<SchedulerExecution> list = schedulerExecutionMapper
-				.getSchedulerExecutions(query);
-		return list;
-	}
+    public List<SchedulerExecution> list(SchedulerExecutionQuery query) {
+        return schedulerExecutionMapper
+                .getSchedulerExecutions(query);
+    }
 
-	@Transactional
-	public void save(SchedulerExecution schedulerExecution) {
-		if (schedulerExecution.getId() == null) {
-			schedulerExecution.setId(idGenerator
-					.nextId("SYS_SCHEDULER_EXECUTION"));
-			schedulerExecution.setCreateTime(new Date());
+    @Transactional
+    public void save(SchedulerExecution schedulerExecution) {
+        if (schedulerExecution.getId() == null) {
+            schedulerExecution.setId(idGenerator
+                    .nextId("SYS_SCHEDULER_EXECUTION"));
+            schedulerExecution.setCreateTime(new Date());
 
-			Calendar calendar = Calendar.getInstance();
-			calendar.setTime(new Date());
-			int year = calendar.get(Calendar.YEAR);
-			int month = calendar.get(Calendar.MONTH) + 1;
-			int week = calendar.get(Calendar.WEEK_OF_YEAR);
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(new Date());
+            int year = calendar.get(Calendar.YEAR);
+            int month = calendar.get(Calendar.MONTH) + 1;
+            int week = calendar.get(Calendar.WEEK_OF_YEAR);
 
-			schedulerExecution.setRunYear(year);
-			schedulerExecution.setRunMonth(month);
-			schedulerExecution.setRunWeek(week);
-			schedulerExecution.setRunDay(DateUtils.getNowYearMonthDay());
+            schedulerExecution.setRunYear(year);
+            schedulerExecution.setRunMonth(month);
+            schedulerExecution.setRunWeek(week);
+            schedulerExecution.setRunDay(DateUtils.getNowYearMonthDay());
 
-			if (month <= 3) {
-				schedulerExecution.setRunQuarter(1);
-			} else if (month > 3 && month <= 6) {
-				schedulerExecution.setRunQuarter(2);
-			}
-			if (month > 6 && month <= 9) {
-				schedulerExecution.setRunQuarter(3);
-			}
-			if (month > 9) {
-				schedulerExecution.setRunQuarter(4);
-			}
+            if (month <= 3) {
+                schedulerExecution.setRunQuarter(1);
+            } else if (month <= 6) {
+                schedulerExecution.setRunQuarter(2);
+            } else if (month <= 9) {
+                schedulerExecution.setRunQuarter(3);
+            } else {
+                schedulerExecution.setRunQuarter(4);
+            }
 
-			schedulerExecutionMapper
-					.insertSchedulerExecution(schedulerExecution);
-		}
-	}
+            schedulerExecutionMapper
+                    .insertSchedulerExecution(schedulerExecution);
+        }
+    }
 
-	@javax.annotation.Resource
-	public void setEntityDAO(EntityDAO entityDAO) {
-		this.entityDAO = entityDAO;
-	}
+    @javax.annotation.Resource
+    public void setEntityDAO(EntityDAO entityDAO) {
+        this.entityDAO = entityDAO;
+    }
 
-	@javax.annotation.Resource
-	public void setIdGenerator(IdGenerator idGenerator) {
-		this.idGenerator = idGenerator;
-	}
+    @javax.annotation.Resource
+    public void setIdGenerator(IdGenerator idGenerator) {
+        this.idGenerator = idGenerator;
+    }
 
-	@javax.annotation.Resource
-	public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
-		this.jdbcTemplate = jdbcTemplate;
-	}
+    @javax.annotation.Resource
+    public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
 
-	@javax.annotation.Resource
-	public void setSchedulerExecutionMapper(
-			SchedulerExecutionMapper schedulerExecutionMapper) {
-		this.schedulerExecutionMapper = schedulerExecutionMapper;
-	}
+    @javax.annotation.Resource
+    public void setSchedulerExecutionMapper(
+            SchedulerExecutionMapper schedulerExecutionMapper) {
+        this.schedulerExecutionMapper = schedulerExecutionMapper;
+    }
 
-	@javax.annotation.Resource
-	public void setSqlSessionTemplate(SqlSessionTemplate sqlSessionTemplate) {
-		this.sqlSessionTemplate = sqlSessionTemplate;
-	}
+    @javax.annotation.Resource
+    public void setSqlSessionTemplate(SqlSessionTemplate sqlSessionTemplate) {
+        this.sqlSessionTemplate = sqlSessionTemplate;
+    }
 
 }

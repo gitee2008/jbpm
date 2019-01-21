@@ -18,93 +18,92 @@
 
 package com.glaf.core.service;
 
-import java.util.List;
-
-import org.springframework.transaction.annotation.Transactional;
-
 import com.glaf.core.base.TreeModel;
 import com.glaf.core.query.TreeModelQuery;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Transactional(readOnly = true)
 public interface ITreeModelService {
 
-	/**
-	 * 获取某个节点的所有祖先节点
-	 * 
-	 * @param treeId
-	 * @return
-	 */
-	List<TreeModel> getAncestorTreeModels(long id);
+    /**
+     * 获取某个节点的所有祖先节点
+     *
+     * @param id
+     * @return
+     */
+    List<TreeModel> getAncestorTreeModels(long id);
 
-	/**
-	 * 获取某个节点的所有子孙节点
-	 * 
-	 * @param treeId
-	 * @return
-	 */
-	List<TreeModel> getChildrenTreeModels(long id);
+    /**
+     * 获取某个节点的所有子孙节点
+     *
+     * @param id
+     * @return
+     */
+    List<TreeModel> getChildrenTreeModels(long id);
 
-	/**
-	 * 获取某个节点下的子节点
-	 * 
-	 * @param treeId
-	 * @return
-	 */
-	List<TreeModel> getSubTreeModels(long id);
+    /**
+     * 获取某个节点下的子节点
+     *
+     * @param id
+     * @return
+     */
+    List<TreeModel> getSubTreeModels(long id);
 
-	/**
-	 * 根据主键获取树节点
-	 * 
-	 * @param treeId
-	 * @return
-	 */
-	TreeModel getTreeModel(long id);
+    /**
+     * 根据主键获取树节点
+     *
+     * @param id
+     * @return
+     */
+    TreeModel getTreeModel(long id);
 
-	/**
-	 * 根据编码获取树节点
-	 * 
-	 * @param code
-	 * @return
-	 */
-	TreeModel getTreeModelByCode(String code);
+    /**
+     * 根据编码获取树节点
+     *
+     * @param code
+     * @return
+     */
+    TreeModel getTreeModelByCode(String code);
 
-	/**
-	 * 获取树型结构
-	 * 
-	 * @return
-	 */
-	List<TreeModel> getTreeModels();
+    /**
+     * 获取树型结构
+     *
+     * @return
+     */
+    List<TreeModel> getTreeModels();
 
-	/**
-	 * 获取树型结构
-	 * 
-	 * @param parameter
-	 * @return
-	 */
-	List<TreeModel> getTreeModels(TreeModelQuery query);
+    /**
+     * 获取树型结构
+     *
+     * @param query
+     * @return
+     */
+    List<TreeModel> getTreeModels(TreeModelQuery query);
 
-	/**
-	 * 获取某个节点的所有子孙节点
-	 * 
-	 * @param treeId
-	 * @return
-	 */
-	TreeModel getTreeModelWithAllChildren(long id);
+    /**
+     * 获取某个节点的所有子孙节点
+     *
+     * @param id
+     * @return
+     */
+    TreeModel getTreeModelWithAllChildren(long id);
 
-	/**
-	 * 保存节点
-	 * 
-	 * @param treeModel
-	 */
-	@Transactional
-	void save(TreeModel treeModel);
+    /**
+     * 保存节点
+     *
+     * @param treeModel
+     */
+    @Transactional
+    void save(TreeModel treeModel);
 
-	/**
-	 * 保存节点
-	 * 
-	 * @param treeModels
-	 */
-	@Transactional
-	void saveAll(List<TreeModel> treeModels);
+    /**
+     * 保存节点
+     *
+     * @param treeModels
+     */
+    @Transactional
+    void saveAll(List<TreeModel> treeModels);
 
 }

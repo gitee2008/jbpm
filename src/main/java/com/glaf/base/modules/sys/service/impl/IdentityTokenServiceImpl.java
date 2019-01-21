@@ -43,15 +43,15 @@ import com.glaf.core.util.UUID32;
 public class IdentityTokenServiceImpl implements IdentityTokenService {
 	protected final Logger logger = LoggerFactory.getLogger(getClass());
 
-	protected EntityDAO entityDAO;
+	private EntityDAO entityDAO;
 
-	protected IdGenerator idGenerator;
+	private IdGenerator idGenerator;
 
-	protected JdbcTemplate jdbcTemplate;
+	private JdbcTemplate jdbcTemplate;
 
-	protected SqlSessionTemplate sqlSessionTemplate;
+	private SqlSessionTemplate sqlSessionTemplate;
 
-	protected IdentityTokenMapper identityTokenMapper;
+	private IdentityTokenMapper identityTokenMapper;
 
 	public IdentityTokenServiceImpl() {
 
@@ -72,16 +72,14 @@ public class IdentityTokenServiceImpl implements IdentityTokenService {
 		if (id == null) {
 			return null;
 		}
-		IdentityToken identityToken = identityTokenMapper.getIdentityTokenById(id);
-		return identityToken;
+		return identityTokenMapper.getIdentityTokenById(id);
 	}
 
 	public IdentityToken getIdentityTokenByToken(String token) {
 		if (token == null) {
 			return null;
 		}
-		IdentityToken identityToken = identityTokenMapper.getIdentityTokenByToken(token);
-		return identityToken;
+		return identityTokenMapper.getIdentityTokenByToken(token);
 	}
 
 	/**
@@ -100,13 +98,11 @@ public class IdentityTokenServiceImpl implements IdentityTokenService {
 	 */
 	public List<IdentityToken> getIdentityTokensByQueryCriteria(int start, int pageSize, IdentityTokenQuery query) {
 		RowBounds rowBounds = new RowBounds(start, pageSize);
-		List<IdentityToken> rows = sqlSessionTemplate.selectList("getIdentityTokens", query, rowBounds);
-		return rows;
+		return sqlSessionTemplate.selectList("getIdentityTokens", query, rowBounds);
 	}
 
 	public List<IdentityToken> list(IdentityTokenQuery query) {
-		List<IdentityToken> list = identityTokenMapper.getIdentityTokens(query);
-		return list;
+		return identityTokenMapper.getIdentityTokens(query);
 	}
 
 	@Transactional

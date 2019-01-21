@@ -18,19 +18,6 @@
 
 package com.glaf.core.service.impl;
 
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
-
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.ibatis.session.RowBounds;
-import org.apache.ibatis.session.SqlSession;
-import org.mybatis.spring.SqlSessionTemplate;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.glaf.core.base.Parameter;
 import com.glaf.core.dao.EntityDAO;
 import com.glaf.core.domain.Scheduler;
@@ -42,207 +29,217 @@ import com.glaf.core.query.SchedulerQuery;
 import com.glaf.core.service.ISysSchedulerService;
 import com.glaf.core.util.DateUtils;
 import com.glaf.core.util.UUID32;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.ibatis.session.RowBounds;
+import org.apache.ibatis.session.SqlSession;
+import org.mybatis.spring.SqlSessionTemplate;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
 
 @Service("sysSchedulerService")
 @Transactional(readOnly = true)
 public class SysSchedulerServiceImpl implements ISysSchedulerService {
-	protected final static Log logger = LogFactory
-			.getLog(SysSchedulerServiceImpl.class);
+    protected final static Log logger = LogFactory
+            .getLog(SysSchedulerServiceImpl.class);
 
-	protected EntityDAO entityDAO;
+    private EntityDAO entityDAO;
 
-	protected IdGenerator idGenerator;
+    private IdGenerator idGenerator;
 
-	protected SqlSession sqlSession;
+    private SqlSession sqlSession;
 
-	protected SqlSessionTemplate sqlSessionTemplate;
+    private SqlSessionTemplate sqlSessionTemplate;
 
-	protected SchedulerMapper schedulerMapper;
+    private SchedulerMapper schedulerMapper;
 
-	protected SchedulerParamMapper schedulerParamMapper;
+    private SchedulerParamMapper schedulerParamMapper;
 
-	public SysSchedulerServiceImpl() {
+    private SysSchedulerServiceImpl() {
 
-	}
+    }
 
-	public int count(SchedulerQuery query) {
-		return schedulerMapper.getSchedulerCount(query);
-	}
+    public int count(SchedulerQuery query) {
+        return schedulerMapper.getSchedulerCount(query);
+    }
 
-	@Transactional
-	public void deleteById(String id) {
-		schedulerMapper.deleteSchedulerById(id);
-		schedulerParamMapper.deleteSchedulerParamsByTaskId(id);
-	}
+    @Transactional
+    public void deleteById(String id) {
+        schedulerMapper.deleteSchedulerById(id);
+        schedulerParamMapper.deleteSchedulerParamsByTaskId(id);
+    }
 
-	@Transactional
-	public void deleteByIds(List<String> rowIds) {
-		SchedulerQuery query = new SchedulerQuery();
-		query.rowIds(rowIds);
-		schedulerMapper.deleteSchedulers(query);
-	}
+    @Transactional
+    public void deleteByIds(List<String> rowIds) {
+        SchedulerQuery query = new SchedulerQuery();
+        query.rowIds(rowIds);
+        schedulerMapper.deleteSchedulers(query);
+    }
 
-	@Transactional
-	public void deleteScheduler(String taskId) {
-		schedulerMapper.deleteSchedulerByTaskId(taskId);
-		schedulerParamMapper.deleteSchedulerParamsByTaskId(taskId);
-	}
+    @Transactional
+    public void deleteScheduler(String taskId) {
+        schedulerMapper.deleteSchedulerByTaskId(taskId);
+        schedulerParamMapper.deleteSchedulerParamsByTaskId(taskId);
+    }
 
-	public List<Scheduler> getAllSchedulers() {
-		SchedulerQuery query = new SchedulerQuery();
-		return this.list(query);
-	}
+    public List<Scheduler> getAllSchedulers() {
+        SchedulerQuery query = new SchedulerQuery();
+        return this.list(query);
+    }
 
-	public Scheduler getScheduler(String id) {
-		Scheduler scheduler = schedulerMapper.getSchedulerById(id);
-		if (scheduler == null) {
-			scheduler = this.getSchedulerByTaskId(id);
-		}
-		if (scheduler != null) {
-			List<SchedulerParam> params = schedulerParamMapper
-					.getSchedulerParamsByTaskId(scheduler.getTaskId());
-			if (params != null && !params.isEmpty()) {
-				for (SchedulerParam param : params) {
-					scheduler.getJobDataMap().put(param.getKeyName(), param);
-				}
-			}
-		}
-		return scheduler;
-	}
+    public Scheduler getScheduler(String id) {
+        Scheduler scheduler = schedulerMapper.getSchedulerById(id);
+        if (scheduler == null) {
+            scheduler = this.getSchedulerByTaskId(id);
+        }
+        if (scheduler != null) {
+            List<SchedulerParam> params = schedulerParamMapper
+                    .getSchedulerParamsByTaskId(scheduler.getTaskId());
+            if (params != null && !params.isEmpty()) {
+                for (SchedulerParam param : params) {
+                    scheduler.getJobDataMap().put(param.getKeyName(), param);
+                }
+            }
+        }
+        return scheduler;
+    }
 
-	public Scheduler getSchedulerByTaskId(String taskId) {
-		Scheduler scheduler = schedulerMapper.getSchedulerByTaskId(taskId);
-		if (scheduler != null) {
-			List<SchedulerParam> params = schedulerParamMapper
-					.getSchedulerParamsByTaskId(scheduler.getTaskId());
-			if (params != null && !params.isEmpty()) {
-				for (SchedulerParam param : params) {
-					scheduler.getJobDataMap().put(param.getKeyName(), param);
-				}
-			}
-		}
-		return scheduler;
-	}
+    public Scheduler getSchedulerByTaskId(String taskId) {
+        Scheduler scheduler = schedulerMapper.getSchedulerByTaskId(taskId);
+        if (scheduler != null) {
+            List<SchedulerParam> params = schedulerParamMapper
+                    .getSchedulerParamsByTaskId(scheduler.getTaskId());
+            if (params != null && !params.isEmpty()) {
+                for (SchedulerParam param : params) {
+                    scheduler.getJobDataMap().put(param.getKeyName(), param);
+                }
+            }
+        }
+        return scheduler;
+    }
 
-	/**
-	 * 根据查询参数获取记录总数
-	 * 
-	 * @return
-	 */
-	public int getSchedulerCountByQueryCriteria(SchedulerQuery query) {
-		return schedulerMapper.getSchedulerCount(query);
-	}
+    /**
+     * 根据查询参数获取记录总数
+     *
+     * @return
+     */
+    public int getSchedulerCountByQueryCriteria(SchedulerQuery query) {
+        return schedulerMapper.getSchedulerCount(query);
+    }
 
-	public List<Scheduler> getSchedulers(String taskType) {
-		SchedulerQuery query = new SchedulerQuery();
-		query.taskType(taskType);
-		return this.list(query);
-	}
+    public List<Scheduler> getSchedulers(String taskType) {
+        SchedulerQuery query = new SchedulerQuery();
+        query.taskType(taskType);
+        return this.list(query);
+    }
 
-	/**
-	 * 根据查询参数获取一页的数据
-	 * 
-	 * @return
-	 */
-	public List<Scheduler> getSchedulersByQueryCriteria(int start,
-			int pageSize, SchedulerQuery query) {
-		RowBounds rowBounds = new RowBounds(start, pageSize);
-		List<Scheduler> rows = sqlSessionTemplate.selectList("getSchedulers",
-				query, rowBounds);
-		return rows;
-	}
+    /**
+     * 根据查询参数获取一页的数据
+     *
+     * @return
+     */
+    public List<Scheduler> getSchedulersByQueryCriteria(int start,
+                                                        int pageSize, SchedulerQuery query) {
+        RowBounds rowBounds = new RowBounds(start, pageSize);
+        return sqlSessionTemplate.selectList("getSchedulers",
+                query, rowBounds);
+    }
 
-	public List<Scheduler> getUserSchedulers(String createBy) {
-		SchedulerQuery query = new SchedulerQuery();
-		query.createBy(createBy);
-		return this.list(query);
-	}
+    public List<Scheduler> getUserSchedulers(String createBy) {
+        SchedulerQuery query = new SchedulerQuery();
+        query.createBy(createBy);
+        return this.list(query);
+    }
 
-	public List<Scheduler> list(SchedulerQuery query) {
-		List<Scheduler> list = schedulerMapper.getSchedulers(query);
-		return list;
-	}
+    public List<Scheduler> list(SchedulerQuery query) {
+        return schedulerMapper.getSchedulers(query);
+    }
 
-	@Transactional
-	public void locked(String taskId, int locked) {
-		Scheduler model = this.getSchedulerByTaskId(taskId);
-		if (model != null) {
-			model.setLocked(locked);
-			schedulerMapper.updateScheduler(model);
-		}
-	}
+    @Transactional
+    public void locked(String taskId, int locked) {
+        Scheduler model = this.getSchedulerByTaskId(taskId);
+        if (model != null) {
+            model.setLocked(locked);
+            schedulerMapper.updateScheduler(model);
+        }
+    }
 
-	@Transactional
-	public void save(Scheduler model) {
-		if (StringUtils.isEmpty(model.getId())) {
-			if (StringUtils.isEmpty(model.getTaskId())) {
-				model.setTaskId(UUID32.getUUID());
-			}
-			if (model.getStartDate() == null) {
-				model.setStartDate(new Date());
-			}
-			if (model.getEndDate() == null) {
-				model.setEndDate(DateUtils.toDate("2099-12-31"));
-			}
-			if (model.getRepeatInterval() <= 0) {
-				model.setRepeatInterval(3600);
-			}
-			model.setCreateDate(new Date());
-			model.setId(idGenerator.getNextId());
-			schedulerMapper.insertScheduler(model);
-		} else {
-			schedulerMapper.updateScheduler(model);
-		}
-		schedulerParamMapper.deleteSchedulerParamsByTaskId(model.getTaskId());
-		Collection<Parameter> params = model.getJobDataMap().values();
-		if (params != null && !params.isEmpty()) {
-			for (Parameter param : params) {
-				if (param instanceof SchedulerParam) {
-					SchedulerParam p = (SchedulerParam) param;
-					if (StringUtils.isEmpty(p.getId())) {
-						p.setId(idGenerator.getNextId());
-						p.setTaskId(model.getTaskId());
-						schedulerParamMapper.insertSchedulerParam(p);
-					}
-				}
-			}
-		}
-	}
+    @Transactional
+    public void save(Scheduler model) {
+        if (StringUtils.isEmpty(model.getId())) {
+            if (StringUtils.isEmpty(model.getTaskId())) {
+                model.setTaskId(UUID32.getUUID());
+            }
+            if (model.getStartDate() == null) {
+                model.setStartDate(new Date());
+            }
+            if (model.getEndDate() == null) {
+                model.setEndDate(DateUtils.toDate("2099-12-31"));
+            }
+            if (model.getRepeatInterval() <= 0) {
+                model.setRepeatInterval(3600);
+            }
+            model.setCreateDate(new Date());
+            model.setId(idGenerator.getNextId());
+            schedulerMapper.insertScheduler(model);
+        } else {
+            schedulerMapper.updateScheduler(model);
+        }
+        schedulerParamMapper.deleteSchedulerParamsByTaskId(model.getTaskId());
+        Collection<Parameter> params = model.getJobDataMap().values();
+        if (!params.isEmpty()) {
+            for (Parameter param : params) {
+                if (param instanceof SchedulerParam) {
+                    SchedulerParam p = (SchedulerParam) param;
+                    if (StringUtils.isEmpty(p.getId())) {
+                        p.setId(idGenerator.getNextId());
+                        p.setTaskId(model.getTaskId());
+                        schedulerParamMapper.insertSchedulerParam(p);
+                    }
+                }
+            }
+        }
+    }
 
-	@javax.annotation.Resource
-	public void setEntityDAO(EntityDAO entityDAO) {
-		this.entityDAO = entityDAO;
-	}
+    @javax.annotation.Resource
+    public void setEntityDAO(EntityDAO entityDAO) {
+        this.entityDAO = entityDAO;
+    }
 
-	@javax.annotation.Resource
-	public void setIdGenerator(IdGenerator idGenerator) {
-		this.idGenerator = idGenerator;
-	}
+    @javax.annotation.Resource
+    public void setIdGenerator(IdGenerator idGenerator) {
+        this.idGenerator = idGenerator;
+    }
 
-	@javax.annotation.Resource
-	public void setSchedulerMapper(SchedulerMapper schedulerMapper) {
-		this.schedulerMapper = schedulerMapper;
-	}
+    @javax.annotation.Resource
+    public void setSchedulerMapper(SchedulerMapper schedulerMapper) {
+        this.schedulerMapper = schedulerMapper;
+    }
 
-	@javax.annotation.Resource
-	public void setSchedulerParamMapper(
-			SchedulerParamMapper schedulerParamMapper) {
-		this.schedulerParamMapper = schedulerParamMapper;
-	}
+    @javax.annotation.Resource
+    public void setSchedulerParamMapper(
+            SchedulerParamMapper schedulerParamMapper) {
+        this.schedulerParamMapper = schedulerParamMapper;
+    }
 
-	@javax.annotation.Resource
-	public void setSqlSession(SqlSession sqlSession) {
-		this.sqlSession = sqlSession;
-	}
+    @javax.annotation.Resource
+    public void setSqlSession(SqlSession sqlSession) {
+        this.sqlSession = sqlSession;
+    }
 
-	@javax.annotation.Resource
-	public void setSqlSessionTemplate(SqlSessionTemplate sqlSessionTemplate) {
-		this.sqlSessionTemplate = sqlSessionTemplate;
-	}
+    @javax.annotation.Resource
+    public void setSqlSessionTemplate(SqlSessionTemplate sqlSessionTemplate) {
+        this.sqlSessionTemplate = sqlSessionTemplate;
+    }
 
-	@Transactional
-	public void update(Scheduler model) {
-		schedulerMapper.updateScheduler(model);
-	}
+    @Transactional
+    public void update(Scheduler model) {
+        schedulerMapper.updateScheduler(model);
+    }
 
 }

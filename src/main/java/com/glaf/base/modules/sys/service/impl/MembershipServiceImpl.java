@@ -40,13 +40,13 @@ import com.glaf.base.modules.sys.service.MembershipService;
 public class MembershipServiceImpl implements MembershipService {
 	protected final Logger logger = LoggerFactory.getLogger(getClass());
 
-	protected EntityDAO entityDAO;
+	private EntityDAO entityDAO;
 
-	protected IdGenerator idGenerator;
+	private IdGenerator idGenerator;
 
-	protected MembershipMapper membershipMapper;
+	private MembershipMapper membershipMapper;
 
-	protected SqlSessionTemplate sqlSessionTemplate;
+	private SqlSessionTemplate sqlSessionTemplate;
 
 	public MembershipServiceImpl() {
 
@@ -84,8 +84,7 @@ public class MembershipServiceImpl implements MembershipService {
 		if (id == null) {
 			return null;
 		}
-		Membership membership = membershipMapper.getMembershipById(id);
-		return membership;
+		return membershipMapper.getMembershipById(id);
 	}
 
 	public int getMembershipCountByQueryCriteria(MembershipQuery query) {
@@ -109,14 +108,12 @@ public class MembershipServiceImpl implements MembershipService {
 	public List<Membership> getMembershipsByQueryCriteria(int start,
 			int pageSize, MembershipQuery query) {
 		RowBounds rowBounds = new RowBounds(start, pageSize);
-		List<Membership> rows = sqlSessionTemplate.selectList("getMemberships",
+		return sqlSessionTemplate.selectList("getMemberships",
 				query, rowBounds);
-		return rows;
 	}
 
 	public List<Membership> list(MembershipQuery query) {
-		List<Membership> list = membershipMapper.getMemberships(query);
-		return list;
+		return membershipMapper.getMemberships(query);
 	}
 
 	@Transactional

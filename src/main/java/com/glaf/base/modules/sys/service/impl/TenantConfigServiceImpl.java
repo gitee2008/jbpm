@@ -50,15 +50,15 @@ import com.glaf.core.util.DBUtils;
 public class TenantConfigServiceImpl implements TenantConfigService {
 	protected final Logger logger = LoggerFactory.getLogger(getClass());
 
-	protected EntityDAO entityDAO;
+	private EntityDAO entityDAO;
 
-	protected IdGenerator idGenerator;
+	private IdGenerator idGenerator;
 
-	protected JdbcTemplate jdbcTemplate;
+	private JdbcTemplate jdbcTemplate;
 
-	protected SqlSessionTemplate sqlSessionTemplate;
+	private SqlSessionTemplate sqlSessionTemplate;
 
-	protected TenantConfigMapper tenantConfigMapper;
+	private TenantConfigMapper tenantConfigMapper;
 
 	public TenantConfigServiceImpl() {
 
@@ -131,7 +131,7 @@ public class TenantConfigServiceImpl implements TenantConfigService {
 					if (cfg != null) {
 						return cfg;
 					}
-				} catch (Exception ex) {
+				} catch (Exception ignored) {
 				}
 			}
 		}
@@ -154,7 +154,7 @@ public class TenantConfigServiceImpl implements TenantConfigService {
 					if (cfg != null) {
 						return cfg;
 					}
-				} catch (Exception ex) {
+				} catch (Exception ignored) {
 				}
 			}
 		}
@@ -182,13 +182,11 @@ public class TenantConfigServiceImpl implements TenantConfigService {
 	 */
 	public List<TenantConfig> getTenantConfigsByQueryCriteria(int start, int pageSize, TenantConfigQuery query) {
 		RowBounds rowBounds = new RowBounds(start, pageSize);
-		List<TenantConfig> rows = sqlSessionTemplate.selectList("getTenantConfigs", query, rowBounds);
-		return rows;
+		return sqlSessionTemplate.selectList("getTenantConfigs", query, rowBounds);
 	}
 
 	public List<TenantConfig> list(TenantConfigQuery query) {
-		List<TenantConfig> list = tenantConfigMapper.getTenantConfigs(query);
-		return list;
+		return tenantConfigMapper.getTenantConfigs(query);
 	}
 
 	@Transactional

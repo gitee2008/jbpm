@@ -18,30 +18,29 @@
 
 package com.glaf.core.service;
 
-import java.util.List;
-import java.util.Map;
-
+import com.glaf.core.domain.SystemProperty;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.glaf.core.domain.SystemProperty;
+import java.util.List;
+import java.util.Map;
 
 @Transactional(readOnly = true)
 public interface ISystemPropertyService {
 
-	List<SystemProperty> getAllSystemProperties();
+    List<SystemProperty> getAllSystemProperties();
 
-	Map<String, SystemProperty> getProperyMap();
+    Map<String, SystemProperty> getProperyMap();
 
-	List<SystemProperty> getSystemProperties(String category);
+    List<SystemProperty> getSystemProperties(String category);
 
-	SystemProperty getSystemProperty(String category, String name);
+    SystemProperty getSystemProperty(String category, String name);
 
-	SystemProperty getSystemPropertyById(String id);
+    SystemProperty getSystemPropertyById(String id);
 
-	@Transactional
-	void save(SystemProperty property);
+    @Transactional
+    void save(SystemProperty property);
 
-	@Transactional
-	void saveAll(List<SystemProperty> props);
+    @Transactional
+    void saveAll(List<SystemProperty> props);
 
 }

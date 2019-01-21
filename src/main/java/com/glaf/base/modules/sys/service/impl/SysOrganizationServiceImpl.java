@@ -53,17 +53,17 @@ import com.glaf.core.util.PageResult;
 public class SysOrganizationServiceImpl implements SysOrganizationService {
 	protected final static Log logger = LogFactory.getLog(SysOrganizationServiceImpl.class);
 
-	protected IdGenerator idGenerator;
+	private IdGenerator idGenerator;
 
-	protected SqlSessionTemplate sqlSessionTemplate;
+	private SqlSessionTemplate sqlSessionTemplate;
 
-	protected SysOrganizationMapper sysOrganizationMapper;
+	private SysOrganizationMapper sysOrganizationMapper;
 
-	public SysOrganizationServiceImpl() {
+	private SysOrganizationServiceImpl() {
 
 	}
 
-	public int count(SysOrganizationQuery query) {
+	private int count(SysOrganizationQuery query) {
 		return sysOrganizationMapper.getSysOrganizationCount(query);
 	}
 
@@ -121,15 +121,9 @@ public class SysOrganizationServiceImpl implements SysOrganizationService {
 	}
 
 	@Transactional
-	public void deleteById(long organizationId) {
+	private void deleteById(long organizationId) {
 		if (SystemConfig.getBoolean("use_query_cache")) {
 			CacheFactory.clear(Constants.CACHE_ORGANIZATION_REGION);
-		}
-		if (organizationId > 0) {
-			SysOrganization organization = this.getSysOrganization(organizationId);
-			if (organization != null) {
-
-			}
 		}
 	}
 
@@ -166,8 +160,7 @@ public class SysOrganizationServiceImpl implements SysOrganizationService {
 	}
 
 	public SysOrganization findById(long organizationId) {
-		SysOrganization organization = this.getSysOrganization(organizationId);
-		return organization;
+		return this.getSysOrganization(organizationId);
 	}
 
 	public SysOrganization findByName(String name) {
@@ -226,7 +219,7 @@ public class SysOrganizationServiceImpl implements SysOrganizationService {
 		if (organization != null && organization.getParentId() > 0) {
 			SysOrganization parent = this.getSysOrganization(organization.getParentId());
 			organization.setParent(parent);
-			if (organization != null && SystemConfig.getBoolean("use_query_cache")) {
+			if (SystemConfig.getBoolean("use_query_cache")) {
 				CacheFactory.put(Constants.CACHE_ORGANIZATION_REGION, cacheKey,
 						organization.toJsonObject().toJSONString());
 			}
@@ -352,11 +345,7 @@ public class SysOrganizationServiceImpl implements SysOrganizationService {
 	public List<SysOrganization> getSysOrganizationsByQueryCriteria(int start, int pageSize,
 			SysOrganizationQuery query) {
 		RowBounds rowBounds = new RowBounds(start, pageSize);
-		List<SysOrganization> list = sqlSessionTemplate.selectList("getSysOrganizations", query, rowBounds);
-		if (list != null && !list.isEmpty()) {
-
-		}
-		return list;
+		return sqlSessionTemplate.selectList("getSysOrganizations", query, rowBounds);
 	}
 
 	/**
@@ -426,21 +415,12 @@ public class SysOrganizationServiceImpl implements SysOrganizationService {
 	}
 
 	public List<SysOrganization> list(SysOrganizationQuery query) {
-		List<SysOrganization> list = sysOrganizationMapper.getSysOrganizations(query);
-		if (list != null && !list.isEmpty()) {
-
-		}
-		return list;
+		return sysOrganizationMapper.getSysOrganizations(query);
 	}
 
 	@Transactional
 	public void markDeleteFlag(long organizationId, int deleteFlag) {
-		if (organizationId > 0) {
-			SysOrganization organization = this.getSysOrganization(organizationId);
-			if (organization != null) {
 
-			}
-		}
 	}
 
 	/**
@@ -508,7 +488,7 @@ public class SysOrganizationServiceImpl implements SysOrganizationService {
 
 		List<SysOrganization> list = this.list(query);
 		if (list != null && list.size() > 0) {// 有记录
-			SysOrganization temp = (SysOrganization) list.get(0);
+			SysOrganization temp = list.get(0);
 			bean.setSort(temp.getSort());
 			this.update(bean);// 更新bean
 		}
@@ -530,7 +510,7 @@ public class SysOrganizationServiceImpl implements SysOrganizationService {
 
 		List<SysOrganization> list = this.list(query);
 		if (list != null && list.size() > 0) {// 有记录
-			SysOrganization temp = (SysOrganization) list.get(0);
+			SysOrganization temp = list.get(0);
 			int i = bean.getSort();
 			bean.setSort(temp.getSort());
 			this.update(bean);// 更新bean

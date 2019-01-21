@@ -135,13 +135,13 @@ public interface SysOrganizationService {
 
 	/**
 	 * 获取分页列表
-	 * 
-	 * @param parent
-	 *            int
+	 *
+	 *
 	 * @param pageNo
 	 *            int
 	 * @param pageSize
 	 *            int
+	 * @param query
 	 * @return
 	 */
 	PageResult getSysOrganizationList(int pageNo, int pageSize, SysOrganizationQuery query);
@@ -211,7 +211,7 @@ public interface SysOrganizationService {
 	/**
 	 * 设置删除标记
 	 * 
-	 * @param id
+	 * @param organizationId
 	 * @param deleteFlag
 	 */
 	@Transactional

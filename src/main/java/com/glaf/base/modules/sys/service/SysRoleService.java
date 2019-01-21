@@ -71,7 +71,7 @@ public interface SysRoleService {
 	/**
 	 * 按code查找对象
 	 * 
-	 * @param name
+	 * @param code
 	 *            String
 	 * @return SysRole
 	 */
