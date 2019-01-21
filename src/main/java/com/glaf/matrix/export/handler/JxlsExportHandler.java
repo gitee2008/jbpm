@@ -213,8 +213,7 @@ public class JxlsExportHandler implements ExportHandler {
 							}
 						}
 					}
-					params.put("obj_" + item.getName(), rowMap);
-					params.put("map_" + item.getName(), rowMap);
+					params.put(item.getName() + "_row", rowMap);
 				}
 
 				List<BufferedImage> imageList = new ArrayList<BufferedImage>();
@@ -331,7 +330,6 @@ public class JxlsExportHandler implements ExportHandler {
 					if (i > 0 && i % pageSize == 0) {
 						pageNo++;
 						params.put(item.getName() + "_rows" + pageNo, pageList);
-						params.put("rows_" + item.getName() + "_" + pageNo, pageList);
 						pageList.clear();
 					}
 				}

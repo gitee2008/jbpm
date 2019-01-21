@@ -149,6 +149,16 @@ public class DataModel implements Serializable {
 
 	protected String imagePath5;
 
+	protected String imagePath6;
+
+	protected String imagePath7;
+
+	protected String imagePath8;
+
+	protected String imagePath9;
+
+	protected String imagePath10;
+
 	protected transient JxlsImage image1;
 
 	protected transient JxlsImage image2;
@@ -158,6 +168,16 @@ public class DataModel implements Serializable {
 	protected transient JxlsImage image4;
 
 	protected transient JxlsImage image5;
+
+	protected transient JxlsImage image6;
+
+	protected transient JxlsImage image7;
+
+	protected transient JxlsImage image8;
+
+	protected transient JxlsImage image9;
+
+	protected transient JxlsImage image10;
 
 	protected Map<String, Object> data;
 
@@ -257,6 +277,10 @@ public class DataModel implements Serializable {
 		return image1;
 	}
 
+	public JxlsImage getImage10() {
+		return image10;
+	}
+
 	public JxlsImage getImage2() {
 		return image2;
 	}
@@ -273,8 +297,28 @@ public class DataModel implements Serializable {
 		return image5;
 	}
 
+	public JxlsImage getImage6() {
+		return image6;
+	}
+
+	public JxlsImage getImage7() {
+		return image7;
+	}
+
+	public JxlsImage getImage8() {
+		return image8;
+	}
+
+	public JxlsImage getImage9() {
+		return image9;
+	}
+
 	public String getImagePath1() {
 		return imagePath1;
+	}
+
+	public String getImagePath10() {
+		return imagePath10;
 	}
 
 	public String getImagePath2() {
@@ -291,6 +335,22 @@ public class DataModel implements Serializable {
 
 	public String getImagePath5() {
 		return imagePath5;
+	}
+
+	public String getImagePath6() {
+		return imagePath6;
+	}
+
+	public String getImagePath7() {
+		return imagePath7;
+	}
+
+	public String getImagePath8() {
+		return imagePath8;
+	}
+
+	public String getImagePath9() {
+		return imagePath9;
 	}
 
 	public Long getLong1() {
@@ -517,6 +577,10 @@ public class DataModel implements Serializable {
 		this.image1 = image1;
 	}
 
+	public void setImage10(JxlsImage image10) {
+		this.image10 = image10;
+	}
+
 	public void setImage2(JxlsImage image2) {
 		this.image2 = image2;
 	}
@@ -533,8 +597,28 @@ public class DataModel implements Serializable {
 		this.image5 = image5;
 	}
 
+	public void setImage6(JxlsImage image6) {
+		this.image6 = image6;
+	}
+
+	public void setImage7(JxlsImage image7) {
+		this.image7 = image7;
+	}
+
+	public void setImage8(JxlsImage image8) {
+		this.image8 = image8;
+	}
+
+	public void setImage9(JxlsImage image9) {
+		this.image9 = image9;
+	}
+
 	public void setImagePath1(String imagePath1) {
 		this.imagePath1 = imagePath1;
+	}
+
+	public void setImagePath10(String imagePath10) {
+		this.imagePath10 = imagePath10;
 	}
 
 	public void setImagePath2(String imagePath2) {
@@ -551,6 +635,22 @@ public class DataModel implements Serializable {
 
 	public void setImagePath5(String imagePath5) {
 		this.imagePath5 = imagePath5;
+	}
+
+	public void setImagePath6(String imagePath6) {
+		this.imagePath6 = imagePath6;
+	}
+
+	public void setImagePath7(String imagePath7) {
+		this.imagePath7 = imagePath7;
+	}
+
+	public void setImagePath8(String imagePath8) {
+		this.imagePath8 = imagePath8;
+	}
+
+	public void setImagePath9(String imagePath9) {
+		this.imagePath9 = imagePath9;
 	}
 
 	public void setLong1(Long long1) {
