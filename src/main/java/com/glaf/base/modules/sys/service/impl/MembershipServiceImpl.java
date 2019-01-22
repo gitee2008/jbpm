@@ -28,19 +28,16 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.glaf.core.dao.EntityDAO;
-import com.glaf.base.modules.sys.model.Membership;
-import com.glaf.core.id.IdGenerator;
 import com.glaf.base.modules.sys.mapper.MembershipMapper;
+import com.glaf.base.modules.sys.model.Membership;
 import com.glaf.base.modules.sys.query.MembershipQuery;
 import com.glaf.base.modules.sys.service.MembershipService;
+import com.glaf.core.id.IdGenerator;
 
 @Service("membershipService")
 @Transactional(readOnly = true)
 public class MembershipServiceImpl implements MembershipService {
 	protected final Logger logger = LoggerFactory.getLogger(getClass());
-
-	private EntityDAO entityDAO;
 
 	private IdGenerator idGenerator;
 
@@ -105,11 +102,9 @@ public class MembershipServiceImpl implements MembershipService {
 		return membershipMapper.getMemberships(query);
 	}
 
-	public List<Membership> getMembershipsByQueryCriteria(int start,
-			int pageSize, MembershipQuery query) {
+	public List<Membership> getMembershipsByQueryCriteria(int start, int pageSize, MembershipQuery query) {
 		RowBounds rowBounds = new RowBounds(start, pageSize);
-		return sqlSessionTemplate.selectList("getMemberships",
-				query, rowBounds);
+		return sqlSessionTemplate.selectList("getMemberships", query, rowBounds);
 	}
 
 	public List<Membership> list(MembershipQuery query) {
@@ -129,8 +124,7 @@ public class MembershipServiceImpl implements MembershipService {
 	}
 
 	@Transactional
-	public void saveMemberships(Long nodeId, String roleId, String type,
-			List<Membership> memberships) {
+	public void saveMemberships(Long nodeId, String roleId, String type, List<Membership> memberships) {
 		MembershipQuery query = new MembershipQuery();
 		query.nodeId(nodeId);
 		query.roleId(roleId);
@@ -154,8 +148,7 @@ public class MembershipServiceImpl implements MembershipService {
 	}
 
 	@Transactional
-	public void saveMemberships(Long nodeId, String type,
-			List<Membership> memberships) {
+	public void saveMemberships(Long nodeId, String type, List<Membership> memberships) {
 		MembershipQuery query = new MembershipQuery();
 		query.nodeId(nodeId);
 		query.type(type);
@@ -179,12 +172,9 @@ public class MembershipServiceImpl implements MembershipService {
 	/**
 	 * 保存成员关系
 	 * 
-	 * @param actorId
-	 *            用户编号
-	 * @param type
-	 *            类型
-	 * @param nodeIds
-	 *            节点集合
+	 * @param actorId 用户编号
+	 * @param type    类型
+	 * @param nodeIds 节点集合
 	 */
 	@Transactional
 	public void saveMemberships(String actorId, String type, List<Long> nodeIds) {
@@ -208,11 +198,6 @@ public class MembershipServiceImpl implements MembershipService {
 				membershipMapper.insertMembership(m);
 			}
 		}
-	}
-
-	@javax.annotation.Resource
-	public void setEntityDAO(EntityDAO entityDAO) {
-		this.entityDAO = entityDAO;
 	}
 
 	@javax.annotation.Resource

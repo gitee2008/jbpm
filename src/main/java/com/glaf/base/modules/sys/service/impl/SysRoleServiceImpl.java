@@ -39,7 +39,6 @@ import com.glaf.base.modules.sys.model.SysRole;
 import com.glaf.base.modules.sys.query.SysRoleQuery;
 import com.glaf.base.modules.sys.service.SysRoleService;
 import com.glaf.base.modules.sys.util.SysRoleJsonFactory;
-
 import com.glaf.core.cache.CacheFactory;
 import com.glaf.core.config.SystemConfig;
 import com.glaf.core.id.IdGenerator;
@@ -58,7 +57,7 @@ public class SysRoleServiceImpl implements SysRoleService {
 
 	private SysRoleMapper sysRoleMapper;
 
-	private SysRoleServiceImpl() {
+	public SysRoleServiceImpl() {
 
 	}
 
@@ -344,10 +343,8 @@ public class SysRoleServiceImpl implements SysRoleService {
 	/**
 	 * 排序
 	 * 
-	 * @param bean
-	 *            SysRole
-	 * @param operate
-	 *            int 操作
+	 * @param bean    SysRole
+	 * @param operate int 操作
 	 */
 	@Transactional
 	public void sort(SysRole bean, int operate) {

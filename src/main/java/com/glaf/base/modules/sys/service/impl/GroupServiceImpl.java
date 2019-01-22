@@ -43,7 +43,6 @@ import com.glaf.base.modules.sys.service.GroupService;
 import com.glaf.base.modules.sys.util.GroupJsonFactory;
 import com.glaf.core.cache.CacheFactory;
 import com.glaf.core.config.SystemConfig;
-import com.glaf.core.dao.EntityDAO;
 import com.glaf.core.id.IdGenerator;
 import com.glaf.core.util.Constants;
 import com.glaf.core.util.JsonUtils;
@@ -54,8 +53,6 @@ import com.glaf.core.util.UUID32;
 @Transactional(readOnly = true)
 public class GroupServiceImpl implements GroupService {
 	protected final Logger logger = LoggerFactory.getLogger(getClass());
-
-	private EntityDAO entityDAO;
 
 	private IdGenerator idGenerator;
 
@@ -444,11 +441,6 @@ public class GroupServiceImpl implements GroupService {
 				}
 			}
 		}
-	}
-
-	@javax.annotation.Resource
-	public void setEntityDAO(EntityDAO entityDAO) {
-		this.entityDAO = entityDAO;
 	}
 
 	@javax.annotation.Resource

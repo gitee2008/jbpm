@@ -66,7 +66,7 @@ public class SysTreeServiceImpl implements SysTreeService {
 
 	private ITableDataService tableDataService;
 
-	private SysTreeServiceImpl() {
+	public SysTreeServiceImpl() {
 
 	}
 
@@ -221,10 +221,8 @@ public class SysTreeServiceImpl implements SysTreeService {
 	/**
 	 * 获取关联表树型结构
 	 * 
-	 * @param relationTable
-	 *            表名
-	 * @param relationColumn
-	 *            关联字段名
+	 * @param relationTable  表名
+	 * @param relationColumn 关联字段名
 	 * @param query
 	 * @return
 	 */

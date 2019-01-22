@@ -18,7 +18,6 @@
 
 package com.glaf.core.service.impl;
 
-import com.glaf.core.dao.EntityDAO;
 import com.glaf.core.domain.SysKey;
 import com.glaf.core.id.IdGenerator;
 import com.glaf.core.jdbc.DBConnectionFactory;
@@ -31,7 +30,6 @@ import org.apache.ibatis.session.RowBounds;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -41,123 +39,105 @@ import java.util.List;
 @Service("sysKeyService")
 @Transactional(readOnly = true)
 public class SysKeyServiceImpl implements SysKeyService {
-    protected final Logger logger = LoggerFactory.getLogger(getClass());
+	protected final Logger logger = LoggerFactory.getLogger(getClass());
 
-    private EntityDAO entityDAO;
+	private IdGenerator idGenerator;
 
-    private IdGenerator idGenerator;
+	private SqlSessionTemplate sqlSessionTemplate;
 
-    private JdbcTemplate jdbcTemplate;
+	private SysKeyMapper sysKeyMapper;
 
-    private SqlSessionTemplate sqlSessionTemplate;
+	public int count(SysKeyQuery query) {
+		return sysKeyMapper.getSysKeyCount(query);
+	}
 
-    private SysKeyMapper sysKeyMapper;
+	@Transactional
+	public void deleteById(String id) {
+		if (id != null) {
+			sysKeyMapper.deleteSysKeyById(id);
+		}
+	}
 
-    public SysKeyServiceImpl() {
+	@Transactional
+	public void deleteByIds(List<String> ids) {
+		if (ids != null && !ids.isEmpty()) {
+			for (String id : ids) {
+				sysKeyMapper.deleteSysKeyById(id);
+			}
+		}
+	}
 
-    }
+	public SysKey getSysKey(String id) {
+		if (id == null) {
+			return null;
+		}
+		if (StringUtils.equals(DBUtils.POSTGRESQL, DBConnectionFactory.getDatabaseType())) {
+			return sysKeyMapper.getSysKeyById_postgres(id);
+		}
+		return sysKeyMapper.getSysKeyById(id);
+	}
 
-    public int count(SysKeyQuery query) {
-        return sysKeyMapper.getSysKeyCount(query);
-    }
+	/**
+	 * 根据查询参数获取记录总数
+	 *
+	 * @return
+	 */
+	public int getSysKeyCountByQueryCriteria(SysKeyQuery query) {
+		return sysKeyMapper.getSysKeyCount(query);
+	}
 
-    @Transactional
-    public void deleteById(String id) {
-        if (id != null) {
-            sysKeyMapper.deleteSysKeyById(id);
-        }
-    }
+	/**
+	 * 根据查询参数获取一页的数据
+	 *
+	 * @return
+	 */
+	public List<SysKey> getSysKeysByQueryCriteria(int start, int pageSize, SysKeyQuery query) {
+		RowBounds rowBounds = new RowBounds(start, pageSize);
+		return sqlSessionTemplate.selectList("getSysKeys", query, rowBounds);
+	}
 
-    @Transactional
-    public void deleteByIds(List<String> ids) {
-        if (ids != null && !ids.isEmpty()) {
-            for (String id : ids) {
-                sysKeyMapper.deleteSysKeyById(id);
-            }
-        }
-    }
+	public List<SysKey> list(SysKeyQuery query) {
+		return sysKeyMapper.getSysKeys(query);
+	}
 
-    public SysKey getSysKey(String id) {
-        if (id == null) {
-            return null;
-        }
-        if (StringUtils.equals(DBUtils.POSTGRESQL, DBConnectionFactory.getDatabaseType())) {
-            return sysKeyMapper.getSysKeyById_postgres(id);
-        }
-        return sysKeyMapper.getSysKeyById(id);
-    }
+	@Transactional
+	public void save(SysKey sysKey) {
+		if (StringUtils.isEmpty(sysKey.getId())) {
+			sysKey.setId(idGenerator.getNextId("SYS_KEY"));
+			sysKey.setCreateDate(new Date());
+			if (StringUtils.equals(DBUtils.POSTGRESQL, DBConnectionFactory.getDatabaseType())) {
+				sysKeyMapper.insertSysKey_postgres(sysKey);
+			} else {
+				sysKeyMapper.insertSysKey(sysKey);
+			}
+		} else {
+			if (StringUtils.equals(DBUtils.POSTGRESQL, DBConnectionFactory.getDatabaseType())) {
+				if (sysKeyMapper.getSysKeyById_postgres(sysKey.getId()) == null) {
+					sysKey.setCreateDate(new Date());
+					sysKeyMapper.insertSysKey(sysKey);
+				}
+			} else {
+				if (sysKeyMapper.getSysKeyById(sysKey.getId()) == null) {
+					sysKey.setCreateDate(new Date());
+					sysKeyMapper.insertSysKey(sysKey);
+				}
+			}
+		}
+	}
 
-    /**
-     * 根据查询参数获取记录总数
-     *
-     * @return
-     */
-    public int getSysKeyCountByQueryCriteria(SysKeyQuery query) {
-        return sysKeyMapper.getSysKeyCount(query);
-    }
+	@javax.annotation.Resource
+	public void setIdGenerator(IdGenerator idGenerator) {
+		this.idGenerator = idGenerator;
+	}
 
-    /**
-     * 根据查询参数获取一页的数据
-     *
-     * @return
-     */
-    public List<SysKey> getSysKeysByQueryCriteria(int start, int pageSize, SysKeyQuery query) {
-        RowBounds rowBounds = new RowBounds(start, pageSize);
-        return sqlSessionTemplate.selectList("getSysKeys", query, rowBounds);
-    }
+	@javax.annotation.Resource
+	public void setSqlSessionTemplate(SqlSessionTemplate sqlSessionTemplate) {
+		this.sqlSessionTemplate = sqlSessionTemplate;
+	}
 
-    public List<SysKey> list(SysKeyQuery query) {
-        return sysKeyMapper.getSysKeys(query);
-    }
-
-    @Transactional
-    public void save(SysKey sysKey) {
-        if (StringUtils.isEmpty(sysKey.getId())) {
-            sysKey.setId(idGenerator.getNextId("SYS_KEY"));
-            sysKey.setCreateDate(new Date());
-            if (StringUtils.equals(DBUtils.POSTGRESQL, DBConnectionFactory.getDatabaseType())) {
-                sysKeyMapper.insertSysKey_postgres(sysKey);
-            } else {
-                sysKeyMapper.insertSysKey(sysKey);
-            }
-        } else {
-            if (StringUtils.equals(DBUtils.POSTGRESQL, DBConnectionFactory.getDatabaseType())) {
-                if (sysKeyMapper.getSysKeyById_postgres(sysKey.getId()) == null) {
-                    sysKey.setCreateDate(new Date());
-                    sysKeyMapper.insertSysKey(sysKey);
-                }
-            } else {
-                if (sysKeyMapper.getSysKeyById(sysKey.getId()) == null) {
-                    sysKey.setCreateDate(new Date());
-                    sysKeyMapper.insertSysKey(sysKey);
-                }
-            }
-        }
-    }
-
-    @javax.annotation.Resource
-    public void setEntityDAO(EntityDAO entityDAO) {
-        this.entityDAO = entityDAO;
-    }
-
-    @javax.annotation.Resource
-    public void setIdGenerator(IdGenerator idGenerator) {
-        this.idGenerator = idGenerator;
-    }
-
-    @javax.annotation.Resource
-    public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
-    }
-
-    @javax.annotation.Resource
-    public void setSqlSessionTemplate(SqlSessionTemplate sqlSessionTemplate) {
-        this.sqlSessionTemplate = sqlSessionTemplate;
-    }
-
-    @javax.annotation.Resource
-    public void setSysKeyMapper(SysKeyMapper sysKeyMapper) {
-        this.sysKeyMapper = sysKeyMapper;
-    }
+	@javax.annotation.Resource
+	public void setSysKeyMapper(SysKeyMapper sysKeyMapper) {
+		this.sysKeyMapper = sysKeyMapper;
+	}
 
 }

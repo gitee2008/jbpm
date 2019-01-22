@@ -39,20 +39,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-
-import com.glaf.core.base.TableModel;
-import com.glaf.core.id.IdGenerator;
-import com.glaf.core.security.Authentication;
-import com.glaf.core.cache.CacheFactory;
-import com.glaf.core.config.SystemConfig;
-import com.glaf.core.service.ITableDataService;
-import com.glaf.core.util.Constants;
-import com.glaf.core.util.PageResult;
-import com.glaf.core.util.UUID32;
-
 import com.glaf.base.modules.sys.SysConstants;
-import com.glaf.base.modules.sys.mapper.SysAccessMapper;
-import com.glaf.base.modules.sys.mapper.SysApplicationMapper;
 import com.glaf.base.modules.sys.mapper.SysRoleMapper;
 import com.glaf.base.modules.sys.mapper.SysUserMapper;
 import com.glaf.base.modules.sys.mapper.SysUserRoleMapper;
@@ -68,24 +55,26 @@ import com.glaf.base.modules.sys.service.SysUserService;
 import com.glaf.base.modules.sys.util.PinyinUtils;
 import com.glaf.base.modules.sys.util.SysRoleJsonFactory;
 import com.glaf.base.modules.sys.util.SysUserJsonFactory;
+import com.glaf.core.base.TableModel;
+import com.glaf.core.cache.CacheFactory;
+import com.glaf.core.config.SystemConfig;
+import com.glaf.core.id.IdGenerator;
+import com.glaf.core.security.Authentication;
+import com.glaf.core.service.ITableDataService;
+import com.glaf.core.util.Constants;
+import com.glaf.core.util.PageResult;
+import com.glaf.core.util.UUID32;
 
 @Service("sysUserService")
 @Transactional(readOnly = true)
 public class SysUserServiceImpl implements SysUserService {
 	private final static Log logger = LogFactory.getLog(SysUserServiceImpl.class);
 
-	// protected static ConcurrentMap<String, String> passwordMap = new
-	// ConcurrentHashMap<String, String>();
-
 	private IdGenerator idGenerator;
 
 	private MembershipService membershipService;
 
 	private SqlSessionTemplate sqlSessionTemplate;
-
-	private SysAccessMapper sysAccessMapper;
-
-	private SysApplicationMapper sysApplicationMapper;
 
 	private SysRoleMapper sysRoleMapper;
 
@@ -95,7 +84,7 @@ public class SysUserServiceImpl implements SysUserService {
 
 	private ITableDataService tableDataService;
 
-	private SysUserServiceImpl() {
+	public SysUserServiceImpl() {
 
 	}
 
@@ -974,16 +963,6 @@ public class SysUserServiceImpl implements SysUserService {
 	@Resource
 	public void setSqlSessionTemplate(SqlSessionTemplate sqlSessionTemplate) {
 		this.sqlSessionTemplate = sqlSessionTemplate;
-	}
-
-	@Resource
-	public void setSysAccessMapper(SysAccessMapper sysAccessMapper) {
-		this.sysAccessMapper = sysAccessMapper;
-	}
-
-	@Resource
-	public void setSysApplicationMapper(SysApplicationMapper sysApplicationMapper) {
-		this.sysApplicationMapper = sysApplicationMapper;
 	}
 
 	@Resource

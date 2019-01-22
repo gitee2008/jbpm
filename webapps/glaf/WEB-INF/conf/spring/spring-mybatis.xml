@@ -19,11 +19,6 @@
 		<constructor-arg index="0" ref="sqlSessionFactory" />
 	</bean>
 
-	<!-- <bean id="baseMapper" class="org.mybatis.spring.mapper.MapperFactoryBean"
-		abstract="true" lazy-init="true">
-		<property name="sqlSessionFactory" ref="sqlSessionFactory" />
-	</bean> -->
-
 	<bean id="baseMapperScanner" class="org.mybatis.spring.mapper.MapperScannerConfigurer">
 		<property name="sqlSessionFactory" ref="sqlSessionFactory" />
 		<property name="basePackage" value="com.glaf.**.mapper" />

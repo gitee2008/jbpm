@@ -29,7 +29,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.ibatis.session.RowBounds;
-
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -45,14 +44,11 @@ import com.glaf.base.modules.sys.model.SysAccess;
 import com.glaf.base.modules.sys.model.SysApplication;
 import com.glaf.base.modules.sys.query.SysApplicationQuery;
 import com.glaf.base.modules.sys.service.SysApplicationService;
-import com.glaf.base.modules.sys.service.SysRoleService;
-import com.glaf.base.modules.sys.service.SysUserService;
 import com.glaf.base.modules.sys.util.PinyinUtils;
 import com.glaf.base.modules.sys.util.SysApplicationJsonFactory;
 import com.glaf.core.cache.CacheFactory;
 import com.glaf.core.config.SystemConfig;
 import com.glaf.core.id.IdGenerator;
-import com.glaf.core.service.EntityService;
 import com.glaf.core.util.Constants;
 import com.glaf.core.util.PageResult;
 
@@ -63,19 +59,13 @@ public class SysApplicationServiceImpl implements SysApplicationService {
 
 	private IdGenerator idGenerator;
 
-	private EntityService entityService;
-
 	private SqlSessionTemplate sqlSessionTemplate;
 
 	private SysApplicationMapper sysApplicationMapper;
 
 	private SysAccessMapper sysAccessMapper;
 
-	private SysRoleService sysRoleService;
-
-	private SysUserService sysUserService;
-
-	private SysApplicationServiceImpl() {
+	public SysApplicationServiceImpl() {
 
 	}
 
@@ -184,8 +174,7 @@ public class SysApplicationServiceImpl implements SysApplicationService {
 	/**
 	 * 按编码查找对象
 	 * 
-	 * @param code
-	 *            String
+	 * @param code String
 	 * @return SysApplication
 	 */
 	public SysApplication findByCode(String code) {
@@ -474,11 +463,6 @@ public class SysApplicationServiceImpl implements SysApplicationService {
 	}
 
 	@Resource
-	public void setEntityService(EntityService entityService) {
-		this.entityService = entityService;
-	}
-
-	@Resource
 	public void setIdGenerator(IdGenerator idGenerator) {
 		this.idGenerator = idGenerator;
 	}
@@ -496,16 +480,6 @@ public class SysApplicationServiceImpl implements SysApplicationService {
 	@Resource
 	public void setSysApplicationMapper(SysApplicationMapper sysApplicationMapper) {
 		this.sysApplicationMapper = sysApplicationMapper;
-	}
-
-	@javax.annotation.Resource
-	public void setSysRoleService(SysRoleService sysRoleService) {
-		this.sysRoleService = sysRoleService;
-	}
-
-	@Resource
-	public void setSysUserService(SysUserService sysUserService) {
-		this.sysUserService = sysUserService;
 	}
 
 	@Transactional

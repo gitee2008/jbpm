@@ -18,9 +18,7 @@
 
 package com.glaf.core.service.impl;
 
-import com.glaf.core.dao.EntityDAO;
 import com.glaf.core.domain.SchedulerLog;
-import com.glaf.core.id.IdGenerator;
 import com.glaf.core.jdbc.DBConnectionFactory;
 import com.glaf.core.mapper.SchedulerLogMapper;
 import com.glaf.core.query.SchedulerLogQuery;
@@ -32,7 +30,6 @@ import org.apache.ibatis.session.RowBounds;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -42,129 +39,108 @@ import java.util.List;
 @Service("schedulerLogService")
 @Transactional(readOnly = true)
 public class SchedulerLogServiceImpl implements ISchedulerLogService {
-    protected final Logger logger = LoggerFactory.getLogger(getClass());
+	protected final Logger logger = LoggerFactory.getLogger(getClass());
 
-    private EntityDAO entityDAO;
+	private SqlSessionTemplate sqlSessionTemplate;
 
-    private IdGenerator idGenerator;
+	private SchedulerLogMapper schedulerLogMapper;
 
-    private JdbcTemplate jdbcTemplate;
+	public SchedulerLogServiceImpl() {
 
-    private SqlSessionTemplate sqlSessionTemplate;
+	}
 
-    private SchedulerLogMapper schedulerLogMapper;
+	@Transactional
+	public void bulkInsert(List<SchedulerLog> list) {
+		for (SchedulerLog schedulerLog : list) {
+			schedulerLog.setId(UUID32.getUUID());
+			schedulerLog.setCreateDate(new Date());
+		}
+		if (StringUtils.equals(DBUtils.ORACLE, DBConnectionFactory.getDatabaseType())) {
+			schedulerLogMapper.bulkInsertSchedulerLog_oracle(list);
+		} else {
+			schedulerLogMapper.bulkInsertSchedulerLog(list);
+		}
+	}
 
-    public SchedulerLogServiceImpl() {
+	public int count(SchedulerLogQuery query) {
+		return schedulerLogMapper.getSchedulerLogCount(query);
+	}
 
-    }
+	@Transactional
+	public void deleteById(String id) {
+		if (id != null) {
+			schedulerLogMapper.deleteSchedulerLogById(id);
+		}
+	}
 
-    @Transactional
-    public void bulkInsert(List<SchedulerLog> list) {
-        for (SchedulerLog schedulerLog : list) {
-            schedulerLog.setId(UUID32.getUUID());
-            schedulerLog.setCreateDate(new Date());
-        }
-        if (StringUtils.equals(DBUtils.ORACLE, DBConnectionFactory.getDatabaseType())) {
-            schedulerLogMapper.bulkInsertSchedulerLog_oracle(list);
-        } else {
-            schedulerLogMapper.bulkInsertSchedulerLog(list);
-        }
-    }
+	@Transactional
+	public void deleteByIds(List<String> ids) {
+		if (ids != null && !ids.isEmpty()) {
+			for (String id : ids) {
+				schedulerLogMapper.deleteSchedulerLogById(id);
+			}
+		}
+	}
 
-    public int count(SchedulerLogQuery query) {
-        return schedulerLogMapper.getSchedulerLogCount(query);
-    }
+	@Transactional
+	public void deleteSchedulerLogByTaskId(String taskId) {
+		schedulerLogMapper.deleteSchedulerLogByTaskId(taskId);
+	}
 
-    @Transactional
-    public void deleteById(String id) {
-        if (id != null) {
-            schedulerLogMapper.deleteSchedulerLogById(id);
-        }
-    }
+	public SchedulerLog getSchedulerLog(String id) {
+		if (id == null) {
+			return null;
+		}
+		return schedulerLogMapper.getSchedulerLogById(id);
+	}
 
-    @Transactional
-    public void deleteByIds(List<String> ids) {
-        if (ids != null && !ids.isEmpty()) {
-            for (String id : ids) {
-                schedulerLogMapper.deleteSchedulerLogById(id);
-            }
-        }
-    }
+	/**
+	 * 根据查询参数获取记录总数
+	 *
+	 * @return
+	 */
+	public int getSchedulerLogCountByQueryCriteria(SchedulerLogQuery query) {
+		return schedulerLogMapper.getSchedulerLogCount(query);
+	}
 
-    @Transactional
-    public void deleteSchedulerLogByTaskId(String taskId) {
-        schedulerLogMapper.deleteSchedulerLogByTaskId(taskId);
-    }
+	/**
+	 * 根据查询参数获取一页的数据
+	 *
+	 * @return
+	 */
+	public List<SchedulerLog> getSchedulerLogsByQueryCriteria(int start, int pageSize, SchedulerLogQuery query) {
+		RowBounds rowBounds = new RowBounds(start, pageSize);
+		return sqlSessionTemplate.selectList("getSchedulerLogs", query, rowBounds);
+	}
 
-    public SchedulerLog getSchedulerLog(String id) {
-        if (id == null) {
-            return null;
-        }
-        return schedulerLogMapper.getSchedulerLogById(id);
-    }
+	public List<SchedulerLog> list(SchedulerLogQuery query) {
+		return schedulerLogMapper.getSchedulerLogs(query);
+	}
 
-    /**
-     * 根据查询参数获取记录总数
-     *
-     * @return
-     */
-    public int getSchedulerLogCountByQueryCriteria(SchedulerLogQuery query) {
-        return schedulerLogMapper.getSchedulerLogCount(query);
-    }
+	@Transactional
+	public void save(SchedulerLog schedulerLog) {
+		if (StringUtils.isEmpty(schedulerLog.getId())) {
+			schedulerLog.setId(UUID32.getUUID());
+			schedulerLog.setCreateDate(new Date());
+			schedulerLogMapper.insertSchedulerLog(schedulerLog);
+		} else {
+			if (this.getSchedulerLog(schedulerLog.getId()) == null) {
+				schedulerLog.setCreateDate(new Date());
+				schedulerLogMapper.insertSchedulerLog(schedulerLog);
+			} else {
+				schedulerLogMapper.updateSchedulerLog(schedulerLog);
+			}
+		}
+	}
 
-    /**
-     * 根据查询参数获取一页的数据
-     *
-     * @return
-     */
-    public List<SchedulerLog> getSchedulerLogsByQueryCriteria(int start, int pageSize, SchedulerLogQuery query) {
-        RowBounds rowBounds = new RowBounds(start, pageSize);
-        return sqlSessionTemplate.selectList("getSchedulerLogs", query, rowBounds);
-    }
+	@javax.annotation.Resource
+	public void setSchedulerLogMapper(SchedulerLogMapper schedulerLogMapper) {
+		this.schedulerLogMapper = schedulerLogMapper;
+	}
 
-    public List<SchedulerLog> list(SchedulerLogQuery query) {
-        return schedulerLogMapper.getSchedulerLogs(query);
-    }
-
-    @Transactional
-    public void save(SchedulerLog schedulerLog) {
-        if (StringUtils.isEmpty(schedulerLog.getId())) {
-            schedulerLog.setId(UUID32.getUUID());
-            schedulerLog.setCreateDate(new Date());
-            schedulerLogMapper.insertSchedulerLog(schedulerLog);
-        } else {
-            if (this.getSchedulerLog(schedulerLog.getId()) == null) {
-                schedulerLog.setCreateDate(new Date());
-                schedulerLogMapper.insertSchedulerLog(schedulerLog);
-            } else {
-                schedulerLogMapper.updateSchedulerLog(schedulerLog);
-            }
-        }
-    }
-
-    @javax.annotation.Resource
-    public void setEntityDAO(EntityDAO entityDAO) {
-        this.entityDAO = entityDAO;
-    }
-
-    @javax.annotation.Resource
-    public void setIdGenerator(IdGenerator idGenerator) {
-        this.idGenerator = idGenerator;
-    }
-
-    @javax.annotation.Resource
-    public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
-    }
-
-    @javax.annotation.Resource
-    public void setSchedulerLogMapper(SchedulerLogMapper schedulerLogMapper) {
-        this.schedulerLogMapper = schedulerLogMapper;
-    }
-
-    @javax.annotation.Resource
-    public void setSqlSessionTemplate(SqlSessionTemplate sqlSessionTemplate) {
-        this.sqlSessionTemplate = sqlSessionTemplate;
-    }
+	@javax.annotation.Resource
+	public void setSqlSessionTemplate(SqlSessionTemplate sqlSessionTemplate) {
+		this.sqlSessionTemplate = sqlSessionTemplate;
+	}
 
 }

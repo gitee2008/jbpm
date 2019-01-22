@@ -42,401 +42,376 @@ import java.util.Map;
 @Transactional(readOnly = true)
 public class TreeModelServiceImpl implements ITreeModelService {
 
-    private EntityDAO entityDAO;
+	private EntityDAO entityDAO;
 
-    private IdGenerator idGenerator;
+	private IdGenerator idGenerator;
 
-    public TreeModelServiceImpl() {
+	protected List<TreeModel> cloneProperties(List<TreeModel> rows) {
+		List<TreeModel> list = new java.util.ArrayList<TreeModel>();
+		if (rows != null && !rows.isEmpty()) {
+			for (TreeModel model : rows) {
+				TreeModel m = new BaseTree();
+				this.cloneTreeModel(model, m);
+				list.add(m);
+			}
+		}
+		return list;
+	}
 
-    }
+	/**
+	 * 复制树对象
+	 *
+	 * @param model  源对象
+	 * @param target 目标对象
+	 */
+	private void cloneTreeModel(TreeModel model, TreeModel target) {
+		target.setId(model.getId());
+		target.setParentId(model.getParentId());
+		if (model.getParent() != null) {
+			target.setParent(model.getParent());
+		}
 
-    protected List<TreeModel> cloneProperties(List<TreeModel> rows) {
-        List<TreeModel> list = new java.util.ArrayList<TreeModel>();
-        if (rows != null && !rows.isEmpty()) {
-            for (TreeModel model : rows) {
-                TreeModel m = new BaseTree();
-                this.cloneTreeModel(model, m);
-                list.add(m);
-            }
-        }
-        return list;
-    }
+		target.setChildren(model.getChildren());
+		target.setCode(model.getCode());
 
-    /**
-     * 复制树对象
-     *
-     * @param model  源对象
-     * @param target 目标对象
-     */
-    private void cloneTreeModel(TreeModel model, TreeModel target) {
-        target.setId(model.getId());
-        target.setParentId(model.getParentId());
-        if (model.getParent() != null) {
-            target.setParent(model.getParent());
-        }
+		target.setDescription(model.getDescription());
 
-        target.setChildren(model.getChildren());
-        target.setCode(model.getCode());
+		target.setIcon(model.getIcon());
+		target.setIconCls(model.getIcon());
+		target.setLevel(model.getLevel());
+		target.setLocked(model.getLocked());
+		target.setName(model.getName());
 
-        target.setDescription(model.getDescription());
+		target.setSortNo(model.getSortNo());
+		target.setTreeId(model.getTreeId());
 
-        target.setIcon(model.getIcon());
-        target.setIconCls(model.getIcon());
-        target.setLevel(model.getLevel());
-        target.setLocked(model.getLocked());
-        target.setName(model.getName());
+		target.setUrl(model.getUrl());
 
-        target.setSortNo(model.getSortNo());
-        target.setTreeId(model.getTreeId());
+	}
 
-        target.setUrl(model.getUrl());
+	/**
+	 * 获取某个节点的所有祖先节点
+	 *
+	 * @param treeId
+	 * @return
+	 */
+	public List<TreeModel> getAncestorTreeModels(long treeId) {
+		List<TreeModel> treeModels = new java.util.ArrayList<TreeModel>();
+		TreeModel treeModel = this.getTreeModel(treeId);
 
-    }
+		if (treeModel != null && treeModel.getParentId() > 0) {
+			TreeModel parent = this.getTreeModel(treeModel.getParentId());
+			if (parent != null) {
+				this.loadAncestorTreeNodes(parent, treeModels);
+			}
+		}
 
-    /**
-     * 获取某个节点的所有祖先节点
-     *
-     * @param treeId
-     * @return
-     */
-    public List<TreeModel> getAncestorTreeModels(long treeId) {
-        List<TreeModel> treeModels = new java.util.ArrayList<TreeModel>();
-        TreeModel treeModel = this.getTreeModel(treeId);
+		return treeModels;
+	}
 
-        if (treeModel != null && treeModel.getParentId() > 0) {
-            TreeModel parent = this.getTreeModel(treeModel.getParentId());
-            if (parent != null) {
-                this.loadAncestorTreeNodes(parent, treeModels);
-            }
-        }
+	/**
+	 * 获取某个节点的所有子孙节点
+	 *
+	 * @param treeId
+	 * @return
+	 */
+	public List<TreeModel> getChildrenTreeModels(long treeId) {
+		List<TreeModel> treeModels = new java.util.ArrayList<TreeModel>();
+		TreeModel treeModel = this.getTreeModel(treeId);
+		if (treeModel != null) {
+			this.loadChildrenTreeModels(treeModel, treeModels);
+		}
+		return treeModels;
+	}
 
-        return treeModels;
-    }
+	public List<TreeModel> getSubTreeModels(long treeId) {
+		List<TreeModel> treeModels = new java.util.ArrayList<TreeModel>();
+		TreeModel treeModel = this.getTreeModel(treeId);
+		if (treeModel != null) {
 
-    /**
-     * 获取某个节点的所有子孙节点
-     *
-     * @param treeId
-     * @return
-     */
-    public List<TreeModel> getChildrenTreeModels(long treeId) {
-        List<TreeModel> treeModels = new java.util.ArrayList<TreeModel>();
-        TreeModel treeModel = this.getTreeModel(treeId);
-        if (treeModel != null) {
-            this.loadChildrenTreeModels(treeModel, treeModels);
-        }
-        return treeModels;
-    }
+			TreeModelQuery query = new TreeModelQuery();
+			query.parentId(treeModel.getId());
 
-    public List<TreeModel> getSubTreeModels(long treeId) {
-        List<TreeModel> treeModels = new java.util.ArrayList<TreeModel>();
-        TreeModel treeModel = this.getTreeModel(treeId);
-        if (treeModel != null) {
+			String statementId = CustomProperties.getString("sys.getTreeModels");
+			if (StringUtils.isEmpty(statementId)) {
+				statementId = SystemProperties.getString("sys.getTreeModels");
+			}
 
-            TreeModelQuery query = new TreeModelQuery();
-            query.parentId(treeModel.getId());
+			if (StringUtils.isEmpty(statementId)) {
+				statementId = "getTreeModels";
+			}
 
-            String statementId = CustomProperties.getString("sys.getTreeModels");
-            if (StringUtils.isEmpty(statementId)) {
-                statementId = SystemProperties.getString("sys.getTreeModels");
-            }
+			List<?> list = entityDAO.getList(statementId, query);
+			for (Object object : list) {
+				treeModels.add((TreeModel) object);
+			}
 
-            if (StringUtils.isEmpty(statementId)) {
-                statementId = "getTreeModels";
-            }
+		}
+		return treeModels;
+	}
 
-            List<?> list = entityDAO.getList(statementId, query);
-            for (Object object : list) {
-                treeModels.add((TreeModel) object);
-            }
+	public Map<String, TreeModel> getTreeMap() {
+		Map<String, TreeModel> codeMap = new java.util.HashMap<String, TreeModel>();
+		TreeModelQuery query = new TreeModelQuery();
+		List<TreeModel> treeModels = this.getTreeModels(query);
+		if (treeModels != null && treeModels.size() > 0) {
+			Iterator<TreeModel> iterator = treeModels.iterator();
+			while (iterator.hasNext()) {
+				TreeModel treeModel = iterator.next();
+				codeMap.put(treeModel.getCode(), treeModel);
+			}
+		}
+		return codeMap;
+	}
 
-        }
-        return treeModels;
-    }
+	public Map<String, TreeModel> getTreeMap(List<String> codes) {
+		Map<String, TreeModel> codeMap = new java.util.HashMap<String, TreeModel>();
+		TreeModelQuery query = new TreeModelQuery();
+		query.setCodes(codes);
+		List<TreeModel> treeModels = this.getTreeModels(query);
+		if (treeModels != null && treeModels.size() > 0) {
+			Iterator<TreeModel> iterator = treeModels.iterator();
+			while (iterator.hasNext()) {
+				TreeModel treeModel = iterator.next();
+				codeMap.put(treeModel.getCode(), treeModel);
+				codeMap.put(treeModel.getCode().toLowerCase(), treeModel);
+				codeMap.put(treeModel.getCode().toUpperCase(), treeModel);
+			}
+		}
+		return codeMap;
+	}
 
-    public Map<String, TreeModel> getTreeMap() {
-        Map<String, TreeModel> codeMap = new java.util.HashMap<String, TreeModel>();
-        TreeModelQuery query = new TreeModelQuery();
-        List<TreeModel> treeModels = this.getTreeModels(query);
-        if (treeModels != null && treeModels.size() > 0) {
-            Iterator<TreeModel> iterator = treeModels.iterator();
-            while (iterator.hasNext()) {
-                TreeModel treeModel = iterator.next();
-                codeMap.put(treeModel.getCode(), treeModel);
-            }
-        }
-        return codeMap;
-    }
+	/**
+	 * 根据编码获取树节点
+	 *
+	 * @param treeId
+	 * @return
+	 */
+	public TreeModel getTreeModel(long treeId) {
+		String cacheKey = "cache_treemodel_" + treeId;
+		if (SystemConfig.getBoolean("use_query_cache")) {
+			String text = CacheFactory.getString("tree", cacheKey);
+			if (StringUtils.isNotEmpty(text)) {
+				try {
+					com.alibaba.fastjson.JSONObject json = JSON.parseObject(text);
+					return TreeModelJsonFactory.jsonToObject(json);
+				} catch (Exception ignored) {
+				}
+			}
+		}
+		TreeModel treeModel = null;
+		String statementId = CustomProperties.getString("sys.getTreeModelById");
+		if (StringUtils.isEmpty(statementId)) {
+			statementId = SystemProperties.getString("sys.getTreeModelById");
+		}
+		if (StringUtils.isEmpty(statementId)) {
+			statementId = "getTreeModelById";
+		}
+		List<Object> rows = entityDAO.getList(statementId, treeId);
+		if (rows != null && rows.size() > 0) {
+			treeModel = (TreeModel) rows.get(0);
+		}
+		if (treeModel != null && SystemConfig.getBoolean("use_query_cache")) {
+			CacheFactory.put("tree", cacheKey, treeModel.toJsonObject().toJSONString());
+		}
+		return treeModel;
+	}
 
-    public Map<String, TreeModel> getTreeMap(List<String> codes) {
-        Map<String, TreeModel> codeMap = new java.util.HashMap<String, TreeModel>();
-        TreeModelQuery query = new TreeModelQuery();
-        query.setCodes(codes);
-        List<TreeModel> treeModels = this.getTreeModels(query);
-        if (treeModels != null && treeModels.size() > 0) {
-            Iterator<TreeModel> iterator = treeModels.iterator();
-            while (iterator.hasNext()) {
-                TreeModel treeModel = iterator.next();
-                codeMap.put(treeModel.getCode(), treeModel);
-                codeMap.put(treeModel.getCode().toLowerCase(), treeModel);
-                codeMap.put(treeModel.getCode().toUpperCase(), treeModel);
-            }
-        }
-        return codeMap;
-    }
+	/**
+	 * 根据编码获取树节点
+	 *
+	 * @param code
+	 * @return
+	 */
+	public TreeModel getTreeModelByCode(String code) {
+		TreeModel treeModel = null;
+		String statementId = CustomProperties.getString("sys.getTreeModelByCode");
+		if (StringUtils.isEmpty(statementId)) {
+			statementId = SystemProperties.getString("sys.getTreeModelByCode");
+		}
+		if (StringUtils.isEmpty(statementId)) {
+			statementId = "getTreeModelByCode";
+		}
+		List<Object> rows = entityDAO.getList(statementId, code);
+		if (rows != null && rows.size() > 0) {
+			treeModel = (TreeModel) rows.get(0);
+		}
 
-    /**
-     * 根据编码获取树节点
-     *
-     * @param treeId
-     * @return
-     */
-    public TreeModel getTreeModel(long treeId) {
-        String cacheKey = "cache_treemodel_" + treeId;
-        if (SystemConfig.getBoolean("use_query_cache")) {
-            String text = CacheFactory.getString("tree", cacheKey);
-            if (StringUtils.isNotEmpty(text)) {
-                try {
-                    com.alibaba.fastjson.JSONObject json = JSON.parseObject(text);
-                    return TreeModelJsonFactory.jsonToObject(json);
-                } catch (Exception ignored) {
-                }
-            }
-        }
-        TreeModel treeModel = null;
-        String statementId = CustomProperties.getString("sys.getTreeModelById");
-        if (StringUtils.isEmpty(statementId)) {
-            statementId = SystemProperties.getString("sys.getTreeModelById");
-        }
-        if (StringUtils.isEmpty(statementId)) {
-            statementId = "getTreeModelById";
-        }
-        List<Object> rows = entityDAO.getList(statementId, treeId);
-        if (rows != null && rows.size() > 0) {
-            treeModel = (TreeModel) rows.get(0);
-        }
-        if (treeModel != null && SystemConfig.getBoolean("use_query_cache")) {
-            CacheFactory.put("tree", cacheKey, treeModel.toJsonObject().toJSONString());
-        }
-        return treeModel;
-    }
+		return treeModel;
+	}
 
-    /**
-     * 根据编码获取树节点
-     *
-     * @param code
-     * @return
-     */
-    public TreeModel getTreeModelByCode(String code) {
-        TreeModel treeModel = null;
-        String statementId = CustomProperties.getString("sys.getTreeModelByCode");
-        if (StringUtils.isEmpty(statementId)) {
-            statementId = SystemProperties.getString("sys.getTreeModelByCode");
-        }
-        if (StringUtils.isEmpty(statementId)) {
-            statementId = "getTreeModelByCode";
-        }
-        List<Object> rows = entityDAO.getList(statementId, code);
-        if (rows != null && rows.size() > 0) {
-            treeModel = (TreeModel) rows.get(0);
-        }
+	public Map<String, TreeModel> getTreeModelMap(List<String> codes) {
+		Map<String, TreeModel> codeMap = new java.util.HashMap<String, TreeModel>();
+		TreeModelQuery query = new TreeModelQuery();
+		query.codes(codes);
+		List<TreeModel> treeModels = this.getTreeModels(query);
+		if (treeModels != null && treeModels.size() > 0) {
+			Iterator<TreeModel> iterator = treeModels.iterator();
+			while (iterator.hasNext()) {
+				TreeModel treeModel = iterator.next();
+				codeMap.put(treeModel.getCode(), treeModel);
+				codeMap.put(treeModel.getCode().toLowerCase(), treeModel);
+				codeMap.put(treeModel.getCode().toUpperCase(), treeModel);
+			}
+		}
+		return codeMap;
+	}
 
-        return treeModel;
-    }
+	public List<TreeModel> getTreeModels() {
+		TreeModelQuery query = new TreeModelQuery();
+		return getTreeModels(query);
+	}
 
-    public Map<String, TreeModel> getTreeModelMap(List<String> codes) {
-        Map<String, TreeModel> codeMap = new java.util.HashMap<String, TreeModel>();
-        TreeModelQuery query = new TreeModelQuery();
-        query.codes(codes);
-        List<TreeModel> treeModels = this.getTreeModels(query);
-        if (treeModels != null && treeModels.size() > 0) {
-            Iterator<TreeModel> iterator = treeModels.iterator();
-            while (iterator.hasNext()) {
-                TreeModel treeModel = iterator.next();
-                codeMap.put(treeModel.getCode(), treeModel);
-                codeMap.put(treeModel.getCode().toLowerCase(), treeModel);
-                codeMap.put(treeModel.getCode().toUpperCase(), treeModel);
-            }
-        }
-        return codeMap;
-    }
+	public List<TreeModel> getTreeModels(TreeModelQuery query) {
+		List<TreeModel> treeModels = new java.util.ArrayList<TreeModel>();
 
-    public List<TreeModel> getTreeModels() {
-        TreeModelQuery query = new TreeModelQuery();
-        return getTreeModels(query);
-    }
+		String statementId = CustomProperties.getString("sys.getTreeModels");
+		if (StringUtils.isEmpty(statementId)) {
+			statementId = SystemProperties.getString("sys.getTreeModels");
+		}
 
-    public List<TreeModel> getTreeModels(TreeModelQuery query) {
-        List<TreeModel> treeModels = new java.util.ArrayList<TreeModel>();
+		if (StringUtils.isEmpty(statementId)) {
+			statementId = "getTreeModels";
+		}
 
-        String statementId = CustomProperties.getString("sys.getTreeModels");
-        if (StringUtils.isEmpty(statementId)) {
-            statementId = SystemProperties.getString("sys.getTreeModels");
-        }
+		List<Object> rows = entityDAO.getList(statementId, query);
+		if (rows != null && rows.size() > 0) {
+			Iterator<Object> iterator = rows.iterator();
+			while (iterator.hasNext()) {
+				TreeModel treeModel = (TreeModel) iterator.next();
+				treeModels.add(treeModel);
+			}
+		}
+		return treeModels;
+	}
 
-        if (StringUtils.isEmpty(statementId)) {
-            statementId = "getTreeModels";
-        }
+	public TreeModel getTreeModelWithAllChildren(long treeId) {
+		TreeModel model = this.getTreeModel(treeId);
+		if (model != null) {
+			this.loadTreeModelWithAllChildren(model);
+			return model;
+		}
+		return null;
+	}
 
-        List<Object> rows = entityDAO.getList(statementId, query);
-        if (rows != null && rows.size() > 0) {
-            Iterator<Object> iterator = rows.iterator();
-            while (iterator.hasNext()) {
-                TreeModel treeModel = (TreeModel) iterator.next();
-                treeModels.add(treeModel);
-            }
-        }
-        return treeModels;
-    }
+	private void loadAncestorTreeNodes(TreeModel treeModel, List<TreeModel> treeModels) {
+		if (treeModel != null && treeModels != null) {
+			treeModels.add(treeModel);
+			if (treeModel.getParentId() != 0) {
+				TreeModel parent = this.getTreeModel(treeModel.getParentId());
+				if (parent != null) {
+					treeModel.setParent(parent);
+					this.loadAncestorTreeNodes(parent, treeModels);
+				}
+			}
+		}
+	}
 
-    public TreeModel getTreeModelWithAllChildren(long treeId) {
-        TreeModel model = this.getTreeModel(treeId);
-        if (model != null) {
-            this.loadTreeModelWithAllChildren(model);
-            return model;
-        }
-        return null;
-    }
+	private void loadChildrenTreeModels(TreeModel treeModel, List<TreeModel> treeModels) {
+		if (treeModel != null && treeModels != null) {
+			List<TreeModel> rows = this.getSubTreeModels(treeModel.getId());
+			if (rows != null && rows.size() > 0) {
+				for (int i = 0, len = rows.size(); i < len; i++) {
+					TreeModel model = rows.get(i);
+					model.setParent(treeModel);
+					treeModels.add(model);
+					this.loadChildrenTreeModels(model, treeModels);
+				}
+			}
+		}
+	}
 
-    private TreeModel getTreeModelWithAncestor(long nodeId) {
-        TreeModel treeModel = this.getTreeModel(nodeId);
-        if (treeModel != null && treeModel.getParentId() != 0) {
-            TreeModel parent = this.getTreeModelWithAncestor(treeModel.getParentId());
-            if (parent != null) {
-                treeModel.setParent(parent);
-            }
-        }
-        return treeModel;
-    }
+	private void loadTreeModelWithAllChildren(TreeModel root) {
+		List<TreeModel> children = this.getSubTreeModels(root.getId());
+		if (children != null && children.size() > 0) {
+			for (TreeModel model : children) {
+				root.addChild(model);
+				this.loadTreeModelWithAllChildren(model);
+			}
+		}
+	}
 
-    private void loadAncestorTreeNodes(TreeModel treeModel, List<TreeModel> treeModels) {
-        if (treeModel != null && treeModels != null) {
-            treeModels.add(treeModel);
-            if (treeModel.getParentId() != 0) {
-                TreeModel parent = this.getTreeModel(treeModel.getParentId());
-                if (parent != null) {
-                    treeModel.setParent(parent);
-                    this.loadAncestorTreeNodes(parent, treeModels);
-                }
-            }
-        }
-    }
+	@Transactional
+	public void save(TreeModel mxTreeModel) {
+		long parentId = mxTreeModel.getParentId();
+		String parentTreeId = null;
+		TreeModel parent = mxTreeModel.getParent();
+		if (parent != null && parent.getTreeId() != null) {
+			parentTreeId = parent.getTreeId();
+		}
+		if (parentId != 0) {
+			parent = this.getTreeModel(parentId);
+		} else {
+			if (mxTreeModel.getParent() != null) {
+				parent = this.getTreeModelByCode(mxTreeModel.getParent().getCode());
+				if (parent != null) {
+					mxTreeModel.setParentId(parent.getId());
+				}
+			}
+		}
 
-    private void loadChildrenTreeModels(TreeModel treeModel, List<TreeModel> treeModels) {
-        if (treeModel != null && treeModels != null) {
-            List<TreeModel> rows = this.getSubTreeModels(treeModel.getId());
-            if (rows != null && rows.size() > 0) {
-                for (int i = 0, len = rows.size(); i < len; i++) {
-                    TreeModel model = rows.get(i);
-                    model.setParent(treeModel);
-                    treeModels.add(model);
-                    this.loadChildrenTreeModels(model, treeModels);
-                }
-            }
-        }
-    }
+		if (mxTreeModel.getId() == 0) {
+			mxTreeModel.setId(idGenerator.nextId());
+		}
 
-    private void loadTreeModelWithAllChildren(TreeModel root) {
-        List<TreeModel> children = this.getSubTreeModels(root.getId());
-        if (children != null && children.size() > 0) {
-            for (TreeModel model : children) {
-                root.addChild(model);
-                this.loadTreeModelWithAllChildren(model);
-            }
-        }
-    }
+		if (StringUtils.isEmpty(mxTreeModel.getCode())) {
+			mxTreeModel.setCode("code_" + mxTreeModel.getId());
+		}
 
-    @Transactional
-    public void save(TreeModel mxTreeModel) {
-        long parentId = mxTreeModel.getParentId();
-        String parentTreeId = null;
-        TreeModel parent = mxTreeModel.getParent();
-        if (parent != null && parent.getTreeId() != null) {
-            parentTreeId = parent.getTreeId();
-        }
-        if (parentId != 0) {
-            parent = this.getTreeModel(parentId);
-        } else {
-            if (mxTreeModel.getParent() != null) {
-                parent = this.getTreeModelByCode(mxTreeModel.getParent().getCode());
-                if (parent != null) {
-                    mxTreeModel.setParentId(parent.getId());
-                }
-            }
-        }
+		if (parentTreeId != null) {
+			mxTreeModel.setTreeId(parentTreeId + mxTreeModel.getId() + "|");
+		} else {
+			if (parent == null) {
+				mxTreeModel.setTreeId(mxTreeModel.getId() + "|");
+			} else {
+				if (parent.getTreeId() != null) {
+					mxTreeModel.setTreeId(parent.getTreeId() + mxTreeModel.getId() + "|");
+				}
+			}
+		}
 
-        if (mxTreeModel.getId() == 0) {
-            mxTreeModel.setId(idGenerator.nextId());
-        }
+		if (this.getTreeModel(mxTreeModel.getId()) == null) {
+			String statementId = CustomProperties.getString("sys.insertTreeModel");
+			if (StringUtils.isEmpty(statementId)) {
+				statementId = SystemProperties.getString("sys.insertTreeModel");
+			}
 
-        if (StringUtils.isEmpty(mxTreeModel.getCode())) {
-            mxTreeModel.setCode("code_" + mxTreeModel.getId());
-        }
+			if (StringUtils.isEmpty(statementId)) {
+				statementId = "insertTreeModel";
+			}
+			entityDAO.insert(statementId, mxTreeModel);
+		} else {
+			String statementId = CustomProperties.getString("sys.updateTreeModel");
+			if (StringUtils.isEmpty(statementId)) {
+				statementId = SystemProperties.getString("sys.updateTreeModel");
+			}
 
-        if (parentTreeId != null) {
-            mxTreeModel.setTreeId(parentTreeId + mxTreeModel.getId() + "|");
-        } else {
-            if (parent == null) {
-                mxTreeModel.setTreeId(mxTreeModel.getId() + "|");
-            } else {
-                if (parent.getTreeId() != null) {
-                    mxTreeModel.setTreeId(parent.getTreeId() + mxTreeModel.getId() + "|");
-                }
-            }
-        }
+			if (StringUtils.isEmpty(statementId)) {
+				statementId = "updateTreeModel";
+			}
+			entityDAO.update(statementId, mxTreeModel);
+		}
 
-        if (this.getTreeModel(mxTreeModel.getId()) == null) {
-            String statementId = CustomProperties.getString("sys.insertTreeModel");
-            if (StringUtils.isEmpty(statementId)) {
-                statementId = SystemProperties.getString("sys.insertTreeModel");
-            }
+	}
 
-            if (StringUtils.isEmpty(statementId)) {
-                statementId = "insertTreeModel";
-            }
-            entityDAO.insert(statementId, mxTreeModel);
-        } else {
-            String statementId = CustomProperties.getString("sys.updateTreeModel");
-            if (StringUtils.isEmpty(statementId)) {
-                statementId = SystemProperties.getString("sys.updateTreeModel");
-            }
+	@Transactional
+	public void saveAll(List<TreeModel> treeModels) {
+		if (treeModels != null && treeModels.size() > 0) {
+			for (int i = 0, len = treeModels.size(); i < len; i++) {
+				TreeModel treeNode = treeModels.get(i);
+				this.save(treeNode);
+			}
+		}
+	}
 
-            if (StringUtils.isEmpty(statementId)) {
-                statementId = "updateTreeModel";
-            }
-            entityDAO.update(statementId, mxTreeModel);
-        }
+	@javax.annotation.Resource
+	public void setEntityDAO(EntityDAO entityDAO) {
+		this.entityDAO = entityDAO;
+	}
 
-    }
-
-    @Transactional
-    public void saveAll(List<TreeModel> treeModels) {
-        if (treeModels != null && treeModels.size() > 0) {
-            for (int i = 0, len = treeModels.size(); i < len; i++) {
-                TreeModel treeNode = treeModels.get(i);
-                this.save(treeNode);
-            }
-        }
-    }
-
-    @javax.annotation.Resource
-    public void setEntityDAO(EntityDAO entityDAO) {
-        this.entityDAO = entityDAO;
-    }
-
-    @javax.annotation.Resource
-    public void setIdGenerator(IdGenerator idGenerator) {
-        this.idGenerator = idGenerator;
-    }
-
-    private void updateTreeId(TreeModel parent) {
-        if (parent != null && parent.getChildren() != null && !parent.getChildren().isEmpty()) {
-            for (TreeModel t : parent.getChildren()) {
-                t.setTreeId(parent.getTreeId() + t.getId() + "|");
-                this.save(t);
-                this.updateTreeId(t);
-            }
-        }
-    }
+	@javax.annotation.Resource
+	public void setIdGenerator(IdGenerator idGenerator) {
+		this.idGenerator = idGenerator;
+	}
 
 }

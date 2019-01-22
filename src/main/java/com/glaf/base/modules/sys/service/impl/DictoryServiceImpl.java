@@ -59,7 +59,7 @@ public class DictoryServiceImpl implements DictoryService {
 
 	private SysTreeService sysTreeService;
 
-	private DictoryServiceImpl() {
+	public DictoryServiceImpl() {
 
 	}
 

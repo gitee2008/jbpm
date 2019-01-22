@@ -38,260 +38,250 @@ import java.util.List;
 @Service("workCalendarService")
 @Transactional(readOnly = true)
 public class WorkCalendarServiceImpl implements WorkCalendarService {
-    private final static Log logger = LogFactory
-            .getLog(WorkCalendarServiceImpl.class);
+	private final static Log logger = LogFactory.getLog(WorkCalendarServiceImpl.class);
 
-    private IdGenerator idGenerator;
+	private IdGenerator idGenerator;
 
-    private SqlSessionTemplate sqlSessionTemplate;
+	private SqlSessionTemplate sqlSessionTemplate;
 
-    private WorkCalendarMapper workCalendarMapper;
+	private WorkCalendarMapper workCalendarMapper;
 
-    private static final List<Integer> workDateList = new java.util.ArrayList<Integer>();
+	private static final List<Integer> workDateList = new java.util.ArrayList<Integer>();
 
-    private WorkCalendarServiceImpl() {
+	public boolean checkWorkDate(Date date) {
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(date);
+		int year = cal.get(Calendar.YEAR);
+		int month = cal.get(Calendar.MONTH);
+		int day = cal.get(Calendar.DAY_OF_MONTH);
+		logger.info("year:" + year + ", month:" + month + ", day:" + day);
+		WorkCalendar bean = find(year, month + 1, day);
+		return bean == null;
+	}
 
-    }
+	public int count(WorkCalendarQuery query) {
+		return workCalendarMapper.getWorkCalendarCount(query);
+	}
 
-    public boolean checkWorkDate(Date date) {
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(date);
-        int year = cal.get(Calendar.YEAR);
-        int month = cal.get(Calendar.MONTH);
-        int day = cal.get(Calendar.DAY_OF_MONTH);
-        logger.info("year:" + year + ", month:" + month + ", day:" + day);
-        WorkCalendar bean = find(year, month + 1, day);
-        return bean == null;
-    }
+	@Transactional
+	public boolean create(WorkCalendar bean) {
+		StringBuilder buffer = new StringBuilder();
+		buffer.append(bean.getFreeYear());
+		if (bean.getFreeMonth() <= 9) {
+			buffer.append("0");
+		}
+		buffer.append(bean.getFreeMonth());
+		if (bean.getFreeDay() <= 9) {
+			buffer.append("0");
+		}
+		buffer.append(bean.getFreeDay());
+		bean.setId(Long.parseLong(buffer.toString()));
+		this.workCalendarMapper.insertWorkCalendar(bean);
+		return false;
+	}
 
-    public int count(WorkCalendarQuery query) {
-        return workCalendarMapper.getWorkCalendarCount(query);
-    }
+	@Transactional
+	public boolean delete(long id) {
+		this.deleteById(id);
+		return true;
+	}
 
-    @Transactional
-    public boolean create(WorkCalendar bean) {
-        StringBuilder buffer = new StringBuilder();
-        buffer.append(bean.getFreeYear());
-        if (bean.getFreeMonth() <= 9) {
-            buffer.append("0");
-        }
-        buffer.append(bean.getFreeMonth());
-        if (bean.getFreeDay() <= 9) {
-            buffer.append("0");
-        }
-        buffer.append(bean.getFreeDay());
-        bean.setId(Long.parseLong(buffer.toString()));
-        this.workCalendarMapper.insertWorkCalendar(bean);
-        return false;
-    }
+	@Transactional
+	public boolean delete(WorkCalendar bean) {
+		this.deleteById(bean.getId());
+		return true;
+	}
 
-    @Transactional
-    public boolean delete(long id) {
-        this.deleteById(id);
-        return true;
-    }
+	@Transactional
+	public void deleteById(Long id) {
+		if (id != null) {
+			workCalendarMapper.deleteWorkCalendarById(id);
+		}
+	}
 
-    @Transactional
-    public boolean delete(WorkCalendar bean) {
-        this.deleteById(bean.getId());
-        return true;
-    }
+	@Transactional
+	public void deleteByIds(List<Long> rowIds) {
+		if (rowIds != null && !rowIds.isEmpty()) {
+			WorkCalendarQuery query = new WorkCalendarQuery();
+			query.rowIds(rowIds);
+			workCalendarMapper.deleteWorkCalendars(query);
+		}
+	}
 
-    @Transactional
-    public void deleteById(Long id) {
-        if (id != null) {
-            workCalendarMapper.deleteWorkCalendarById(id);
-        }
-    }
+	public WorkCalendar find(int freeYear, int freeMonth, int freeDay) {
+		WorkCalendarQuery query = new WorkCalendarQuery();
+		query.freeYear(freeYear);
+		query.freeMonth(freeMonth);
+		query.freeDay(freeDay);
+		List<WorkCalendar> list = this.list(query);
+		if (list != null && !list.isEmpty()) {
+			return list.get(0);
+		}
+		return null;
+	}
 
-    @Transactional
-    public void deleteByIds(List<Long> rowIds) {
-        if (rowIds != null && !rowIds.isEmpty()) {
-            WorkCalendarQuery query = new WorkCalendarQuery();
-            query.rowIds(rowIds);
-            workCalendarMapper.deleteWorkCalendars(query);
-        }
-    }
+	public WorkCalendar findById(long id) {
+		return this.getWorkCalendar(id);
+	}
 
-    public WorkCalendar find(int freeYear, int freeMonth, int freeDay) {
-        WorkCalendarQuery query = new WorkCalendarQuery();
-        query.freeYear(freeYear);
-        query.freeMonth(freeMonth);
-        query.freeDay(freeDay);
-        List<WorkCalendar> list = this.list(query);
-        if (list != null && !list.isEmpty()) {
-            return list.get(0);
-        }
-        return null;
-    }
+	private WorkCalendar getWorkCalendar(Long id) {
+		if (id == null) {
+			return null;
+		}
+		return workCalendarMapper.getWorkCalendarById(id);
+	}
 
-    public WorkCalendar findById(long id) {
-        return this.getWorkCalendar(id);
-    }
+	public int getWorkCalendarCountByQueryCriteria(WorkCalendarQuery query) {
+		return workCalendarMapper.getWorkCalendarCount(query);
+	}
 
-    private WorkCalendar getWorkCalendar(Long id) {
-        if (id == null) {
-            return null;
-        }
-        return workCalendarMapper.getWorkCalendarById(id);
-    }
+	public List<WorkCalendar> getWorkCalendarsByQueryCriteria(int start, int pageSize, WorkCalendarQuery query) {
+		RowBounds rowBounds = new RowBounds(start, pageSize);
+		return sqlSessionTemplate.selectList("getWorkCalendars", query, rowBounds);
+	}
 
-    public int getWorkCalendarCountByQueryCriteria(WorkCalendarQuery query) {
-        return workCalendarMapper.getWorkCalendarCount(query);
-    }
+	public Date getWorkDate(Date startDate, int interval) {
+		if (startDate == null) {
+			return null;
+		}
+		Date endDate;
 
-    public List<WorkCalendar> getWorkCalendarsByQueryCriteria(int start,
-                                                              int pageSize, WorkCalendarQuery query) {
-        RowBounds rowBounds = new RowBounds(start, pageSize);
-        return sqlSessionTemplate.selectList(
-                "getWorkCalendars", query, rowBounds);
-    }
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(startDate);
+		int year = cal.get(Calendar.YEAR);
+		int month = cal.get(Calendar.MONTH);
 
-    public Date getWorkDate(Date startDate, int interval) {
-        if (startDate == null) {
-            return null;
-        }
-        Date endDate;
+		List<Date> noneWorkDays = new java.util.ArrayList<Date>();
+		if (workDateList.size() == 0)
+			initWorkDate();
+		if (!workDateList.isEmpty()) {
+			Iterator<?> iter = workDateList.iterator();
+			cal.set(Calendar.YEAR, year);
+			cal.set(Calendar.MONTH, month);
+			cal.set(Calendar.DAY_OF_MONTH, ((Integer) iter.next()).intValue());
+			noneWorkDays.add(cal.getTime());
+		}
 
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(startDate);
-        int year = cal.get(Calendar.YEAR);
-        int month = cal.get(Calendar.MONTH);
+		endDate = getWorkDate(startDate, interval, noneWorkDays);
+		return endDate;
+	}
 
-        List<Date> noneWorkDays = new java.util.ArrayList<Date>();
-        if (workDateList.size() == 0)
-            initWorkDate();
-        if (!workDateList.isEmpty()) {
-            Iterator<?> iter = workDateList.iterator();
-            cal.set(Calendar.YEAR, year);
-            cal.set(Calendar.MONTH, month);
-            cal.set(Calendar.DAY_OF_MONTH, ((Integer) iter.next()).intValue());
-            noneWorkDays.add(cal.getTime());
-        }
+	public Date getWorkDate(Date startDate, int interval, List<Date> noneWorkDays) {
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(startDate);
 
-        endDate = getWorkDate(startDate, interval, noneWorkDays);
-        return endDate;
-    }
+		// 按照间隔天数,循环
+		for (int i = 1; i <= interval; i++) {
+			cal.add(Calendar.DAY_OF_MONTH, 1);
+			Date nextDate = cal.getTime();
+			if (noneWorkDays.contains(nextDate)) {// 下一天是非工作日,则往后移
+				return getWorkDate(nextDate, interval + 1 - i, noneWorkDays);
+			}
+		}
+		return cal.getTime();
+	}
 
-    public Date getWorkDate(Date startDate, int interval,
-                            List<Date> noneWorkDays) {
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(startDate);
+	public Date getWorkDate2(Date startDate, int interval) {
+		if (startDate == null) {
+			return null;
+		}
+		Date endDate;
 
-        // 按照间隔天数,循环
-        for (int i = 1; i <= interval; i++) {
-            cal.add(Calendar.DAY_OF_MONTH, 1);
-            Date nextDate = cal.getTime();
-            if (noneWorkDays.contains(nextDate)) {// 下一天是非工作日,则往后移
-                return getWorkDate(nextDate, interval + 1 - i, noneWorkDays);
-            }
-        }
-        return cal.getTime();
-    }
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(startDate);
+		int year = cal.get(Calendar.YEAR);
+		int month = cal.get(Calendar.MONTH);
 
-    public Date getWorkDate2(Date startDate, int interval) {
-        if (startDate == null) {
-            return null;
-        }
-        Date endDate;
+		List<Date> noneWorkDays = new java.util.ArrayList<Date>();
 
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(startDate);
-        int year = cal.get(Calendar.YEAR);
-        int month = cal.get(Calendar.MONTH);
+		// 取连续2个月的非工作日
+		List<Integer> list = getWorkDateList(year, month + 1);
+		if (list != null) {
+			Iterator<Integer> iter = list.iterator();
+			while (iter.hasNext()) {
+				cal.set(Calendar.YEAR, year);
+				cal.set(Calendar.MONTH, month);
+				cal.set(Calendar.DAY_OF_MONTH, iter.next().intValue());
+				noneWorkDays.add(cal.getTime());
+			}
+		}
+		list = getWorkDateList(year, month + 2);
+		if (list != null) {
+			Iterator<Integer> iter = list.iterator();
+			while (iter.hasNext()) {
+				cal.set(Calendar.YEAR, year);
+				cal.set(Calendar.MONTH, month + 1);
+				cal.set(Calendar.DAY_OF_MONTH, iter.next().intValue());
+				noneWorkDays.add(cal.getTime());
+			}
+		}
 
-        List<Date> noneWorkDays = new java.util.ArrayList<Date>();
+		endDate = getWorkDate(startDate, interval, noneWorkDays);
+		return endDate;
+	}
 
-        // 取连续2个月的非工作日
-        List<Integer> list = getWorkDateList(year, month + 1);
-        if (list != null) {
-            Iterator<Integer> iter = list.iterator();
-            while (iter.hasNext()) {
-                cal.set(Calendar.YEAR, year);
-                cal.set(Calendar.MONTH, month);
-                cal.set(Calendar.DAY_OF_MONTH,
-                        iter.next().intValue());
-                noneWorkDays.add(cal.getTime());
-            }
-        }
-        list = getWorkDateList(year, month + 2);
-        if (list != null) {
-            Iterator<Integer> iter = list.iterator();
-            while (iter.hasNext()) {
-                cal.set(Calendar.YEAR, year);
-                cal.set(Calendar.MONTH, month + 1);
-                cal.set(Calendar.DAY_OF_MONTH,
-                        iter.next().intValue());
-                noneWorkDays.add(cal.getTime());
-            }
-        }
+	public List<Integer> getWorkDateList(int freeYear, int freeMonth) {
+		WorkCalendarQuery query = new WorkCalendarQuery();
+		query.freeYear(freeYear);
+		query.freeMonth(freeMonth);
 
-        endDate = getWorkDate(startDate, interval, noneWorkDays);
-        return endDate;
-    }
+		List<WorkCalendar> list = this.list(query);
+		List<Integer> days = new java.util.ArrayList<Integer>();
+		if (list != null && !list.isEmpty()) {
+			for (WorkCalendar cal : list) {
+				days.add(cal.getFreeDay());
+			}
+		}
 
-    public List<Integer> getWorkDateList(int freeYear, int freeMonth) {
-        WorkCalendarQuery query = new WorkCalendarQuery();
-        query.freeYear(freeYear);
-        query.freeMonth(freeMonth);
+		return days;
+	}
 
-        List<WorkCalendar> list = this.list(query);
-        List<Integer> days = new java.util.ArrayList<Integer>();
-        if (list != null && !list.isEmpty()) {
-            for (WorkCalendar cal : list) {
-                days.add(cal.getFreeDay());
-            }
-        }
+	private void initWorkDate() {
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(new Date());
+		int year = cal.get(Calendar.YEAR);
 
-        return days;
-    }
+		workDateList.addAll(getWorkDateList(year - 1, 12));
+		for (int i = 1; i <= 12; i++) {
+			workDateList.addAll(getWorkDateList(year, i));
+		}
+		workDateList.addAll(getWorkDateList(year + 1, 1));
+	}
 
-    private void initWorkDate() {
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(new Date());
-        int year = cal.get(Calendar.YEAR);
+	private List<WorkCalendar> list(WorkCalendarQuery query) {
+		return workCalendarMapper.getWorkCalendars(query);
+	}
 
-        workDateList.addAll(getWorkDateList(year - 1, 12));
-        for (int i = 1; i <= 12; i++) {
-            workDateList.addAll(getWorkDateList(year, i));
-        }
-        workDateList.addAll(getWorkDateList(year + 1, 1));
-    }
+	@Transactional
+	public void save(WorkCalendar workCalendar) {
+		if (workCalendar.getId() == 0) {
+			workCalendar.setId(idGenerator.nextId());
+			// workCalendar.setCreateDate(new Date());
+			workCalendarMapper.insertWorkCalendar(workCalendar);
+		} else {
+			workCalendarMapper.updateWorkCalendar(workCalendar);
+		}
+	}
 
-    private List<WorkCalendar> list(WorkCalendarQuery query) {
-        return workCalendarMapper.getWorkCalendars(query);
-    }
+	@javax.annotation.Resource
+	public void setIdGenerator(IdGenerator idGenerator) {
+		this.idGenerator = idGenerator;
+	}
 
-    @Transactional
-    public void save(WorkCalendar workCalendar) {
-        if (workCalendar.getId() == 0) {
-            workCalendar.setId(idGenerator.nextId());
-            // workCalendar.setCreateDate(new Date());
-            workCalendarMapper.insertWorkCalendar(workCalendar);
-        } else {
-            workCalendarMapper.updateWorkCalendar(workCalendar);
-        }
-    }
+	@javax.annotation.Resource
+	public void setSqlSessionTemplate(SqlSessionTemplate sqlSessionTemplate) {
+		this.sqlSessionTemplate = sqlSessionTemplate;
+	}
 
-    @javax.annotation.Resource
-    public void setIdGenerator(IdGenerator idGenerator) {
-        this.idGenerator = idGenerator;
-    }
+	@javax.annotation.Resource
+	public void setWorkCalendarMapper(WorkCalendarMapper workCalendarMapper) {
+		this.workCalendarMapper = workCalendarMapper;
+	}
 
-    @javax.annotation.Resource
-    public void setSqlSessionTemplate(SqlSessionTemplate sqlSessionTemplate) {
-        this.sqlSessionTemplate = sqlSessionTemplate;
-    }
-
-    @javax.annotation.Resource
-    public void setWorkCalendarMapper(WorkCalendarMapper workCalendarMapper) {
-        this.workCalendarMapper = workCalendarMapper;
-    }
-
-    @Transactional
-    public boolean update(WorkCalendar bean) {
-        workCalendarMapper.updateWorkCalendar(bean);
-        return true;
-    }
+	@Transactional
+	public boolean update(WorkCalendar bean) {
+		workCalendarMapper.updateWorkCalendar(bean);
+		return true;
+	}
 
 }

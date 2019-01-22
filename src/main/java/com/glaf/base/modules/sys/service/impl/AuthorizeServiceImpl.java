@@ -43,8 +43,7 @@ public class AuthorizeServiceImpl implements AuthorizeService {
 	/**
 	 * 用户登陆
 	 * 
-	 * @param userIdOrMobile
-	 *            用户账号或手机号码
+	 * @param userIdOrMobile 用户账号或手机号码
 	 * @param password
 	 * @return
 	 */
@@ -95,8 +94,7 @@ public class AuthorizeServiceImpl implements AuthorizeService {
 	/**
 	 * 用户登陆
 	 * 
-	 * @param userIdOrMobile
-	 *            用户账号或手机号码
+	 * @param userIdOrMobile 用户账号或手机号码
 	 * @param password
 	 * @return
 	 */

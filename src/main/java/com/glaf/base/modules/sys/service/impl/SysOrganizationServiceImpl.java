@@ -19,7 +19,6 @@
 package com.glaf.base.modules.sys.service.impl;
 
 import java.util.Date;
-
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -59,7 +58,7 @@ public class SysOrganizationServiceImpl implements SysOrganizationService {
 
 	private SysOrganizationMapper sysOrganizationMapper;
 
-	private SysOrganizationServiceImpl() {
+	public SysOrganizationServiceImpl() {
 
 	}
 
@@ -371,8 +370,7 @@ public class SysOrganizationServiceImpl implements SysOrganizationService {
 	/**
 	 * 获取列表
 	 * 
-	 * @param parentId
-	 *            long
+	 * @param parentId long
 	 * @return List
 	 */
 	public List<SysOrganization> getSysOrganizationWithChildren(long parentId) {
@@ -456,10 +454,8 @@ public class SysOrganizationServiceImpl implements SysOrganizationService {
 	/**
 	 * 排序
 	 * 
-	 * @param bean
-	 *            SysOrganization
-	 * @param operate
-	 *            int 操作
+	 * @param bean    SysOrganization
+	 * @param operate int 操作
 	 */
 	@Transactional
 	public void sort(long parentId, SysOrganization bean, int operate) {
