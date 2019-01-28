@@ -75,11 +75,6 @@ public class ExportAppBean {
 		try {
 			srcDatabase = databaseService.getDatabaseById(exportApp.getSrcDatabaseId());
 			Environment.setCurrentSystemName(srcDatabase.getName());
-			for (ExportItem item : items) {
-				if (item.getLocked() == 1) {
-					continue;
-				}
-			}
 
 			for (ExportItem item : items) {
 				if (item.getLocked() == 1) {
@@ -219,10 +214,12 @@ public class ExportAppBean {
 						if (sourceResultList != null && !sourceResultList.isEmpty()) {
 							List<Map<String, Object>> dataList = new ArrayList<Map<String, Object>>();
 							for (Map<String, Object> rowMap : sourceResultList) {
-								LowerLinkedMap dataMap2 = new LowerLinkedMap();
-								dataMap2.putAll(parameter);
-								dataMap2.putAll(rowMap);
-								dataList.add(dataMap2);
+								if (rowMap != null) {
+									LowerLinkedMap dataMap2 = new LowerLinkedMap();
+									dataMap2.putAll(parameter);
+									dataMap2.putAll(rowMap);
+									dataList.add(dataMap2);
+								}
 							}
 							sourceResultList.clear();
 
@@ -294,7 +291,7 @@ public class ExportAppBean {
 				item.setDataList(dataListMap.values());
 			}
 		} catch (Exception ex) {
-			// ex.printStackTrace();
+			ex.printStackTrace();
 			logger.error("execute sql error", ex);
 			throw new RuntimeException(ex);
 		} finally {
