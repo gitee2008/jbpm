@@ -34,7 +34,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
+ 
 import com.glaf.core.context.ContextFactory;
 import com.glaf.core.domain.ColumnDefinition;
 import com.glaf.core.domain.Database;
@@ -91,10 +91,6 @@ public class LoopSqlToTableBatchBean {
 			srcDatabase = databaseService.getDatabaseById(Long.parseLong(app.getSourceDatabaseId()));
 			targetDatabase = databaseService.getDatabaseById(Long.parseLong(app.getTargetDatabaseId()));
 
-			if (srcDatabase != null) {
-				srcConn = DBConnectionFactory.getConnection(srcDatabase.getName());
-			}
-
 			if (targetDatabase != null) {
 				targetConn = DBConnectionFactory.getConnection(targetDatabase.getName());
 				logger.debug("targetConn:" + targetConn);
@@ -102,7 +98,7 @@ public class LoopSqlToTableBatchBean {
 				targetConn = DBConnectionFactory.getConnection();
 			}
 
-			if (targetConn != null) {
+			if (srcDatabase != null && targetConn != null) {
 				List<ColumnDefinition> columns = null;
 				boolean tableExists = false;
 				if (DBUtils.tableExists(targetConn, app.getTargetTableName())) {
@@ -162,13 +158,6 @@ public class LoopSqlToTableBatchBean {
 					throw new RuntimeException(" SQL statement illegal ");
 				}
 
-				if (targetDatabase != null) {
-					targetConn = DBConnectionFactory.getConnection(targetDatabase.getName());
-					logger.debug("targetConn:" + targetConn);
-				} else {
-					targetConn = DBConnectionFactory.getConnection();
-				}
-
 				Date startDate = app.getStartDate();
 				Date stopDate = app.getStopDate();
 
@@ -176,7 +165,9 @@ public class LoopSqlToTableBatchBean {
 					stopDate = new Date();
 				}
 
+				srcConn = DBConnectionFactory.getConnection(srcDatabase.getName());
 				String sourceDatabaseType = DBConnectionFactory.getDatabaseType(srcConn);
+
 				parameter.put("loop_date_var", DateUtils.getYearMonthDay(stopDate));
 				if (StringUtils.equals(sourceDatabaseType, "oracle")) {
 					parameter.put("loop_date_start_var", DateUtils.getDate(stopDate) + " 00:00:00");
@@ -192,11 +183,20 @@ public class LoopSqlToTableBatchBean {
 				sql = QueryUtils.replaceSQLVars(sql, parameter);
 				logger.debug("query sql:" + sql);
 				List<ColumnDefinition> cols = helper.getColumns(srcConn, sql, parameter);
+				JdbcUtils.close(srcConn);
+
 				for (ColumnDefinition col : cols) {
 					if (StringUtils.equals(col.getJavaType(), "String")) {
 						col.setLength(1000);
 					}
 					tableDefinition.addColumn(col);
+				}
+
+				if (targetDatabase != null) {
+					targetConn = DBConnectionFactory.getConnection(targetDatabase.getName());
+					logger.debug("targetConn:" + targetConn);
+				} else {
+					targetConn = DBConnectionFactory.getConnection();
 				}
 
 				tableExists = DBUtils.tableExists(targetConn, tableDefinition.getTableName());
@@ -210,9 +210,9 @@ public class LoopSqlToTableBatchBean {
 						tbCol.setColumnName(col.getColumnName());
 						tbCol.setJavaType(col.getJavaType());
 						tbCol.setLength(col.getLength());
-						tbCol.setTableId("loop_sql_table_" + syncId);
-						tbCol.setId("loop_sql_table_" + syncId + "_" + col.getColumnName());
-						tableService.saveColumn("loop_sql_table_" + syncId, tbCol);
+						tbCol.setTableId("loop_sql_to_table_" + syncId);
+						tbCol.setId("loop_sql_to_table_" + syncId + "_" + col.getColumnName());
+						tableService.saveColumn("loop_sql_to_table_" + syncId, tbCol);
 					}
 				} else {
 					DBUtils.alterTable(targetConn, tableDefinition);
@@ -222,26 +222,33 @@ public class LoopSqlToTableBatchBean {
 						tbCol.setColumnName(col.getColumnName());
 						tbCol.setJavaType(col.getJavaType());
 						tbCol.setLength(col.getLength());
-						tbCol.setTableId("loop_sql_table_" + syncId);
-						tbCol.setId("loop_sql_table_" + syncId + "_" + col.getColumnName());
-						tableService.saveColumn("loop_sql_table_" + syncId, tbCol);
+						tbCol.setTableId("loop_sql_to_table_" + syncId);
+						tbCol.setId("loop_sql_to_table_" + syncId + "_" + col.getColumnName());
+						tableService.saveColumn("loop_sql_to_table_" + syncId, tbCol);
 					}
 				}
 
+				targetConn.commit();
+				JdbcUtils.close(targetConn);
+
 				if (!StringUtils.equals(app.getDeleteFetch(), "Y")) {
-					psmt = targetConn.prepareStatement("select ex_id_ from " + app.getTargetTableName()
-							+ " where ex_syncid_ = '" + app.getId() + "' ");
+					if (targetDatabase != null) {
+						targetConn = DBConnectionFactory.getConnection(targetDatabase.getName());
+						logger.debug("targetConn:" + targetConn);
+					} else {
+						targetConn = DBConnectionFactory.getConnection();
+					}
+					psmt = targetConn.prepareStatement("select EX_ID_ from " + app.getTargetTableName()
+							+ " where EX_SYNCID_ = '" + app.getId() + "' ");
 					rs = psmt.executeQuery();
 					while (rs.next()) {
 						String key = rs.getString(1);
 						keyMap.put(key, key);
 					}
-					JdbcUtils.close(psmt);
 					JdbcUtils.close(rs);
+					JdbcUtils.close(psmt);
+					JdbcUtils.close(targetConn);
 				}
-
-				targetConn.commit();
-				JdbcUtils.close(targetConn);
 
 				logger.debug("columns:" + columns);
 
@@ -254,6 +261,8 @@ public class LoopSqlToTableBatchBean {
 					}
 				}
 
+				logger.debug("startDate:" + DateUtils.getDateTime(startDate));
+				logger.debug("stopDate:" + DateUtils.getDateTime(stopDate));
 				if (startDate != null && startDate.getTime() < stopDate.getTime()) {
 					calendar.setTime(startDate);
 					String primaryKey = app.getPrimaryKey();
@@ -277,6 +286,8 @@ public class LoopSqlToTableBatchBean {
 						sql = app.getSql();
 						sql = QueryUtils.replaceSQLVars(sql, parameter);
 						logger.debug("query sql:" + sql);
+
+						srcConn = DBConnectionFactory.getConnection(srcDatabase.getName());
 						if (StringUtils.equals(app.getSkipError(), "Y")) {
 							try {
 								resultList = helper.getResultList(srcConn, sql, parameter);
@@ -285,6 +296,8 @@ public class LoopSqlToTableBatchBean {
 						} else {
 							resultList = helper.getResultList(srcConn, sql, parameter);
 						}
+						JdbcUtils.close(srcConn);
+
 						if (resultList != null && !resultList.isEmpty()) {
 							days.add(DateUtils.getDate(calendar.getTime()));
 							for (Map<String, Object> dataMap : resultList) {
@@ -328,8 +341,8 @@ public class LoopSqlToTableBatchBean {
 						targetConn.setAutoCommit(false);
 						if (StringUtils.equals(app.getDeleteFetch(), "Y")) {
 							for (String day : days) {
-								String delSQL = " delete from " + app.getTargetTableName() + " where ex_syncid_ = '"
-										+ app.getId() + "' " + " and ex_date_ = '" + day + "' ";
+								String delSQL = " delete from " + app.getTargetTableName() + " where EX_SYNCID_ = '"
+										+ app.getId() + "' " + " and EX_DATE_ = '" + day + "' ";
 								DBUtils.executeSchemaResource(targetConn, delSQL);
 								logger.debug("delete sql:" + delSQL);
 							}

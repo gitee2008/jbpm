@@ -29,6 +29,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ForkJoinPool;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -38,17 +39,13 @@ import com.glaf.core.context.ContextFactory;
 import com.glaf.core.domain.ColumnDefinition;
 import com.glaf.core.domain.Database;
 import com.glaf.core.domain.TableDefinition;
-import com.glaf.core.jdbc.BulkInsertBean;
 import com.glaf.core.jdbc.DBConnectionFactory;
 import com.glaf.core.jdbc.QueryHelper;
 import com.glaf.core.service.IDatabaseService;
 import com.glaf.core.util.DBUtils;
 import com.glaf.core.util.DateUtils;
 import com.glaf.core.util.JdbcUtils;
-import com.glaf.core.util.LowerLinkedMap;
-import com.glaf.core.util.ParamUtils;
 import com.glaf.core.util.QueryUtils;
-import com.glaf.core.util.UUID32;
 import com.glaf.matrix.cycle.domain.LoopSqlToTable;
 import com.glaf.matrix.cycle.service.LoopSqlToTableService;
 import com.glaf.matrix.data.domain.TableColumn;
@@ -88,10 +85,6 @@ public class LoopSqlToTableBean {
 			srcDatabase = databaseService.getDatabaseById(Long.parseLong(app.getSourceDatabaseId()));
 			targetDatabase = databaseService.getDatabaseById(Long.parseLong(app.getTargetDatabaseId()));
 
-			if (srcDatabase != null) {
-				srcConn = DBConnectionFactory.getConnection(srcDatabase.getName());
-			}
-
 			if (targetDatabase != null) {
 				targetConn = DBConnectionFactory.getConnection(targetDatabase.getName());
 				logger.debug("targetConn:" + targetConn);
@@ -99,7 +92,7 @@ public class LoopSqlToTableBean {
 				targetConn = DBConnectionFactory.getConnection();
 			}
 
-			if (targetConn != null) {
+			if (srcDatabase != null && targetConn != null) {
 				List<ColumnDefinition> columns = null;
 				boolean tableExists = false;
 				if (DBUtils.tableExists(targetConn, app.getTargetTableName())) {
@@ -159,13 +152,6 @@ public class LoopSqlToTableBean {
 					throw new RuntimeException(" SQL statement illegal ");
 				}
 
-				if (targetDatabase != null) {
-					targetConn = DBConnectionFactory.getConnection(targetDatabase.getName());
-					logger.debug("targetConn:" + targetConn);
-				} else {
-					targetConn = DBConnectionFactory.getConnection();
-				}
-
 				Date startDate = app.getStartDate();
 				Date stopDate = app.getStopDate();
 
@@ -173,7 +159,9 @@ public class LoopSqlToTableBean {
 					stopDate = new Date();
 				}
 
+				srcConn = DBConnectionFactory.getConnection(srcDatabase.getName());
 				String sourceDatabaseType = DBConnectionFactory.getDatabaseType(srcConn);
+
 				parameter.put("loop_date_var", DateUtils.getYearMonthDay(stopDate));
 				if (StringUtils.equals(sourceDatabaseType, "oracle")) {
 					parameter.put("loop_date_start_var", DateUtils.getDate(stopDate) + " 00:00:00");
@@ -198,6 +186,13 @@ public class LoopSqlToTableBean {
 					tableDefinition.addColumn(col);
 				}
 
+				if (targetDatabase != null) {
+					targetConn = DBConnectionFactory.getConnection(targetDatabase.getName());
+					logger.debug("targetConn:" + targetConn);
+				} else {
+					targetConn = DBConnectionFactory.getConnection();
+				}
+
 				tableExists = DBUtils.tableExists(targetConn, tableDefinition.getTableName());
 
 				targetConn.setAutoCommit(false);
@@ -209,9 +204,9 @@ public class LoopSqlToTableBean {
 						tbCol.setColumnName(col.getColumnName());
 						tbCol.setJavaType(col.getJavaType());
 						tbCol.setLength(col.getLength());
-						tbCol.setTableId("loop_sql_table_" + syncId);
-						tbCol.setId("loop_sql_table_" + syncId + "_" + col.getColumnName());
-						tableService.saveColumn("loop_sql_table_" + syncId, tbCol);
+						tbCol.setTableId("loop_sql_to_table_" + syncId);
+						tbCol.setId("loop_sql_to_table_" + syncId + "_" + col.getColumnName());
+						tableService.saveColumn("loop_sql_to_table_" + syncId, tbCol);
 					}
 				} else {
 					DBUtils.alterTable(targetConn, tableDefinition);
@@ -221,26 +216,35 @@ public class LoopSqlToTableBean {
 						tbCol.setColumnName(col.getColumnName());
 						tbCol.setJavaType(col.getJavaType());
 						tbCol.setLength(col.getLength());
-						tbCol.setTableId("loop_sql_table_" + syncId);
-						tbCol.setId("loop_sql_table_" + syncId + "_" + col.getColumnName());
-						tableService.saveColumn("loop_sql_table_" + syncId, tbCol);
+						tbCol.setTableId("loop_sql_to_table_" + syncId);
+						tbCol.setId("loop_sql_to_table_" + syncId + "_" + col.getColumnName());
+						tableService.saveColumn("loop_sql_to_table_" + syncId, tbCol);
 					}
 				}
 
+				targetConn.commit();
+				JdbcUtils.close(targetConn);
+
 				if (!StringUtils.equals(app.getDeleteFetch(), "Y")) {
-					psmt = targetConn.prepareStatement("select ex_id_ from " + app.getTargetTableName()
-							+ " where ex_syncid_ = '" + app.getId() + "' ");
+					if (targetDatabase != null) {
+						targetConn = DBConnectionFactory.getConnection(targetDatabase.getName());
+						logger.debug("targetConn:" + targetConn);
+					} else {
+						targetConn = DBConnectionFactory.getConnection();
+					}
+					psmt = targetConn.prepareStatement("select EX_ID_ from " + app.getTargetTableName()
+							+ " where EX_SYNCID_ = '" + app.getId() + "' ");
 					rs = psmt.executeQuery();
 					while (rs.next()) {
 						String key = rs.getString(1);
 						keyMap.put(key, key);
 					}
-					JdbcUtils.close(psmt);
 					JdbcUtils.close(rs);
+					JdbcUtils.close(psmt);
+					JdbcUtils.close(targetConn);
 				}
 
-				targetConn.commit();
-				JdbcUtils.close(targetConn);
+				// JdbcUtils.close(targetConn);
 
 				logger.debug("columns:" + columns);
 
@@ -253,13 +257,15 @@ public class LoopSqlToTableBean {
 					}
 				}
 
+				logger.debug("startDate:" + DateUtils.getDateTime(startDate));
+				logger.debug("stopDate:" + DateUtils.getDateTime(stopDate));
 				if (startDate != null && startDate.getTime() < stopDate.getTime()) {
 					calendar.setTime(startDate);
 					String primaryKey = app.getPrimaryKey();
 					if (StringUtils.isNotEmpty(primaryKey)) {
 						primaryKey = primaryKey.trim().toLowerCase();
 					}
-
+					ForkJoinPool forkJoinPool = ForkJoinPool.commonPool();
 					while (calendar.getTime().getTime() < stopDate.getTime()) {
 						calendar.add(Calendar.DAY_OF_YEAR, 1);// 每次增加一天
 						parameter.put("loop_date_var", DateUtils.getYearMonthDay(calendar.getTime()));
@@ -271,108 +277,14 @@ public class LoopSqlToTableBean {
 							parameter.put("loop_date_end_var", DateUtils.getDate(calendar.getTime()) + " 23:59:59");
 						}
 						logger.debug("date start:" + DateUtils.getDate(calendar.getTime()));
-						this.saveDaily(srcDatabase, targetDatabase, app, parameter, tableDefinition, calendar.getTime(),
-								keyMap);
+						SaveDataAction task = new SaveDataAction(srcDatabase, targetDatabase, app, parameter,
+								tableDefinition, calendar.getTime(), keyMap);
+						forkJoinPool.execute(task);
+						Thread.sleep(200);
 					}
 				}
 			}
 			return true;
-		} catch (Exception ex) {
-			// ex.printStackTrace();
-			logger.error("execute sync error", ex);
-			throw new RuntimeException(ex);
-		} finally {
-			JdbcUtils.close(rs);
-			JdbcUtils.close(psmt);
-			JdbcUtils.close(srcConn);
-			JdbcUtils.close(targetConn);
-		}
-	}
-
-	protected void saveDaily(Database srcDatabase, Database targetDatabase, LoopSqlToTable app,
-			Map<String, Object> parameter, TableDefinition tableDefinition, Date date, Map<String, String> keyMap) {
-		Map<String, Map<String, Object>> dataListMap = new HashMap<String, Map<String, Object>>();
-		List<Map<String, Object>> insertList = new ArrayList<Map<String, Object>>();
-		QueryHelper helper = new QueryHelper();
-		List<Map<String, Object>> resultList = null;
-		LowerLinkedMap rowMap = null;
-		Connection srcConn = null;
-		Connection targetConn = null;
-		PreparedStatement psmt = null;
-		ResultSet rs = null;
-		String primaryKey = app.getPrimaryKey();
-		String sql = app.getSql();
-		try {
-			if (srcDatabase != null) {
-				srcConn = DBConnectionFactory.getConnection(srcDatabase.getName());
-			}
-
-			sql = QueryUtils.replaceSQLVars(sql, parameter);
-			logger.debug("query sql:" + sql);
-			if (StringUtils.equals(app.getSkipError(), "Y")) {
-				try {
-					resultList = helper.getResultList(srcConn, sql, parameter);
-				} catch (java.lang.Throwable ex) {
-				}
-			} else {
-				resultList = helper.getResultList(srcConn, sql, parameter);
-			}
-			JdbcUtils.close(srcConn);
-
-			if (resultList != null && !resultList.isEmpty()) {
-				for (Map<String, Object> dataMap : resultList) {
-					rowMap = new LowerLinkedMap();
-					rowMap.putAll(dataMap);
-					if (StringUtils.isNotEmpty(primaryKey)) {
-						String key = ParamUtils.getString(rowMap, primaryKey);
-						if (keyMap.get(app.getId() + "_" + key) == null) {
-							rowMap.put("ex_id_", app.getId() + "_" + key);
-							rowMap.put("ex_syncid_", app.getId());
-							rowMap.put("ex_databaseid_", srcDatabase.getId());
-							rowMap.put("ex_discriminator_", srcDatabase.getDiscriminator());
-							rowMap.put("ex_mapping_", srcDatabase.getMapping());
-							rowMap.put("ex_date_", DateUtils.getDate(date));
-							keyMap.put(app.getId() + "_" + key, srcDatabase.getId() + "_" + key);
-							insertList.add(rowMap);
-						}
-					} else {
-						rowMap.put("ex_id_", app.getId() + "_" + UUID32.getUUID());
-						rowMap.put("ex_syncid_", app.getId());
-						rowMap.put("ex_databaseid_", srcDatabase.getId());
-						rowMap.put("ex_discriminator_", srcDatabase.getDiscriminator());
-						rowMap.put("ex_mapping_", srcDatabase.getMapping());
-						rowMap.put("ex_date_", DateUtils.getDate(date));
-						insertList.add(rowMap);
-					}
-				}
-
-				if (insertList.size() > 0) {
-					if (targetDatabase != null) {
-						targetConn = DBConnectionFactory.getConnection(targetDatabase.getName());
-						logger.debug("targetConn:" + targetConn);
-					} else {
-						targetConn = DBConnectionFactory.getConnection();
-					}
-					BulkInsertBean insertBean = new BulkInsertBean();
-					targetConn.setAutoCommit(false);
-					if (StringUtils.equals(app.getDeleteFetch(), "Y")) {
-						String day = DateUtils.getDate(date);
-						String delSQL = " delete from " + app.getTargetTableName() + " where ex_syncid_ = '"
-								+ app.getId() + "' " + " and ex_date_ = '" + day + "' ";
-						DBUtils.executeSchemaResource(targetConn, delSQL);
-						logger.debug("delete sql:" + delSQL);
-
-					}
-					insertBean.bulkInsert(null, targetConn, tableDefinition, insertList);
-					targetConn.commit();
-					JdbcUtils.close(targetConn);
-				}
-				insertList.clear();
-				dataListMap.clear();
-				insertList = null;
-				dataListMap = null;
-			}
-
 		} catch (Exception ex) {
 			// ex.printStackTrace();
 			logger.error("execute sync error", ex);
