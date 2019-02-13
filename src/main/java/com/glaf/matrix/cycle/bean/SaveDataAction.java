@@ -99,74 +99,72 @@ public class SaveDataAction extends RecursiveAction {
 		try {
 			if (srcDatabase != null) {
 				srcConn = DBConnectionFactory.getConnection(srcDatabase.getName());
-			}
 
-			sql = QueryUtils.replaceSQLVars(sql, parameter);
-			logger.debug("query sql:" + sql);
-			if (StringUtils.equals(app.getSkipError(), "Y")) {
-				try {
+				sql = QueryUtils.replaceSQLVars(sql, parameter);
+				logger.debug("query sql:" + sql);
+				if (StringUtils.equals(app.getSkipError(), "Y")) {
+					try {
+						resultList = helper.getResultList(srcConn, sql, parameter);
+					} catch (java.lang.Throwable ex) {
+					}
+				} else {
 					resultList = helper.getResultList(srcConn, sql, parameter);
-				} catch (java.lang.Throwable ex) {
 				}
-			} else {
-				resultList = helper.getResultList(srcConn, sql, parameter);
-			}
-			JdbcUtils.close(srcConn);
+				JdbcUtils.close(srcConn);
 
-			if (resultList != null && !resultList.isEmpty()) {
-				for (Map<String, Object> dataMap : resultList) {
-					rowMap = new LowerLinkedMap();
-					rowMap.putAll(dataMap);
-					if (StringUtils.isNotEmpty(primaryKey)) {
-						String key = ParamUtils.getString(rowMap, primaryKey);
-						if (keyMap.get(app.getId() + "_" + key) == null) {
-							rowMap.put("ex_id_", app.getId() + "_" + key);
+				if (resultList != null && !resultList.isEmpty()) {
+					for (Map<String, Object> dataMap : resultList) {
+						rowMap = new LowerLinkedMap();
+						rowMap.putAll(dataMap);
+						if (StringUtils.isNotEmpty(primaryKey)) {
+							String key = ParamUtils.getString(rowMap, primaryKey);
+							if (keyMap.get(app.getId() + "_" + key) == null) {
+								rowMap.put("ex_id_", app.getId() + "_" + key);
+								rowMap.put("ex_syncid_", app.getId());
+								rowMap.put("ex_databaseid_", srcDatabase.getId());
+								rowMap.put("ex_discriminator_", srcDatabase.getDiscriminator());
+								rowMap.put("ex_mapping_", srcDatabase.getMapping());
+								rowMap.put("ex_date_", DateUtils.getDate(date));
+								keyMap.put(app.getId() + "_" + key, srcDatabase.getId() + "_" + key);
+								insertList.add(rowMap);
+							}
+						} else {
+							rowMap.put("ex_id_", app.getId() + "_" + UUID32.getUUID());
 							rowMap.put("ex_syncid_", app.getId());
 							rowMap.put("ex_databaseid_", srcDatabase.getId());
 							rowMap.put("ex_discriminator_", srcDatabase.getDiscriminator());
 							rowMap.put("ex_mapping_", srcDatabase.getMapping());
 							rowMap.put("ex_date_", DateUtils.getDate(date));
-							keyMap.put(app.getId() + "_" + key, srcDatabase.getId() + "_" + key);
 							insertList.add(rowMap);
 						}
-					} else {
-						rowMap.put("ex_id_", app.getId() + "_" + UUID32.getUUID());
-						rowMap.put("ex_syncid_", app.getId());
-						rowMap.put("ex_databaseid_", srcDatabase.getId());
-						rowMap.put("ex_discriminator_", srcDatabase.getDiscriminator());
-						rowMap.put("ex_mapping_", srcDatabase.getMapping());
-						rowMap.put("ex_date_", DateUtils.getDate(date));
-						insertList.add(rowMap);
 					}
-				}
 
-				if (insertList.size() > 0) {
-					if (targetDatabase != null) {
-						targetConn = DBConnectionFactory.getConnection(targetDatabase.getName());
-						logger.debug("targetConn:" + targetConn);
-					} else {
-						targetConn = DBConnectionFactory.getConnection();
+					if (insertList.size() > 0) {
+						if (targetDatabase != null) {
+							targetConn = DBConnectionFactory.getConnection(targetDatabase.getName());
+							logger.debug("targetConn:" + targetConn);
+						} else {
+							targetConn = DBConnectionFactory.getConnection();
+						}
+						BulkInsertBean insertBean = new BulkInsertBean();
+						targetConn.setAutoCommit(false);
+						if (StringUtils.equals(app.getDeleteFetch(), "Y")) {
+							String day = DateUtils.getDate(date);
+							String delSQL = " delete from " + app.getTargetTableName() + " where EX_SYNCID_ = '"
+									+ app.getId() + "' and EX_DATE_ = '" + day + "' ";
+							DBUtils.executeSchemaResource(targetConn, delSQL);
+							logger.debug("delete sql:" + delSQL);
+						}
+						insertBean.bulkInsert(null, targetConn, tableDefinition, insertList);
+						targetConn.commit();
+						JdbcUtils.close(targetConn);
 					}
-					BulkInsertBean insertBean = new BulkInsertBean();
-					targetConn.setAutoCommit(false);
-					if (StringUtils.equals(app.getDeleteFetch(), "Y")) {
-						String day = DateUtils.getDate(date);
-						String delSQL = " delete from " + app.getTargetTableName() + " where EX_SYNCID_ = '"
-								+ app.getId() + "' " + " and EX_DATE_ = '" + day + "' ";
-						DBUtils.executeSchemaResource(targetConn, delSQL);
-						logger.debug("delete sql:" + delSQL);
-
-					}
-					insertBean.bulkInsert(null, targetConn, tableDefinition, insertList);
-					targetConn.commit();
-					JdbcUtils.close(targetConn);
+					insertList.clear();
+					dataListMap.clear();
+					insertList = null;
+					dataListMap = null;
 				}
-				insertList.clear();
-				dataListMap.clear();
-				insertList = null;
-				dataListMap = null;
 			}
-
 		} catch (Exception ex) {
 			// ex.printStackTrace();
 			logger.error("execute sync error", ex);

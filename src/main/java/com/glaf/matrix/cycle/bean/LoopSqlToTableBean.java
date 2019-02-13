@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -279,8 +280,13 @@ public class LoopSqlToTableBean {
 						logger.debug("date start:" + DateUtils.getDate(calendar.getTime()));
 						SaveDataAction task = new SaveDataAction(srcDatabase, targetDatabase, app, parameter,
 								tableDefinition, calendar.getTime(), keyMap);
-						forkJoinPool.execute(task);
+						forkJoinPool.submit(task);
 						Thread.sleep(200);
+					}
+					// 线程阻塞，等待所有任务完成
+					try {
+						forkJoinPool.awaitTermination(2, TimeUnit.SECONDS);
+					} catch (InterruptedException ex) {
 					}
 				}
 			}
