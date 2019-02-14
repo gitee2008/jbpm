@@ -112,7 +112,7 @@
 	<classpathentry kind="lib" path="webapps/glaf/WEB-INF/lib/logback-core.jar"/>
 	<classpathentry kind="lib" path="webapps/glaf/WEB-INF/lib/mail.jar"/>
 	<classpathentry kind="lib" path="webapps/glaf/WEB-INF/lib/minlog.jar"/>
-	<classpathentry kind="lib" path="webapps/glaf/WEB-INF/lib/mongo-java-driver.jar"/>
+	<classpathentry kind="lib" path="webapps/glaf/WEB-INF/lib/mongo-java-driver.jar" sourcepath="lib/mongo-java-driver-sources.jar"/>
 	<classpathentry kind="lib" path="webapps/glaf/WEB-INF/lib/mvel2.jar"/>
 	<classpathentry kind="lib" path="webapps/glaf/WEB-INF/lib/mybatis-spring.jar"/>
 	<classpathentry kind="lib" path="webapps/glaf/WEB-INF/lib/mybatis.jar"/>
