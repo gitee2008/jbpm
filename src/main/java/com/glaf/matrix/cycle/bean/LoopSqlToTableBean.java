@@ -164,6 +164,8 @@ public class LoopSqlToTableBean {
 				String sourceDatabaseType = DBConnectionFactory.getDatabaseType(srcConn);
 
 				parameter.put("loop_date_var", DateUtils.getYearMonthDay(stopDate));
+				parameter.put("loop_date_previous_var", DateUtils.getYesterdayYearMonthDay(stopDate));
+
 				if (StringUtils.equals(sourceDatabaseType, "oracle")) {
 					parameter.put("loop_date_start_var", DateUtils.getDate(stopDate) + " 00:00:00");
 					parameter.put("loop_date_end_var", DateUtils.getDate(stopDate) + " 23:59:59");
@@ -270,18 +272,27 @@ public class LoopSqlToTableBean {
 					while (calendar.getTime().getTime() < stopDate.getTime()) {
 						calendar.add(Calendar.DAY_OF_YEAR, 1);// 每次增加一天
 						parameter.put("loop_date_var", DateUtils.getYearMonthDay(calendar.getTime()));
+						parameter.put("loop_date_previous_var", DateUtils.getYesterdayYearMonthDay(calendar.getTime()));
 						if (StringUtils.equals(sourceDatabaseType, "oracle")) {
 							parameter.put("loop_date_start_var", DateUtils.getDate(calendar.getTime()) + " 00:00:00");
 							parameter.put("loop_date_end_var", DateUtils.getDate(calendar.getTime()) + " 23:59:59");
+							parameter.put("loop_date_previous_start_var",
+									DateUtils.getDateBefore(calendar.getTime(), 1) + " 00:00:00");
+							parameter.put("loop_date_previous_end_var",
+									DateUtils.getDateBefore(calendar.getTime(), 1) + " 23:59:59");
 						} else {
 							parameter.put("loop_date_start_var", DateUtils.getDate(calendar.getTime()) + " 00:00:00");
 							parameter.put("loop_date_end_var", DateUtils.getDate(calendar.getTime()) + " 23:59:59");
+							parameter.put("loop_date_previous_start_var",
+									DateUtils.getDateBefore(calendar.getTime(), 1) + " 00:00:00");
+							parameter.put("loop_date_previous_end_var",
+									DateUtils.getDateBefore(calendar.getTime(), 1) + " 23:59:59");
 						}
 						logger.debug("date start:" + DateUtils.getDate(calendar.getTime()));
 						SaveDataAction task = new SaveDataAction(srcDatabase, targetDatabase, app, parameter,
 								tableDefinition, calendar.getTime(), keyMap);
 						forkJoinPool.submit(task);
-						Thread.sleep(200);
+						Thread.sleep(20);
 					}
 					// 线程阻塞，等待所有任务完成
 					try {

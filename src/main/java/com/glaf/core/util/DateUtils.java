@@ -298,14 +298,6 @@ public class DateUtils {
 		return returnStr;
 	}
 
-	public static String getNowYearMonthDayHour() {
-		String returnStr = null;
-		SimpleDateFormat f = new SimpleDateFormat("yyyyMMddHH");
-		Date date = new Date();
-		returnStr = f.format(date);
-		return returnStr;
-	}
-
 	public static String getNowYearMonthDayHHmmss() {
 		String returnStr = null;
 		SimpleDateFormat f = new SimpleDateFormat("yyyyMMddHHmmss");
@@ -314,47 +306,12 @@ public class DateUtils {
 		return returnStr;
 	}
 
-	public static List<Integer> getYearDays(int year) {
-		List<Integer> list = new ArrayList<Integer>();
-		StringBuilder buff = new StringBuilder();
-		for (int i = 1; i <= 12; i++) {
-			int day = 30;
-			switch (i) {
-			case 1:
-			case 3:
-			case 5:
-			case 7:
-			case 8:
-			case 10:
-			case 12:
-				day = 31;
-				break;
-			case 2:
-				if (year % 4 == 0 || year % 400 == 0) {
-					day = 29;
-				} else {
-					day = 28;
-				}
-				break;
-			default:
-				day = 30;
-				break;
-			}
-			for (int j = 1; j <= day; j++) {
-				buff.delete(0, buff.length());
-				buff.append(year);
-				if (i < 10) {
-					buff.append("0");
-				}
-				buff.append(i);
-				if (j < 10) {
-					buff.append("0");
-				}
-				buff.append(j);
-				list.add(Integer.valueOf(buff.toString()));
-			}
-		}
-		return list;
+	public static String getNowYearMonthDayHour() {
+		String returnStr = null;
+		SimpleDateFormat f = new SimpleDateFormat("yyyyMMddHH");
+		Date date = new Date();
+		returnStr = f.format(date);
+		return returnStr;
 	}
 
 	/**
@@ -406,6 +363,49 @@ public class DateUtils {
 		return getWorkingDay(cal1, cal2);
 	}
 
+	public static List<Integer> getYearDays(int year) {
+		List<Integer> list = new ArrayList<Integer>();
+		StringBuilder buff = new StringBuilder();
+		for (int i = 1; i <= 12; i++) {
+			int day = 30;
+			switch (i) {
+			case 1:
+			case 3:
+			case 5:
+			case 7:
+			case 8:
+			case 10:
+			case 12:
+				day = 31;
+				break;
+			case 2:
+				if (year % 4 == 0 || year % 400 == 0) {
+					day = 29;
+				} else {
+					day = 28;
+				}
+				break;
+			default:
+				day = 30;
+				break;
+			}
+			for (int j = 1; j <= day; j++) {
+				buff.delete(0, buff.length());
+				buff.append(year);
+				if (i < 10) {
+					buff.append("0");
+				}
+				buff.append(i);
+				if (j < 10) {
+					buff.append("0");
+				}
+				buff.append(j);
+				list.add(Integer.valueOf(buff.toString()));
+			}
+		}
+		return list;
+	}
+
 	public static int getYearMonth(Date date) {
 		SimpleDateFormat formatter = new SimpleDateFormat("yyyyMM", Locale.getDefault());
 		String ret = formatter.format(date);
@@ -454,28 +454,12 @@ public class DateUtils {
 		return days;
 	}
 
-	/**
-	 * Current system time. Do not use this to calculate a duration or interval to
-	 * sleep, because it will be broken by settimeofday. Instead, use monotonicNow.
-	 * 
-	 * @return current time in msec.
-	 */
-	public static long now() {
-		return System.currentTimeMillis();
-	}
-
-	/**
-	 * Current time from some arbitrary time base in the past, counting in
-	 * milliseconds, and not affected by settimeofday or similar system clock
-	 * changes. This is appropriate to use when computing how much longer to wait
-	 * for an interval to expire.
-	 * 
-	 * @return a monotonic clock that counts in milliseconds.
-	 */
-	public static long monotonicNow() {
-		final long NANOSECONDS_PER_MILLISECOND = 1000000;
-
-		return System.nanoTime() / NANOSECONDS_PER_MILLISECOND;
+	public static int getYesterdayYearMonthDay(Date date) {
+		SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd", Locale.getDefault());
+		Calendar cal = Calendar.getInstance();
+		cal.setTimeInMillis(date.getTime() - DateUtils.DAY);
+		String ret = formatter.format(cal.getTime());
+		return Integer.parseInt(ret);
 	}
 
 	public static void main(String[] args) {
@@ -535,6 +519,30 @@ public class DateUtils {
 		System.out.println(DateUtils.toDate("1474473600000"));
 		System.out.println(DateUtils.toDate("20160101142323"));
 
+	}
+
+	/**
+	 * Current time from some arbitrary time base in the past, counting in
+	 * milliseconds, and not affected by settimeofday or similar system clock
+	 * changes. This is appropriate to use when computing how much longer to wait
+	 * for an interval to expire.
+	 * 
+	 * @return a monotonic clock that counts in milliseconds.
+	 */
+	public static long monotonicNow() {
+		final long NANOSECONDS_PER_MILLISECOND = 1000000;
+
+		return System.nanoTime() / NANOSECONDS_PER_MILLISECOND;
+	}
+
+	/**
+	 * Current system time. Do not use this to calculate a duration or interval to
+	 * sleep, because it will be broken by settimeofday. Instead, use monotonicNow.
+	 * 
+	 * @return current time in msec.
+	 */
+	public static long now() {
+		return System.currentTimeMillis();
 	}
 
 	public static Date parseDate(String str, String[] parsePatterns) {

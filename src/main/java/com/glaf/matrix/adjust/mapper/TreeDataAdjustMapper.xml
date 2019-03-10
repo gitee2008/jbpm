@@ -1,0 +1,388 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper
+	namespace="com.glaf.matrix.adjust.mapper.TreeDataAdjustMapper">
+
+	<resultMap id="treeDataAdjustResultMap"
+		type="com.glaf.matrix.adjust.domain.TreeDataAdjust">
+		<id property="id" column="ID_" jdbcType="VARCHAR" />
+		<result property="name" column="NAME_" jdbcType="VARCHAR" />
+		<result property="title" column="TITLE_" jdbcType="VARCHAR" />
+		<result property="databaseId" column="DATABASEID_"
+			jdbcType="BIGINT" />
+		<result property="tableName" column="TABLENAME_"
+			jdbcType="VARCHAR" />
+		<result property="primaryKey" column="PRIMARYKEY_"
+			jdbcType="VARCHAR" />
+		<result property="idColumn" column="IDCOLUMN_"
+			jdbcType="VARCHAR" />
+		<result property="parentIdColumn" column="PARENTIDCOLUMN_"
+			jdbcType="VARCHAR" />
+		<result property="treeIdColumn" column="TREEIDCOLUMN_"
+			jdbcType="VARCHAR" />
+		<result property="treeIdDelimiter" column="TREEIDDELIMITER_"
+			jdbcType="VARCHAR" />
+		<result property="nameColumn" column="NAMECOLUMN_"
+			jdbcType="VARCHAR" />
+		<result property="adjustColumn" column="ADJUSTCOLUMN_"
+			jdbcType="VARCHAR" />
+		<result property="adjustType" column="ADJUSTTYPE_"
+			jdbcType="VARCHAR" />
+		<result property="connector" column="CONNECTOR_"
+			jdbcType="VARCHAR" />
+		<result property="expression" column="EXPRESSION_"
+			jdbcType="VARCHAR" />
+		<result property="sqlCriteria" column="SQLCRITERIA_"
+			jdbcType="VARCHAR" />
+		<result property="leafLimitFlag" column="LEAFLIMITFLAG_"
+			jdbcType="VARCHAR" />
+		<result property="forkJoinFlag" column="FORKJOINFLAG_"
+			jdbcType="VARCHAR" />
+		<result property="preprocessFlag" column="PREPROCESSFLAG_"
+			jdbcType="VARCHAR" />
+		<result property="scheduleFlag" column="SCHEDULEFLAG_"
+			jdbcType="VARCHAR" />
+		<result property="type" column="TYPE_" jdbcType="VARCHAR" />
+		<result property="locked" column="LOCKED_" jdbcType="INTEGER" />
+		<result property="createBy" column="CREATEBY_"
+			jdbcType="VARCHAR" />
+		<result property="createTime" column="CREATETIME_"
+			jdbcType="TIMESTAMP" />
+		<result property="updateBy" column="UPDATEBY_"
+			jdbcType="VARCHAR" />
+		<result property="updateTime" column="UPDATETIME_"
+			jdbcType="TIMESTAMP" />
+	</resultMap>
+
+
+	<insert id="insertTreeDataAdjust"
+		parameterType="com.glaf.matrix.adjust.domain.TreeDataAdjust">
+		insert into SYS_TREE_DATA_ADJUST
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			ID_
+			<if test="name != null">
+				,NAME_
+			</if>
+			<if test="title != null">
+				,TITLE_
+			</if>
+			<if test="databaseId != null">
+				,DATABASEID_
+			</if>
+			<if test="tableName != null">
+				,TABLENAME_
+			</if>
+			<if test="primaryKey != null">
+				,PRIMARYKEY_
+			</if>
+			<if test="idColumn != null">
+				,IDCOLUMN_
+			</if>
+			<if test="parentIdColumn != null">
+				,PARENTIDCOLUMN_
+			</if>
+			<if test="treeIdColumn != null">
+				,TREEIDCOLUMN_
+			</if>
+			<if test="treeIdDelimiter != null">
+				,TREEIDDELIMITER_
+			</if>
+			<if test="nameColumn != null">
+				,NAMECOLUMN_
+			</if>
+			<if test="adjustColumn != null">
+				,ADJUSTCOLUMN_
+			</if>
+			<if test="adjustType != null">
+				,ADJUSTTYPE_
+			</if>
+			<if test="connector != null">
+				,CONNECTOR_
+			</if>
+			<if test="expression != null">
+				,EXPRESSION_
+			</if>
+			<if test="sqlCriteria != null">
+				,SQLCRITERIA_
+			</if>
+			<if test="leafLimitFlag != null">
+				,LEAFLIMITFLAG_
+			</if>
+			<if test="forkJoinFlag != null">
+				,FORKJOINFLAG_
+			</if>
+			<if test="preprocessFlag != null">
+				,PREPROCESSFLAG_
+			</if>
+			<if test="scheduleFlag != null">
+				,SCHEDULEFLAG_
+			</if>
+			<if test="type != null">
+				,TYPE_
+			</if>
+			<if test="locked != null">
+				,LOCKED_
+			</if>
+			<if test="createBy != null">
+				,CREATEBY_
+			</if>
+			<if test="createTime != null">
+				,CREATETIME_
+			</if>
+			<if test="updateBy != null">
+				,UPDATEBY_
+			</if>
+			<if test="updateTime != null">
+				,UPDATETIME_
+			</if>
+		</trim>
+
+		<trim prefix=" values (" suffix=")" suffixOverrides=",">
+			#{id, jdbcType=VARCHAR}
+
+			<if test="name != null">
+				,#{name, jdbcType=VARCHAR}
+			</if>
+			<if test="title != null">
+				,#{title, jdbcType=VARCHAR}
+			</if>
+			<if test="databaseId != null">
+				,#{databaseId, jdbcType=BIGINT}
+			</if>
+			<if test="tableName != null">
+				,#{tableName, jdbcType=VARCHAR}
+			</if>
+			<if test="primaryKey != null">
+				,#{primaryKey, jdbcType=VARCHAR}
+			</if>
+			<if test="idColumn != null">
+				,#{idColumn, jdbcType=VARCHAR}
+			</if>
+			<if test="parentIdColumn != null">
+				,#{parentIdColumn, jdbcType=VARCHAR}
+			</if>
+			<if test="treeIdColumn != null">
+				,#{treeIdColumn, jdbcType=VARCHAR}
+			</if>
+			<if test="treeIdDelimiter != null">
+				,#{treeIdDelimiter, jdbcType=VARCHAR}
+			</if>
+			<if test="nameColumn != null">
+				,#{nameColumn, jdbcType=VARCHAR}
+			</if>
+			<if test="adjustColumn != null">
+				,#{adjustColumn, jdbcType=VARCHAR}
+			</if>
+			<if test="adjustType != null">
+				,#{adjustType, jdbcType=VARCHAR}
+			</if>
+			<if test="connector != null">
+				,#{connector, jdbcType=VARCHAR}
+			</if>
+			<if test="expression != null">
+				,#{expression, jdbcType=VARCHAR}
+			</if>
+			<if test="sqlCriteria != null">
+				,#{sqlCriteria, jdbcType=VARCHAR}
+			</if>
+			<if test="leafLimitFlag != null">
+				,#{leafLimitFlag, jdbcType=VARCHAR}
+			</if>
+			<if test="forkJoinFlag != null">
+				,#{forkJoinFlag, jdbcType=VARCHAR}
+			</if>
+			<if test="preprocessFlag != null">
+				,#{preprocessFlag, jdbcType=VARCHAR}
+			</if>
+			<if test="scheduleFlag != null">
+				,#{scheduleFlag, jdbcType=VARCHAR}
+			</if>
+			<if test="type != null">
+				,#{type, jdbcType=VARCHAR}
+			</if>
+			<if test="locked != null">
+				,#{locked, jdbcType=INTEGER}
+			</if>
+			<if test="createBy != null">
+				,#{createBy, jdbcType=VARCHAR}
+			</if>
+			<if test="createTime != null">
+				,#{createTime, jdbcType=TIMESTAMP}
+			</if>
+			<if test="updateBy != null">
+				,#{updateBy, jdbcType=VARCHAR}
+			</if>
+			<if test="updateTime != null">
+				,#{updateTime, jdbcType=TIMESTAMP}
+			</if>
+		</trim>
+	</insert>
+
+
+	<update id="updateTreeDataAdjust"
+		parameterType="com.glaf.matrix.adjust.domain.TreeDataAdjust">
+		update SYS_TREE_DATA_ADJUST
+		set
+		<trim prefix="" suffix="" suffixOverrides=",">
+			<if test="name != null">
+				NAME_ = #{name, jdbcType=VARCHAR},
+			</if>
+			<if test="title != null">
+				TITLE_ = #{title, jdbcType=VARCHAR},
+			</if>
+			<if test="databaseId != null">
+				DATABASEID_ = #{databaseId, jdbcType=BIGINT},
+			</if>
+			<if test="tableName != null">
+				TABLENAME_ = #{tableName, jdbcType=VARCHAR},
+			</if>
+			<if test="primaryKey != null">
+				PRIMARYKEY_ = #{primaryKey, jdbcType=VARCHAR},
+			</if>
+			<if test="idColumn != null">
+				IDCOLUMN_ = #{idColumn, jdbcType=VARCHAR},
+			</if>
+			<if test="parentIdColumn != null">
+				PARENTIDCOLUMN_ = #{parentIdColumn, jdbcType=VARCHAR},
+			</if>
+			<if test="treeIdColumn != null">
+				TREEIDCOLUMN_ = #{treeIdColumn, jdbcType=VARCHAR},
+			</if>
+			<if test="treeIdDelimiter != null">
+				TREEIDDELIMITER_ = #{treeIdDelimiter, jdbcType=VARCHAR},
+			</if>
+			<if test="nameColumn != null">
+				NAMECOLUMN_ = #{nameColumn, jdbcType=VARCHAR},
+			</if>
+			<if test="adjustColumn != null">
+				ADJUSTCOLUMN_ = #{adjustColumn, jdbcType=VARCHAR},
+			</if>
+			<if test="adjustType != null">
+				ADJUSTTYPE_ = #{adjustType, jdbcType=VARCHAR},
+			</if>
+			<if test="connector != null">
+				CONNECTOR_ = #{connector, jdbcType=VARCHAR},
+			</if>
+			<if test="expression != null">
+				EXPRESSION_ = #{expression, jdbcType=VARCHAR},
+			</if>
+			<if test="sqlCriteria != null">
+				SQLCRITERIA_ = #{sqlCriteria, jdbcType=VARCHAR},
+			</if>
+			<if test="leafLimitFlag != null">
+				LEAFLIMITFLAG_ = #{leafLimitFlag, jdbcType=VARCHAR},
+			</if>
+			<if test="forkJoinFlag != null">
+				FORKJOINFLAG_ = #{forkJoinFlag, jdbcType=VARCHAR},
+			</if>
+			<if test="preprocessFlag != null">
+				PREPROCESSFLAG_ = #{preprocessFlag, jdbcType=VARCHAR},
+			</if>
+			<if test="scheduleFlag != null">
+				SCHEDULEFLAG_ = #{scheduleFlag, jdbcType=VARCHAR},
+			</if>
+			<if test="type != null">
+				TYPE_ = #{type, jdbcType=VARCHAR},
+			</if>
+			<if test="locked != null">
+				LOCKED_ = #{locked, jdbcType=INTEGER},
+			</if>
+			<if test="updateBy != null">
+				UPDATEBY_ = #{updateBy, jdbcType=VARCHAR},
+			</if>
+			<if test="updateTime != null">
+				UPDATETIME_ = #{updateTime, jdbcType=TIMESTAMP},
+			</if>
+		</trim>
+		where
+		ID_ = #{id, jdbcType=VARCHAR}
+
+	</update>
+
+
+	<delete id="deleteTreeDataAdjustById" parameterType="string">
+		delete from
+		SYS_TREE_DATA_ADJUST
+		where ID_ = #{id}
+	</delete>
+
+
+	<select id="getTreeDataAdjustById" parameterType="string"
+		resultMap="treeDataAdjustResultMap">
+		select * from SYS_TREE_DATA_ADJUST where ID_ = #{id}
+	</select>
+
+
+	<select id="getTreeDataAdjusts"
+		parameterType="com.glaf.matrix.adjust.query.TreeDataAdjustQuery"
+		resultMap="treeDataAdjustResultMap">
+		select distinct E.*
+		<include refid="selectTreeDataAdjustsSql" />
+		<choose>
+			<when test="orderBy != null">
+				order by ${orderBy}
+			</when>
+			<otherwise>
+				order by E.CREATETIME_ desc
+			</otherwise>
+		</choose>
+	</select>
+
+
+	<select id="getTreeDataAdjustCount"
+		parameterType="com.glaf.matrix.adjust.query.TreeDataAdjustQuery"
+		resultType="int">
+		select count(*)
+		<include refid="selectTreeDataAdjustsSql" />
+	</select>
+
+
+	<sql id="selectTreeDataAdjustsSql">
+
+		from SYS_TREE_DATA_ADJUST E
+
+		<where>
+			1 = 1
+
+			<if test="name != null and name != '' ">
+				and E.NAME_ = #{name}
+			</if>
+
+			<if test="nameLike != null and nameLike != '' ">
+				and E.NAME_ like #{nameLike}
+			</if>
+
+			<if test="titleLike != null and titleLike != '' ">
+				and E.TITLE_ like #{titleLike}
+			</if>
+
+			<if test="type != null and type != '' ">
+				and E.TYPE_ = #{type}
+			</if>
+
+			<if test="scheduleFlag != null and scheduleFlag != '' ">
+				and E.SCHEDULEFLAG_ = #{scheduleFlag}
+			</if>
+
+			<if test="locked != null">
+				and E.LOCKED_ = #{locked}
+			</if>
+
+			<if test="createBy != null and createBy != '' ">
+				and E.CREATEBY_ = #{createBy}
+			</if>
+
+			<if test="createTimeGreaterThanOrEqual != null">
+				and E.CREATETIME_ &gt;= #{createTimeGreaterThanOrEqual}
+			</if>
+
+			<if test="createTimeLessThanOrEqual != null">
+				and E.CREATETIME_ &lt;= #{createTimeLessThanOrEqual}
+			</if>
+
+		</where>
+	</sql>
+
+</mapper>

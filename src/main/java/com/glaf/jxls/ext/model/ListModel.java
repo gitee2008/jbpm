@@ -38,17 +38,17 @@ public class ListModel implements Serializable {
 
 	protected JSONObject jsonObject;
 
-	protected transient List<DataModel> list = new ArrayList<DataModel>();
+	protected List<DataModel> list = new ArrayList<DataModel>();
 
-	protected transient List<JxlsImage> imagelist1 = new ArrayList<JxlsImage>();
+	protected List<JxlsImage> imagelist1 = new ArrayList<JxlsImage>();
 
-	protected transient List<JxlsImage> imagelist2 = new ArrayList<JxlsImage>();
+	protected List<JxlsImage> imagelist2 = new ArrayList<JxlsImage>();
 
-	protected transient List<JxlsImage> imagelist3 = new ArrayList<JxlsImage>();
+	protected List<JxlsImage> imagelist3 = new ArrayList<JxlsImage>();
 
-	protected transient List<JxlsImage> imagelist4 = new ArrayList<JxlsImage>();
+	protected List<JxlsImage> imagelist4 = new ArrayList<JxlsImage>();
 
-	protected transient List<JxlsImage> imagelist5 = new ArrayList<JxlsImage>();
+	protected List<JxlsImage> imagelist5 = new ArrayList<JxlsImage>();
 
 	public ListModel() {
 

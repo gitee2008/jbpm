@@ -21,6 +21,8 @@ package com.glaf.core.jdbc;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 
 import javax.naming.InitialContext;
@@ -35,9 +37,13 @@ import com.glaf.core.config.Configuration;
 import com.glaf.core.config.DBConfiguration;
 import com.glaf.core.config.Environment;
 import com.glaf.core.context.ContextFactory;
+import com.glaf.core.domain.Database;
 import com.glaf.core.jdbc.connection.ConnectionProvider;
 import com.glaf.core.jdbc.connection.ConnectionProviderFactory;
+import com.glaf.core.security.SecurityUtils;
 import com.glaf.core.util.JdbcUtils;
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
 
 public class DBConnectionFactory {
 
@@ -275,6 +281,48 @@ public class DBConnectionFactory {
 
 	public static DataSource getDataSource() {
 		return getDataSource(Environment.DEFAULT_SYSTEM_NAME);
+	}
+
+	public static HikariDataSource getDataSource(Database srcDatabase) {
+		HikariDataSource ds = null;
+		Properties props = DBConfiguration.getTemplateProperties(srcDatabase.getType());
+		if (props != null && !props.isEmpty()) {
+			Map<String, Object> context = new HashMap<String, Object>();
+			String host = srcDatabase.getHost();
+			int port = srcDatabase.getPort();
+			context.put("host", host);
+			if (port > 0) {
+				context.put("port", port);
+			} else {
+				context.put("port", props.getProperty(DBConfiguration.PORT));
+			}
+			context.put("databaseName", srcDatabase.getDbname());
+			String driver = props.getProperty(DBConfiguration.JDBC_DRIVER);
+			String url = props.getProperty(DBConfiguration.JDBC_URL);
+			url = com.glaf.core.el.ExpressionTools.evaluate(url, context);
+			logger.debug("driver:" + driver);
+			logger.debug("url:" + url);
+			HikariConfig config = new HikariConfig();
+			config.setDriverClassName(driver);
+			config.setJdbcUrl(url);
+			config.setMaximumPoolSize(1);
+			config.setAutoCommit(true);
+			// config.setConnectionTimeout(120000);//120秒
+			String user = srcDatabase.getUser();
+			String password = SecurityUtils.decode(srcDatabase.getKey(), srcDatabase.getPassword());
+			if (StringUtils.isNotEmpty(user)) {
+				config.setUsername(user);
+				if (password != null) {
+					config.setPassword(password);
+					ds = new HikariDataSource(config);
+				} else {
+					ds = new HikariDataSource(config);
+				}
+			} else {
+				ds = new HikariDataSource(config);
+			}
+		}
+		return ds;
 	}
 
 	public static DataSource getDataSource(String systemName) {
