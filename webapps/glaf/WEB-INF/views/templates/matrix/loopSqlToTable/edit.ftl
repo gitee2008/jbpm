@@ -172,8 +172,11 @@
 			<br>
 			<span style="color:red;">
 			 （loop_date_var 内置变量代表循环日期yyyyMMdd变量。）<br>
+			 （loop_date_previous_var 内置变量代表循环日期的前一天yyyyMMdd变量。）<br>
 			 （loop_date_start_var 内置变量代表循环开始日期yyyy-MM-dd 00:00:00变量。）<br>
 			 （loop_date_end_var 内置变量代表循环结束日期yyyy-MM-dd 23:59:59变量。）<br>
+			 （loop_date_previous_start_var 内置变量代表循环开始日期的前一天yyyy-MM-dd 00:00:00变量。）<br>
+			 （loop_date_previous_end_var 内置变量代表循环结束日期的前一天yyyy-MM-dd 23:59:59变量。）<br>
 			</span>
 	      </div>
 		</td>
