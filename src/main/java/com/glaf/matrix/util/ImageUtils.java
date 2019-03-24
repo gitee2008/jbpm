@@ -18,6 +18,7 @@
 
 package com.glaf.matrix.util;
 
+import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.geom.AffineTransform;
 import java.awt.image.AffineTransformOp;
@@ -173,6 +174,50 @@ public class ImageUtils {
 			baos = new ByteArrayOutputStream();
 			bos = new BufferedOutputStream(baos);
 			ImageIO.write((BufferedImage) tempImg, imageType, bos);
+			bos.flush();
+			baos.flush();
+			byte[] data = baos.toByteArray();
+			return data;
+		} catch (Exception ex) {
+			throw new RuntimeException(ex);
+		} finally {
+			IOUtils.closeQuietly(bos);
+			IOUtils.closeQuietly(baos);
+		}
+	}
+
+	/**
+	 * 按比例对图片进行缩放.
+	 * 
+	 * @param img       原始图片
+	 * @param scale     缩放比例
+	 * @param imageType 目标图片类型
+	 */
+	public static byte[] zoomByScale(BufferedImage img, double scale, String imageType) {
+		// BufferedImage img = ImageIO.read(new File(srcFile));
+		// 获取图片的长和宽
+		int width = img.getWidth();
+		int height = img.getHeight();
+		// 获取缩放后的长和宽
+		int _width = (int) (scale * width);
+		int _height = (int) (scale * height);
+		ByteArrayOutputStream baos = null;
+		BufferedOutputStream bos = null;
+		try {
+			// 获取缩放后的Image对象
+			Image _img = img.getScaledInstance(_width, _height, Image.SCALE_DEFAULT);
+			// 新建一个和Image对象相同大小的画布
+			BufferedImage image = new BufferedImage(_width, _height, BufferedImage.TYPE_INT_RGB);
+			// 获取画笔
+			Graphics2D graphics = image.createGraphics();
+			// 将Image对象画在画布上
+			graphics.drawImage(_img, 0, 0, null);
+			// 释放资源
+			graphics.dispose();
+			baos = new ByteArrayOutputStream();
+			bos = new BufferedOutputStream(baos);
+			// 使用ImageIO的方法进行输出,记得关闭资源
+			ImageIO.write(image, imageType, bos);
 			bos.flush();
 			baos.flush();
 			byte[] data = baos.toByteArray();

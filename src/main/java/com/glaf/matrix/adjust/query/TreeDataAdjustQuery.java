@@ -23,17 +23,25 @@ import com.glaf.core.query.DataQuery;
 
 public class TreeDataAdjustQuery extends DataQuery {
 	private static final long serialVersionUID = 1L;
-
 	protected String name;
 	protected String nameLike;
 	protected String titleLike;
 	protected String type;
+	protected String adjustType;
 	protected String scheduleFlag;
 	protected Date createTimeGreaterThanOrEqual;
 	protected Date createTimeLessThanOrEqual;
 
 	public TreeDataAdjustQuery() {
 
+	}
+
+	public TreeDataAdjustQuery adjustType(String adjustType) {
+		if (adjustType == null) {
+			throw new RuntimeException("adjustType is null");
+		}
+		this.adjustType = adjustType;
+		return this;
 	}
 
 	public TreeDataAdjustQuery createBy(String createBy) {
@@ -58,6 +66,10 @@ public class TreeDataAdjustQuery extends DataQuery {
 		}
 		this.createTimeLessThanOrEqual = createTimeLessThanOrEqual;
 		return this;
+	}
+
+	public String getAdjustType() {
+		return adjustType;
 	}
 
 	public Date getCreateTimeGreaterThanOrEqual() {
@@ -241,6 +253,10 @@ public class TreeDataAdjustQuery extends DataQuery {
 		}
 		this.scheduleFlag = scheduleFlag;
 		return this;
+	}
+
+	public void setAdjustType(String adjustType) {
+		this.adjustType = adjustType;
 	}
 
 	public void setCreateTimeGreaterThanOrEqual(Date createTimeGreaterThanOrEqual) {

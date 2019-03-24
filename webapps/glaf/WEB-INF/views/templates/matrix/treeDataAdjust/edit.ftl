@@ -115,6 +115,19 @@
 		</td>
 	</tr>
 	<tr>
+		<td width="20%" align="left">目标表名</td>
+		<td align="left">
+            <input id="targetTableName" name="targetTableName" type="text" 
+			       class="easyui-validatebox  x-text" style="width:180px"  
+				   value="${treeDataAdjust.targetTableName}"/>&nbsp;（如果目标表就是来源表，可以不填写。）
+			<div style="margin-top:5px;">
+			  <span style="color:red; margin-left:0px;">
+			  （提示：为了保证系统安全，目标表只能以useradd_、etl_、sync_、tmp_、tree_table_开头。）
+			  </span>
+			</div>
+		</td>
+	</tr>
+	<tr>
 		<td width="20%" align="left">主键列</td>
 		<td align="left">
             <input id="primaryKey" name="primaryKey" type="text" 
@@ -162,12 +175,15 @@
 				   value="${treeDataAdjust.nameColumn}"/>
 		</td>
 	</tr>
-	<tr>
+    <tr>
 		<td width="20%" align="left">调整列</td>
 		<td align="left">
             <input id="adjustColumn" name="adjustColumn" type="text" 
-			       class="easyui-validatebox  x-text" style="width:180px" 
+			       class="easyui-validatebox  x-text" style="width:450px" 
 				   value="${treeDataAdjust.adjustColumn}"/>
+			<div style="margin-top:5px;">
+		     （提示：如果调整功能支持多个列，列名之间用半角的逗号,隔开）
+			</div>
 		</td>
 	</tr>
 	<tr>
@@ -219,9 +235,10 @@
 		<td align="left">
            <select id="adjustType" name="adjustType">
 		        <option value="">----请选择----</option>
-				<option value="dateGT">父节点调整一个更大的日期</option>
+				<option value="dateGT">父节点调整一个较大的日期</option>
 			    <option value="dateLT">父节点调整一个较小的日期</option>
 				<option value="nameChain">生成树形链式结构</option>
+				<option value="treeAggregate">树表逐级汇总</option>
             </select>
             <script type="text/javascript">
                  document.getElementById("adjustType").value="${treeDataAdjust.adjustType}";
@@ -253,6 +270,38 @@
              <script type="text/javascript">
                  document.getElementById("forkJoinFlag").value="${treeDataAdjust.forkJoinFlag}";
              </script>
+		</td>
+	</tr>
+    <tr>
+		<td width="20%" align="left">更新标识</td>
+		<td align="left">
+              <select id="updateFlag" name="updateFlag">
+			    <option value="">----请选择----</option>
+				<option value="A">增量</option>
+			    <option value="F">全量</option>
+             </select>
+             <script type="text/javascript">
+                 document.getElementById("updateFlag").value="${treeDataAdjust.updateFlag}";
+             </script>
+			 <span style="margin-left:15px;">
+		     （提示：只更新变化的数据或更新全部数据）
+			 </span>
+		</td>
+	</tr>
+	<tr>
+		<td width="20%" align="left">每次执行前删除</td>
+		<td align="left">
+              <select id="deleteFetch" name="deleteFetch">
+			    <option value="">----请选择----</option>
+				<option value="Y">是</option>
+			    <option value="N">否</option>
+             </select>
+             <script type="text/javascript">
+                 document.getElementById("deleteFetch").value="${treeDataAdjust.deleteFetch}";
+             </script>
+			 <span style="margin-left:15px;">
+		     （提示：如果目标表不是来源表才支持）
+			 </span>
 		</td>
 	</tr>
 	<tr>

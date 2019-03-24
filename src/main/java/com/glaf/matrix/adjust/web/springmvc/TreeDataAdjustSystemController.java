@@ -245,6 +245,16 @@ public class TreeDataAdjustSystemController {
 	@ResponseBody
 	@RequestMapping("/save")
 	public byte[] save(HttpServletRequest request, HttpServletResponse response) {
+		String targetTableName = request.getParameter("targetTableName");
+		if (StringUtils.isNotEmpty(targetTableName)) {
+			if (!(StringUtils.startsWithIgnoreCase(targetTableName, "etl_")
+					|| StringUtils.startsWithIgnoreCase(targetTableName, "tmp")
+					|| StringUtils.startsWithIgnoreCase(targetTableName, "sync")
+					|| StringUtils.startsWithIgnoreCase(targetTableName, "useradd")
+					|| StringUtils.startsWithIgnoreCase(targetTableName, "tree_table_"))) {
+				return ResponseUtils.responseJsonResult(false, "目标表必须以etl_,tmp,sync,useradd,tree_table_前缀开头。");
+			}
+		}
 		LoginContext loginContext = RequestUtils.getLoginContext(request);
 		String actorId = loginContext.getActorId();
 		Map<String, Object> params = RequestUtils.getParameterMap(request);
@@ -266,6 +276,9 @@ public class TreeDataAdjustSystemController {
 			treeDataAdjust.setConnector(request.getParameter("connector"));
 			treeDataAdjust.setExpression(request.getParameter("expression"));
 			treeDataAdjust.setSqlCriteria(request.getParameter("sqlCriteria"));
+			treeDataAdjust.setTargetTableName(targetTableName);
+			treeDataAdjust.setUpdateFlag(request.getParameter("updateFlag"));
+			treeDataAdjust.setDeleteFetch(request.getParameter("deleteFetch"));
 			treeDataAdjust.setLeafLimitFlag(request.getParameter("leafLimitFlag"));
 			treeDataAdjust.setForkJoinFlag(request.getParameter("forkJoinFlag"));
 			treeDataAdjust.setPreprocessFlag(request.getParameter("preprocessFlag"));
@@ -288,6 +301,16 @@ public class TreeDataAdjustSystemController {
 	@ResponseBody
 	@RequestMapping("/saveAs")
 	public byte[] saveAs(HttpServletRequest request, HttpServletResponse response) {
+		String targetTableName = request.getParameter("targetTableName");
+		if (StringUtils.isNotEmpty(targetTableName)) {
+			if (!(StringUtils.startsWithIgnoreCase(targetTableName, "etl_")
+					|| StringUtils.startsWithIgnoreCase(targetTableName, "tmp")
+					|| StringUtils.startsWithIgnoreCase(targetTableName, "sync")
+					|| StringUtils.startsWithIgnoreCase(targetTableName, "useradd")
+					|| StringUtils.startsWithIgnoreCase(targetTableName, "tree_table_"))) {
+				return ResponseUtils.responseJsonResult(false, "目标表必须以etl_,tmp,sync,useradd,tree_table_前缀开头。");
+			}
+		}
 		LoginContext loginContext = RequestUtils.getLoginContext(request);
 		String actorId = loginContext.getActorId();
 		Map<String, Object> params = RequestUtils.getParameterMap(request);
@@ -309,6 +332,9 @@ public class TreeDataAdjustSystemController {
 			treeDataAdjust.setConnector(request.getParameter("connector"));
 			treeDataAdjust.setExpression(request.getParameter("expression"));
 			treeDataAdjust.setSqlCriteria(request.getParameter("sqlCriteria"));
+			treeDataAdjust.setTargetTableName(targetTableName);
+			treeDataAdjust.setUpdateFlag(request.getParameter("updateFlag"));
+			treeDataAdjust.setDeleteFetch(request.getParameter("deleteFetch"));
 			treeDataAdjust.setLeafLimitFlag(request.getParameter("leafLimitFlag"));
 			treeDataAdjust.setForkJoinFlag(request.getParameter("forkJoinFlag"));
 			treeDataAdjust.setPreprocessFlag(request.getParameter("preprocessFlag"));

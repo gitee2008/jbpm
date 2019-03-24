@@ -65,8 +65,7 @@ public class TreeComponentAdjustBean {
 			dataAdjust = treeDataAdjustService.getTreeDataAdjust(adjustId);
 			if (dataAdjust != null && dataAdjust.getLocked() == 0) {
 				database = databaseService.getDatabaseById(databaseId);
-				if (StringUtils.isNotEmpty(index_id) && StringUtils.isNotEmpty(dataAdjust.getTreeIdDelimiter())
-						&& StringUtils.isNotEmpty(dataAdjust.getAdjustColumn())) {
+				if (StringUtils.isNotEmpty(index_id) && StringUtils.isNotEmpty(dataAdjust.getAdjustColumn())) {
 					conn = DBConnectionFactory.getConnection(database.getName());
 					logger.debug("--------------execute adjust----------------");
 					List<ColumnDefinition> columns = DBUtils.getColumnDefinitions(conn, dataAdjust.getTableName());
@@ -106,7 +105,18 @@ public class TreeComponentAdjustBean {
 						dataList.add(component.getDataMap());
 					}
 
-					this.populate(dataAdjust, repository.getTopTrees(), updateDataList, index_id, adjustDate);
+					// this.populate(dataAdjust, repository.getTopTrees(), updateDataList, index_id,
+					// adjustDate);
+					if (StringUtils.equals(dataAdjust.getAdjustType(), "dateLT")) {
+						TreeTableTraverseMinDateBean bean = new TreeTableTraverseMinDateBean();
+						bean.populate(dataAdjust, repository.getTopTrees(), updateDataList, index_id,
+								adjustDate.getTime());
+					} else if (StringUtils.equals(dataAdjust.getAdjustType(), "dateGT")) {
+						TreeTableTraverseMaxDateBean bean = new TreeTableTraverseMaxDateBean();
+						bean.populate(dataAdjust, repository.getTopTrees(), updateDataList, index_id,
+								adjustDate.getTime());
+					}
+					logger.debug("updateDataList size:" + updateDataList.size());
 
 					if (updateDataList.size() > 0) {
 						conn = DBConnectionFactory.getConnection(database.getName());
@@ -134,7 +144,7 @@ public class TreeComponentAdjustBean {
 	 * @param columns
 	 * @return
 	 */
-	protected List<TreeComponent> getTreeComponents(Connection conn, TreeDataAdjust dataAdjust,
+	public List<TreeComponent> getTreeComponents(Connection conn, TreeDataAdjust dataAdjust,
 			List<ColumnDefinition> columns) {
 		List<String> columnNames = new ArrayList<String>();
 		columnNames.add(dataAdjust.getPrimaryKey());
@@ -150,6 +160,10 @@ public class TreeComponentAdjustBean {
 		if (StringUtils.isNotEmpty(dataAdjust.getTreeIdColumn())) {
 			buffer.append(", ").append(dataAdjust.getTreeIdColumn());
 			columnNames.add(dataAdjust.getTreeIdColumn());
+		}
+		if (StringUtils.isNotEmpty(dataAdjust.getNameColumn())) {
+			buffer.append(", ").append(dataAdjust.getNameColumn());
+			columnNames.add(dataAdjust.getNameColumn());
 		}
 		buffer.append(" from ").append(dataAdjust.getTableName());
 		String sql = buffer.toString();
@@ -174,15 +188,21 @@ public class TreeComponentAdjustBean {
 			for (ColumnDefinition column : columns) {
 				columnMap.put(column.getColumnName().toLowerCase(), column.getColumnName().toLowerCase());
 			}
+
 			String idColumn = columnMap.get(dataAdjust.getIdColumn().toLowerCase()).toLowerCase();
 			String parentIdColumn = columnMap.get(dataAdjust.getParentIdColumn().toLowerCase()).toLowerCase();
-			// String treeIdColumn =
-			// columnMap.get(dataAdjust.getTreeIdColumn().toLowerCase()).toLowerCase();
+			//String nameColumn = columnMap.get(dataAdjust.getNameColumn().toLowerCase()).toLowerCase();
+			String dateColumn = columnMap.get(dataAdjust.getAdjustColumn().toLowerCase()).toLowerCase();
 			for (Map<String, Object> dataMap : dataList) {
 				TreeComponent tree = new TreeComponent();
 				tree.setId(ParamUtils.getString(dataMap, idColumn));
 				tree.setParentId(ParamUtils.getString(dataMap, parentIdColumn));
-				// tree.setTreeId(ParamUtils.getString(dataMap, treeIdColumn));
+				//tree.setTitle(ParamUtils.getString(dataMap, nameColumn));
+				Date date = ParamUtils.getDate(dataMap, dateColumn);
+				if (date != null) {
+					tree.setDateValue(date);
+					tree.setLongValue(date.getTime());
+				}
 				tree.setDataMap(dataMap);
 				list.add(tree);
 			}

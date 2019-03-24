@@ -40,6 +40,7 @@ import com.glaf.core.util.ResponseUtils;
 
 import com.glaf.matrix.adjust.bean.TreeComponentAdjustBean;
 import com.glaf.matrix.adjust.bean.TreeComponentNameChainBean;
+import com.glaf.matrix.adjust.bean.TreeTableAggregateBean;
 import com.glaf.matrix.adjust.domain.TreeDataAdjust;
 import com.glaf.matrix.adjust.service.TreeDataAdjustService;
 import com.glaf.matrix.data.domain.ExecutionLog;
@@ -74,10 +75,9 @@ public class TreeDataAdjustController {
 	@RequestMapping("/execute")
 	public byte[] execute(HttpServletRequest request) {
 		String adjustId = RequestUtils.getString(request, "adjustId");
-		Date adjustDate = RequestUtils.getDate(request, "adjustDate");
 		long databaseId = RequestUtils.getLong(request, "databaseId");
-		String index_id = RequestUtils.getString(request, "index_id");
 		Map<String, Object> parameter = RequestUtils.getParameterMap(request);
+		logger.debug("parameter:" + parameter);
 		if (StringUtils.isNotEmpty(adjustId)) {
 			Long ts = concurrentTimeMap.get(adjustId);
 			if (concurrentMap.get(adjustId) == null
@@ -90,7 +90,11 @@ public class TreeDataAdjustController {
 						if (databaseId == 0) {
 							databaseId = dataAdjust.getDatabaseId();
 						}
-						if (StringUtils.equals(dataAdjust.getAdjustType(), "dateLT")) {
+						logger.debug("dataAdjust:" + dataAdjust.toJsonObject().toJSONString());
+						if (StringUtils.equals(dataAdjust.getAdjustType(), "dateLT")
+								|| StringUtils.equals(dataAdjust.getAdjustType(), "dateGT")) {
+							String index_id = RequestUtils.getString(request, "index_id");
+							Date adjustDate = RequestUtils.getDate(request, "adjustDate");
 							if (StringUtils.isNotEmpty(index_id) && adjustDate != null) {
 								TreeComponentAdjustBean bean = new TreeComponentAdjustBean();
 								bean.execute(databaseId, adjustId, index_id, adjustDate, parameter);
@@ -100,6 +104,50 @@ public class TreeDataAdjustController {
 							TreeComponentNameChainBean bean = new TreeComponentNameChainBean();
 							// bean.execute(databaseId, adjustId, parameter);
 							String content = "执行树表调整[" + dataAdjust.getTitle() + "]";
+							ExecutionLog executionLog = new ExecutionLog();
+							long start = System.currentTimeMillis();
+							boolean ret = false;
+							try {
+								executionLog.setBusinessKey("tree_adjust_" + dataAdjust.getId());
+								if (Authentication.getAuthenticatedActorId() != null) {
+									executionLog.setCreateBy(Authentication.getAuthenticatedActorId());
+								} else {
+									executionLog.setCreateBy("system");
+								}
+								executionLog.setCreateTime(new Date());
+								executionLog.setStartTime(new Date());
+								executionLog.setType("tree_adjust");
+								executionLog.setTitle(dataAdjust.getTitle());
+								bean.execute(databaseId, dataAdjust.getId(), parameter);
+								ret = true;
+							} catch (Exception ex) {
+								ex.printStackTrace();
+								logger.error(ex);
+								ret = false;
+							}
+							try {
+								if (ret) {
+									executionLog.setStatus(9);
+									content = content + " 执行成功！";
+								} else {
+									executionLog.setStatus(-1);
+									content = content + " 执行失败！";
+								}
+								executionLog.setRunTime(System.currentTimeMillis() - start);
+								executionLog.setEndTime(new Date());
+								executionLog.setContent(content);
+								executionLogService.save(executionLog);
+							} catch (Exception ex) {
+								// ex.printStackTrace();
+								logger.error(ex);
+							}
+							return ResponseUtils.responseJsonResult(ret);
+
+						} else if (StringUtils.equals(dataAdjust.getAdjustType(), "treeAggregate")) {
+							TreeTableAggregateBean bean = new TreeTableAggregateBean();
+							// bean.execute(databaseId, adjustId, parameter);
+							String content = "执行树表逐级汇总[" + dataAdjust.getTitle() + "]";
+							logger.debug(content);
 							ExecutionLog executionLog = new ExecutionLog();
 							long start = System.currentTimeMillis();
 							boolean ret = false;

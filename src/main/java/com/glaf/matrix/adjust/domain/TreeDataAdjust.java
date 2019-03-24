@@ -105,9 +105,9 @@ public class TreeDataAdjust implements Serializable, JSONable {
 	protected String nameColumn;
 
 	/**
-	 * 调整列
+	 * 调整列（多列之间用逗号,隔开）
 	 */
-	@Column(name = "ADJUSTCOLUMN_", length = 50)
+	@Column(name = "ADJUSTCOLUMN_", length = 500)
 	protected String adjustColumn;
 
 	/**
@@ -133,6 +133,24 @@ public class TreeDataAdjust implements Serializable, JSONable {
 	 */
 	@Column(name = "SQLCRITERIA_", length = 4000)
 	protected String sqlCriteria;
+
+	/**
+	 * 目标表名
+	 */
+	@Column(name = "TARGETTABLENAME_", length = 100)
+	protected String targetTableName;
+
+	/**
+	 * 更新标识
+	 */
+	@Column(name = "UPDATEFLAG_", length = 1)
+	protected String updateFlag;
+
+	/**
+	 * 每次插入前删除
+	 */
+	@Column(name = "DELETEFETCH_", length = 1)
+	protected String deleteFetch;
 
 	/**
 	 * 限制叶节点
@@ -251,6 +269,10 @@ public class TreeDataAdjust implements Serializable, JSONable {
 		return this.databaseId;
 	}
 
+	public String getDeleteFetch() {
+		return deleteFetch;
+	}
+
 	public String getExpression() {
 		return expression;
 	}
@@ -319,6 +341,10 @@ public class TreeDataAdjust implements Serializable, JSONable {
 		return this.tableName;
 	}
 
+	public String getTargetTableName() {
+		return targetTableName;
+	}
+
 	public String getTitle() {
 		return this.title;
 	}
@@ -340,6 +366,10 @@ public class TreeDataAdjust implements Serializable, JSONable {
 
 	public String getUpdateBy() {
 		return this.updateBy;
+	}
+
+	public String getUpdateFlag() {
+		return updateFlag;
 	}
 
 	public Date getUpdateTime() {
@@ -387,6 +417,10 @@ public class TreeDataAdjust implements Serializable, JSONable {
 
 	public void setDatabaseId(long databaseId) {
 		this.databaseId = databaseId;
+	}
+
+	public void setDeleteFetch(String deleteFetch) {
+		this.deleteFetch = deleteFetch;
 	}
 
 	public void setExpression(String expression) {
@@ -445,6 +479,10 @@ public class TreeDataAdjust implements Serializable, JSONable {
 		this.tableName = tableName;
 	}
 
+	public void setTargetTableName(String targetTableName) {
+		this.targetTableName = targetTableName;
+	}
+
 	public void setTitle(String title) {
 		this.title = title;
 	}
@@ -463,6 +501,10 @@ public class TreeDataAdjust implements Serializable, JSONable {
 
 	public void setUpdateBy(String updateBy) {
 		this.updateBy = updateBy;
+	}
+
+	public void setUpdateFlag(String updateFlag) {
+		this.updateFlag = updateFlag;
 	}
 
 	public void setUpdateTime(Date updateTime) {

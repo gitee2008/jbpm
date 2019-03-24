@@ -278,7 +278,7 @@ public class TreeComponentNameChainBean {
 			String parentIdColumn = columnMap.get(dataAdjust.getParentIdColumn().toLowerCase()).toLowerCase();
 			String treeIdColumn = null;
 			if (dataAdjust.getTreeIdColumn() != null) {
-				treeIdColumn = columnMap.get(dataAdjust.getTreeIdColumn().toLowerCase());
+				treeIdColumn = columnMap.get(dataAdjust.getTreeIdColumn().toLowerCase()).toLowerCase();
 			}
 
 			for (Map<String, Object> dataMap : dataList) {
@@ -296,7 +296,7 @@ public class TreeComponentNameChainBean {
 
 			return list;
 		} catch (Exception ex) {
-			ex.printStackTrace();
+			// ex.printStackTrace();
 			logger.error("execute query error", ex);
 			throw new RuntimeException(ex);
 		} finally {

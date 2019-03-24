@@ -105,6 +105,12 @@ public class SysParams {
 		}
 
 		parameter.put("the_end_of_last_month", DateUtils.getDate(calendar.getTime()) + " 23:59:59");
+		
+		parameter.put("this_month", DateUtils.getNowYearMonth());
+		parameter.put("this_year", DateUtils.getNowYearMonth() / 100);
+		parameter.put("last_month", DateUtils.getYearMonth(calendar.getTime()));
+		parameter.put("last_year", DateUtils.getYearMonth(calendar.getTime()) / 100);
+		
 	}
 
 }

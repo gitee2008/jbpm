@@ -36,6 +36,12 @@
 			jdbcType="VARCHAR" />
 		<result property="sqlCriteria" column="SQLCRITERIA_"
 			jdbcType="VARCHAR" />
+		<result property="targetTableName" column="TARGETTABLENAME_"
+			jdbcType="VARCHAR" />
+		<result property="updateFlag" column="UPDATEFLAG_"
+			jdbcType="VARCHAR" />
+		<result property="deleteFetch" column="DELETEFETCH_"
+			jdbcType="VARCHAR" />
 		<result property="leafLimitFlag" column="LEAFLIMITFLAG_"
 			jdbcType="VARCHAR" />
 		<result property="forkJoinFlag" column="FORKJOINFLAG_"
@@ -106,6 +112,15 @@
 			</if>
 			<if test="sqlCriteria != null">
 				,SQLCRITERIA_
+			</if>
+			<if test="targetTableName != null">
+				,TARGETTABLENAME_
+			</if>
+			<if test="updateFlag != null">
+				,UPDATEFLAG_
+			</if>
+			<if test="deleteFetch != null">
+				,DELETEFETCH_
 			</if>
 			<if test="leafLimitFlag != null">
 				,LEAFLIMITFLAG_
@@ -186,6 +201,15 @@
 			</if>
 			<if test="sqlCriteria != null">
 				,#{sqlCriteria, jdbcType=VARCHAR}
+			</if>
+			<if test="targetTableName != null">
+				,#{targetTableName, jdbcType=VARCHAR}
+			</if>
+			<if test="updateFlag != null">
+				,#{updateFlag, jdbcType=VARCHAR}
+			</if>
+			<if test="deleteFetch != null">
+				,#{deleteFetch, jdbcType=VARCHAR}
 			</if>
 			<if test="leafLimitFlag != null">
 				,#{leafLimitFlag, jdbcType=VARCHAR}
@@ -270,6 +294,15 @@
 			</if>
 			<if test="sqlCriteria != null">
 				SQLCRITERIA_ = #{sqlCriteria, jdbcType=VARCHAR},
+			</if>
+			<if test="targetTableName != null">
+				TARGETTABLENAME_ = #{targetTableName, jdbcType=VARCHAR},
+			</if>
+			<if test="updateFlag != null">
+				UPDATEFLAG_ = #{updateFlag, jdbcType=VARCHAR},
+			</if>
+			<if test="deleteFetch != null">
+				DELETEFETCH_ = #{deleteFetch, jdbcType=VARCHAR},
 			</if>
 			<if test="leafLimitFlag != null">
 				LEAFLIMITFLAG_ = #{leafLimitFlag, jdbcType=VARCHAR},
@@ -364,6 +397,10 @@
 
 			<if test="scheduleFlag != null and scheduleFlag != '' ">
 				and E.SCHEDULEFLAG_ = #{scheduleFlag}
+			</if>
+
+			<if test="adjustType != null and adjustType != '' ">
+				and E.ADJUSTTYPE_ = #{adjustType}
 			</if>
 
 			<if test="locked != null">

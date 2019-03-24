@@ -264,6 +264,10 @@ public class JacksonTreeHelper {
 			component.setUrl(treeModel.getUrl());
 			component.setTreeId(treeModel.getTreeId());
 			component.setCls(treeModel.getCls());
+			component.setIntValue(treeModel.getIntValue());
+			component.setLongValue(treeModel.getLongValue());
+			component.setDoubleValue(treeModel.getDoubleValue());
+			component.setDateValue(treeModel.getDateValue());
 			component.setDataMap(treeModel.getDataMap());
 			repository.addTree(component);
 		}
@@ -299,6 +303,10 @@ public class JacksonTreeHelper {
 					parentTree.setUrl(parent.getUrl());
 					parentTree.setTreeId(parent.getTreeId());
 					parentTree.setCls(parent.getCls());
+					parentTree.setIntValue(parent.getIntValue());
+					parentTree.setLongValue(parent.getLongValue());
+					parentTree.setDoubleValue(parent.getDoubleValue());
+					parentTree.setDateValue(parent.getDateValue());
 					parentTree.setDataMap(parent.getDataMap());
 					// repository.addTree(parentTree);
 				}

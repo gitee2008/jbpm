@@ -18,6 +18,8 @@
 
 package com.glaf.core.tree.component;
 
+import java.util.Date;
+
 public abstract class TreeBase implements Component, java.lang.Comparable<TreeBase> {
 	// ~ Instance fields
 	// ========================================================
@@ -112,6 +114,14 @@ public abstract class TreeBase implements Component, java.lang.Comparable<TreeBa
 
 	protected int locked;
 
+	protected int intValue;
+
+	protected long longValue;
+
+	protected double doubleValue;
+
+	protected Date dateValue;
+
 	// ~ Methods
 	// ================================================================
 
@@ -186,6 +196,10 @@ public abstract class TreeBase implements Component, java.lang.Comparable<TreeBa
 		return code;
 	}
 
+	public Date getDateValue() {
+		return dateValue;
+	}
+
 	/**
 	 * Getter for property description.
 	 * 
@@ -193,6 +207,10 @@ public abstract class TreeBase implements Component, java.lang.Comparable<TreeBa
 	 */
 	public String getDescription() {
 		return description;
+	}
+
+	public double getDoubleValue() {
+		return doubleValue;
 	}
 
 	/**
@@ -227,6 +245,10 @@ public abstract class TreeBase implements Component, java.lang.Comparable<TreeBa
 		return image;
 	}
 
+	public int getIntValue() {
+		return intValue;
+	}
+
 	public int getLevel() {
 		return level;
 	}
@@ -242,6 +264,10 @@ public abstract class TreeBase implements Component, java.lang.Comparable<TreeBa
 
 	public int getLocked() {
 		return locked;
+	}
+
+	public long getLongValue() {
+		return longValue;
 	}
 
 	public String getModule() {
@@ -373,8 +399,7 @@ public abstract class TreeBase implements Component, java.lang.Comparable<TreeBa
 	/**
 	 * Sets the value for action.
 	 * 
-	 * @param action
-	 *            New value of property action.
+	 * @param action New value of property action.
 	 */
 	public void setAction(String action) {
 		this.action = action;
@@ -383,8 +408,7 @@ public abstract class TreeBase implements Component, java.lang.Comparable<TreeBa
 	/**
 	 * Sets the value for align.
 	 * 
-	 * @param align
-	 *            New value of property align.
+	 * @param align New value of property align.
 	 */
 	public void setAlign(String align) {
 		this.align = align;
@@ -393,8 +417,7 @@ public abstract class TreeBase implements Component, java.lang.Comparable<TreeBa
 	/**
 	 * Setter for property altImage.
 	 * 
-	 * @param altImage
-	 *            New value of property altImage.
+	 * @param altImage New value of property altImage.
 	 */
 	public void setAltImage(String altImage) {
 		this.altImage = altImage;
@@ -412,21 +435,27 @@ public abstract class TreeBase implements Component, java.lang.Comparable<TreeBa
 		this.code = code;
 	}
 
+	public void setDateValue(Date dateValue) {
+		this.dateValue = dateValue;
+	}
+
 	/**
 	 * Setter for property description.
 	 * 
-	 * @param description
-	 *            New value of property description.
+	 * @param description New value of property description.
 	 */
 	public void setDescription(String description) {
 		this.description = description;
 	}
 
+	public void setDoubleValue(double doubleValue) {
+		this.doubleValue = doubleValue;
+	}
+
 	/**
 	 * Sets the forward.
 	 * 
-	 * @param forward
-	 *            The forward to set
+	 * @param forward The forward to set
 	 */
 	public void setForward(String forward) {
 		this.forward = forward;
@@ -442,8 +471,7 @@ public abstract class TreeBase implements Component, java.lang.Comparable<TreeBa
 	/**
 	 * Setter for property name.
 	 * 
-	 * @param name
-	 *            New value of property name.
+	 * @param name New value of property name.
 	 */
 	public void setId(String id) {
 		this.id = id;
@@ -452,11 +480,14 @@ public abstract class TreeBase implements Component, java.lang.Comparable<TreeBa
 	/**
 	 * Setter for property image.
 	 * 
-	 * @param image
-	 *            New value of property image.
+	 * @param image New value of property image.
 	 */
 	public void setImage(String image) {
 		this.image = image;
+	}
+
+	public void setIntValue(int intValue) {
+		this.intValue = intValue;
 	}
 
 	public void setLevel(int level) {
@@ -466,8 +497,7 @@ public abstract class TreeBase implements Component, java.lang.Comparable<TreeBa
 	/**
 	 * Setter for property location.
 	 * 
-	 * @param location
-	 *            New value of property location.
+	 * @param location New value of property location.
 	 */
 	public void setLocation(String location) {
 		this.location = location;
@@ -477,6 +507,10 @@ public abstract class TreeBase implements Component, java.lang.Comparable<TreeBa
 		this.locked = locked;
 	}
 
+	public void setLongValue(long longValue) {
+		this.longValue = longValue;
+	}
+
 	public void setModule(String module) {
 		this.module = module;
 	}
@@ -484,8 +518,7 @@ public abstract class TreeBase implements Component, java.lang.Comparable<TreeBa
 	/**
 	 * Setter for property onclick.
 	 * 
-	 * @param onclick
-	 *            New value of property onclick.
+	 * @param onclick New value of property onclick.
 	 */
 	public void setOnclick(String onclick) {
 		this.onclick = onclick;
@@ -501,8 +534,7 @@ public abstract class TreeBase implements Component, java.lang.Comparable<TreeBa
 	/**
 	 * Sets the ondblclick.
 	 * 
-	 * @param ondblclick
-	 *            The ondblclick to set
+	 * @param ondblclick The ondblclick to set
 	 */
 	public void setOndblclick(String ondblclick) {
 		this.ondblclick = ondblclick;
@@ -511,8 +543,7 @@ public abstract class TreeBase implements Component, java.lang.Comparable<TreeBa
 	/**
 	 * Setter for property onmouseout.
 	 * 
-	 * @param onmouseout
-	 *            New value of property onmouseout.
+	 * @param onmouseout New value of property onmouseout.
 	 */
 	public void setOnmouseout(String onmouseout) {
 		this.onmouseout = onmouseout;
@@ -521,8 +552,7 @@ public abstract class TreeBase implements Component, java.lang.Comparable<TreeBa
 	/**
 	 * Setter for property onmouseover.
 	 * 
-	 * @param onmouseover
-	 *            New value of property onmouseover.
+	 * @param onmouseover New value of property onmouseover.
 	 */
 	public void setOnmouseover(String onmouseover) {
 		this.onmouseover = onmouseover;
@@ -531,8 +561,7 @@ public abstract class TreeBase implements Component, java.lang.Comparable<TreeBa
 	/**
 	 * Sets the value for page.
 	 * 
-	 * @param page
-	 *            New value of property page.
+	 * @param page New value of property page.
 	 */
 	public void setPage(String page) {
 		this.page = page;
@@ -541,8 +570,7 @@ public abstract class TreeBase implements Component, java.lang.Comparable<TreeBa
 	/**
 	 * Sets the roles.
 	 * 
-	 * @param roles
-	 *            The roles to set
+	 * @param roles The roles to set
 	 */
 	public void setRoles(String roles) {
 		this.roles = roles;
@@ -555,8 +583,7 @@ public abstract class TreeBase implements Component, java.lang.Comparable<TreeBa
 	/**
 	 * Setter for property target.
 	 * 
-	 * @param target
-	 *            New value of property target.
+	 * @param target New value of property target.
 	 */
 	public void setTarget(String target) {
 		this.target = target;
@@ -565,8 +592,7 @@ public abstract class TreeBase implements Component, java.lang.Comparable<TreeBa
 	/**
 	 * Setter for property title.
 	 * 
-	 * @param title
-	 *            New value of property title.
+	 * @param title New value of property title.
 	 */
 	public void setTitle(String title) {
 		this.title = title;
@@ -575,8 +601,7 @@ public abstract class TreeBase implements Component, java.lang.Comparable<TreeBa
 	/**
 	 * Setter for property toolTip.
 	 * 
-	 * @param toolTip
-	 *            New value of property toolTip.
+	 * @param toolTip New value of property toolTip.
 	 */
 	public void setToolTip(String toolTip) {
 		this.toolTip = toolTip;
@@ -596,8 +621,7 @@ public abstract class TreeBase implements Component, java.lang.Comparable<TreeBa
 	/**
 	 * Sets the width.
 	 * 
-	 * @param width
-	 *            The width to set
+	 * @param width The width to set
 	 */
 	public void setWidth(String width) {
 		this.width = width;

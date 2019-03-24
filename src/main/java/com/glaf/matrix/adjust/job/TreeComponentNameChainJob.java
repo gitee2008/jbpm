@@ -33,7 +33,7 @@ import com.glaf.core.context.ContextFactory;
 import com.glaf.core.job.BaseJob;
 import com.glaf.core.security.Authentication;
 import com.glaf.core.util.DateUtils;
- 
+
 import com.glaf.matrix.adjust.bean.TreeComponentNameChainBean;
 import com.glaf.matrix.adjust.domain.TreeDataAdjust;
 import com.glaf.matrix.adjust.query.TreeDataAdjustQuery;
@@ -66,6 +66,7 @@ public class TreeComponentNameChainJob extends BaseJob {
 		TreeDataAdjustService treeDataAdjustService = ContextFactory
 				.getBean("com.glaf.matrix.adjust.service.treeDataAdjustService");
 		TreeDataAdjustQuery query = new TreeDataAdjustQuery();
+		query.adjustType("nameChain");
 		query.scheduleFlag("Y");
 		query.locked(0);
 		Map<String, Object> params = new HashMap<String, Object>();

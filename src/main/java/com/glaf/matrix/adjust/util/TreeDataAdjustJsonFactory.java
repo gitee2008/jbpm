@@ -92,6 +92,15 @@ public class TreeDataAdjustJsonFactory {
 		if (jsonObject.containsKey("sqlCriteria")) {
 			model.setSqlCriteria(jsonObject.getString("sqlCriteria"));
 		}
+		if (jsonObject.containsKey("targetTableName")) {
+			model.setTargetTableName(jsonObject.getString("targetTableName"));
+		}
+		if (jsonObject.containsKey("updateFlag")) {
+			model.setUpdateFlag(jsonObject.getString("updateFlag"));
+		}
+		if (jsonObject.containsKey("deleteFetch")) {
+			model.setDeleteFetch(jsonObject.getString("deleteFetch"));
+		}
 		if (jsonObject.containsKey("leafLimitFlag")) {
 			model.setLeafLimitFlag(jsonObject.getString("leafLimitFlag"));
 		}
@@ -185,6 +194,15 @@ public class TreeDataAdjustJsonFactory {
 		if (model.getSqlCriteria() != null) {
 			jsonObject.put("sqlCriteria", model.getSqlCriteria());
 		}
+		if (model.getTargetTableName() != null) {
+			jsonObject.put("targetTableName", model.getTargetTableName());
+		}
+		if (model.getUpdateFlag() != null) {
+			jsonObject.put("updateFlag", model.getUpdateFlag());
+		}
+		if (model.getDeleteFetch() != null) {
+			jsonObject.put("deleteFetch", model.getDeleteFetch());
+		}
 		if (model.getLeafLimitFlag() != null) {
 			jsonObject.put("leafLimitFlag", model.getLeafLimitFlag());
 		}
@@ -264,6 +282,15 @@ public class TreeDataAdjustJsonFactory {
 		}
 		if (model.getSqlCriteria() != null) {
 			jsonObject.put("sqlCriteria", model.getSqlCriteria());
+		}
+		if (model.getTargetTableName() != null) {
+			jsonObject.put("targetTableName", model.getTargetTableName());
+		}
+		if (model.getUpdateFlag() != null) {
+			jsonObject.put("updateFlag", model.getUpdateFlag());
+		}
+		if (model.getDeleteFetch() != null) {
+			jsonObject.put("deleteFetch", model.getDeleteFetch());
 		}
 		if (model.getConnector() != null) {
 			jsonObject.put("connector", model.getConnector());
