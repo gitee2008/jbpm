@@ -4,7 +4,6 @@ import org.jxls.area.Area;
 import org.jxls.builder.xls.XlsCommentAreaBuilder;
 import org.jxls.common.CellRef;
 import org.jxls.common.Context;
-import org.jxls.expression.JexlExpressionEvaluator;
 import org.jxls.formula.FastFormulaProcessor;
 import org.jxls.formula.FormulaProcessor;
 import org.jxls.formula.StandardFormulaProcessor;
@@ -137,9 +136,9 @@ public abstract class JxlsBuilder {
 		}
 		context.putVar("_ignoreImageMiss", ignoreImageMiss);
 
-		JexlExpressionEvaluator evaluator = (JexlExpressionEvaluator) jxlsHelper.createExpressionEvaluator(null);
-		evaluator.getJexlEngine().setFunctions(funcs);
-		evaluator.getJexlEngine().setSilent(JxlsConfig.getSilent());
+		// JexlExpressionEvaluator evaluator = (JexlExpressionEvaluator) jxlsHelper.createExpressionEvaluator(null);
+		// evaluator.getJexlEngine().setFunctions(funcs);
+		// evaluator.getJexlEngine().setSilent(JxlsConfig.getSilent());
 
 		transform();
 		return this;
