@@ -51,6 +51,12 @@ public class ExportItem implements Serializable, JSONable {
 	protected String expId;
 
 	/**
+	 * Xml导出编号
+	 */
+	@Column(name = "XMLEXPID_", length = 50)
+	protected String xmlExpId;
+
+	/**
 	 * 部署编号
 	 */
 	@Column(name = "DEPLOYMENTID_", length = 50)
@@ -155,6 +161,24 @@ public class ExportItem implements Serializable, JSONable {
 	protected int imageHeight;
 
 	/**
+	 * 图片的缩放比例
+	 */
+	@Column(name = "IMAGESCALE_")
+	protected double imageScale;
+
+	/**
+	 * 图片的大小，超过这个大小的才缩放，默认单位为MB
+	 */
+	@Column(name = "IMAGESCALESIZE_")
+	protected double imageScaleSize;
+
+	/**
+	 * 每单位图片数量
+	 */
+	@Column(name = "IMAGENUMPERUNIT_")
+	protected int imageNumPerUnit;
+
+	/**
 	 * 根路径
 	 */
 	@Column(name = "ROOTPATH_", length = 200)
@@ -172,6 +196,54 @@ public class ExportItem implements Serializable, JSONable {
 	 */
 	@Column(name = "VARIANTFLAG_", length = 1)
 	protected String variantFlag;
+
+	/**
+	 * 上下文变量标识
+	 */
+	@Column(name = "CONTEXTVARFLAG_", length = 1)
+	protected String contextVarFlag;
+
+	/**
+	 * 生成空白数据标识
+	 */
+	@Column(name = "GENEMPTYFLAG_", length = 1)
+	protected String genEmptyFlag;
+
+	/**
+	 * 数据处理器
+	 */
+	@Column(name = "DATAHANDLERCHAINS_", length = 500)
+	protected String dataHandlerChains;
+
+	/**
+	 * 小计汇总标识
+	 */
+	@Column(name = "SUBTOTALFLAG_", length = 1)
+	protected String subTotalFlag;
+
+	/**
+	 * 小计汇总列
+	 */
+	@Column(name = "SUBTOTALCOLUMN_", length = 50)
+	protected String subTotalColumn;
+
+	/**
+	 * 自动换行列
+	 */
+	@Column(name = "LINEBREAKCOLUMN_", length = 50)
+	protected String lineBreakColumn;
+
+	/**
+	 * 默认行高
+	 */
+	@Column(name = "LINEHEIGHT_")
+	protected int lineHeight;
+
+	/**
+	 * 自动换行后每行字符数
+	 */
+	@Column(name = "CHARNUMPERROW_")
+	protected int charNumPerRow;
 
 	@Column(name = "PAGESIZE_")
 	protected int pageSize;
@@ -204,6 +276,9 @@ public class ExportItem implements Serializable, JSONable {
 	@javax.persistence.Transient
 	protected Collection<Map<String, Object>> dataList = new ArrayList<Map<String, Object>>();
 
+	@javax.persistence.Transient
+	protected JSONObject jsonData = null;
+
 	public ExportItem() {
 
 	}
@@ -225,6 +300,14 @@ public class ExportItem implements Serializable, JSONable {
 		return true;
 	}
 
+	public int getCharNumPerRow() {
+		return charNumPerRow;
+	}
+
+	public String getContextVarFlag() {
+		return contextVarFlag;
+	}
+
 	public String getCreateBy() {
 		return this.createBy;
 	}
@@ -238,6 +321,10 @@ public class ExportItem implements Serializable, JSONable {
 			return DateUtils.getDateTime(this.createTime);
 		}
 		return "";
+	}
+
+	public String getDataHandlerChains() {
+		return dataHandlerChains;
 	}
 
 	public Collection<Map<String, Object>> getDataList() {
@@ -265,11 +352,21 @@ public class ExportItem implements Serializable, JSONable {
 	}
 
 	public String getFileNameColumn() {
+		if (fileNameColumn != null) {
+			fileNameColumn = fileNameColumn.trim();
+		}
 		return fileNameColumn;
 	}
 
 	public String getFilePathColumn() {
+		if (filePathColumn != null) {
+			filePathColumn = filePathColumn.trim();
+		}
 		return filePathColumn;
+	}
+
+	public String getGenEmptyFlag() {
+		return genEmptyFlag;
 	}
 
 	public String getId() {
@@ -292,8 +389,32 @@ public class ExportItem implements Serializable, JSONable {
 		return imageMergeTargetType;
 	}
 
+	public int getImageNumPerUnit() {
+		return imageNumPerUnit;
+	}
+
+	public double getImageScale() {
+		return imageScale;
+	}
+
+	public double getImageScaleSize() {
+		return imageScaleSize;
+	}
+
 	public int getImageWidth() {
 		return imageWidth;
+	}
+
+	public JSONObject getJsonData() {
+		return jsonData;
+	}
+
+	public String getLineBreakColumn() {
+		return lineBreakColumn;
+	}
+
+	public int getLineHeight() {
+		return lineHeight;
 	}
 
 	public int getLocked() {
@@ -301,6 +422,9 @@ public class ExportItem implements Serializable, JSONable {
 	}
 
 	public String getName() {
+		if (name != null) {
+			name = name.trim();
+		}
 		return name;
 	}
 
@@ -338,6 +462,14 @@ public class ExportItem implements Serializable, JSONable {
 		return this.sql;
 	}
 
+	public String getSubTotalColumn() {
+		return subTotalColumn;
+	}
+
+	public String getSubTotalFlag() {
+		return subTotalFlag;
+	}
+
 	public String getTitle() {
 		return title;
 	}
@@ -348,6 +480,10 @@ public class ExportItem implements Serializable, JSONable {
 
 	public String getVarTemplate() {
 		return varTemplate;
+	}
+
+	public String getXmlExpId() {
+		return xmlExpId;
 	}
 
 	@Override
@@ -362,12 +498,24 @@ public class ExportItem implements Serializable, JSONable {
 		return ExportItemJsonFactory.jsonToObject(jsonObject);
 	}
 
+	public void setCharNumPerRow(int charNumPerRow) {
+		this.charNumPerRow = charNumPerRow;
+	}
+
+	public void setContextVarFlag(String contextVarFlag) {
+		this.contextVarFlag = contextVarFlag;
+	}
+
 	public void setCreateBy(String createBy) {
 		this.createBy = createBy;
 	}
 
 	public void setCreateTime(Date createTime) {
 		this.createTime = createTime;
+	}
+
+	public void setDataHandlerChains(String dataHandlerChains) {
+		this.dataHandlerChains = dataHandlerChains;
 	}
 
 	public void setDataList(Collection<Map<String, Object>> dataList) {
@@ -402,6 +550,10 @@ public class ExportItem implements Serializable, JSONable {
 		this.filePathColumn = filePathColumn;
 	}
 
+	public void setGenEmptyFlag(String genEmptyFlag) {
+		this.genEmptyFlag = genEmptyFlag;
+	}
+
 	public void setId(String id) {
 		this.id = id;
 	}
@@ -422,8 +574,32 @@ public class ExportItem implements Serializable, JSONable {
 		this.imageMergeTargetType = imageMergeTargetType;
 	}
 
+	public void setImageNumPerUnit(int imageNumPerUnit) {
+		this.imageNumPerUnit = imageNumPerUnit;
+	}
+
+	public void setImageScale(double imageScale) {
+		this.imageScale = imageScale;
+	}
+
+	public void setImageScaleSize(double imageScaleSize) {
+		this.imageScaleSize = imageScaleSize;
+	}
+
 	public void setImageWidth(int imageWidth) {
 		this.imageWidth = imageWidth;
+	}
+
+	public void setJsonData(JSONObject jsonData) {
+		this.jsonData = jsonData;
+	}
+
+	public void setLineBreakColumn(String lineBreakColumn) {
+		this.lineBreakColumn = lineBreakColumn;
+	}
+
+	public void setLineHeight(int lineHeight) {
+		this.lineHeight = lineHeight;
 	}
 
 	public void setLocked(int locked) {
@@ -462,6 +638,14 @@ public class ExportItem implements Serializable, JSONable {
 		this.sql = sql;
 	}
 
+	public void setSubTotalColumn(String subTotalColumn) {
+		this.subTotalColumn = subTotalColumn;
+	}
+
+	public void setSubTotalFlag(String subTotalFlag) {
+		this.subTotalFlag = subTotalFlag;
+	}
+
 	public void setTitle(String title) {
 		this.title = title;
 	}
@@ -472,6 +656,10 @@ public class ExportItem implements Serializable, JSONable {
 
 	public void setVarTemplate(String varTemplate) {
 		this.varTemplate = varTemplate;
+	}
+
+	public void setXmlExpId(String xmlExpId) {
+		this.xmlExpId = xmlExpId;
 	}
 
 	public JSONObject toJsonObject() {

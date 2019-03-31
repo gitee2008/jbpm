@@ -52,6 +52,9 @@ public class XmlExportJsonFactory {
 		if (jsonObject.containsKey("title")) {
 			model.setTitle(jsonObject.getString("title"));
 		}
+		if (jsonObject.containsKey("datasetId")) {
+			model.setDatasetId(jsonObject.getString("datasetId"));
+		}
 		if (jsonObject.containsKey("sql")) {
 			model.setSql(jsonObject.getString("sql"));
 		}
@@ -114,6 +117,9 @@ public class XmlExportJsonFactory {
 		}
 		if (model.getTitle() != null) {
 			jsonObject.put("title", model.getTitle());
+		}
+		if (model.getDatasetId() != null) {
+			jsonObject.put("datasetId", model.getDatasetId());
 		}
 		if (model.getSql() != null) {
 			jsonObject.put("sql", model.getSql());
@@ -190,6 +196,9 @@ public class XmlExportJsonFactory {
 		}
 		if (model.getTitle() != null) {
 			jsonObject.put("title", model.getTitle());
+		}
+		if (model.getDatasetId() != null) {
+			jsonObject.put("datasetId", model.getDatasetId());
 		}
 		if (model.getSql() != null) {
 			jsonObject.put("sql", model.getSql());

@@ -42,6 +42,8 @@ import com.glaf.matrix.export.mapper.ExportTemplateVarMapper;
 import com.glaf.matrix.export.query.ExportAppQuery;
 import com.glaf.matrix.export.query.ExportItemQuery;
 import com.glaf.matrix.export.query.ExportTemplateVarQuery;
+import com.glaf.matrix.parameter.domain.ParameterConversion;
+import com.glaf.matrix.parameter.service.ParameterConversionService;
 
 @Service("com.glaf.matrix.export.service.exportAppService")
 @Transactional(readOnly = true)
@@ -61,6 +63,8 @@ public class ExportAppServiceImpl implements ExportAppService {
 	protected ExportItemMapper exportItemMapper;
 
 	protected ExportTemplateVarMapper exportTemplateVarMapper;
+
+	protected ParameterConversionService parameterConversionService;
 
 	public ExportAppServiceImpl() {
 
@@ -173,6 +177,14 @@ public class ExportAppServiceImpl implements ExportAppService {
 				}
 			}
 
+			List<ParameterConversion> conversions = parameterConversionService.getParameterConversionsByKey(expId);
+			if (conversions != null && !conversions.isEmpty()) {
+				for (ParameterConversion param : conversions) {
+					param.setKey(model.getId());
+				}
+				parameterConversionService.bulkInsert(conversions);
+			}
+
 			return model.getId();
 		}
 		return null;
@@ -211,5 +223,10 @@ public class ExportAppServiceImpl implements ExportAppService {
 	@javax.annotation.Resource(name = "com.glaf.matrix.export.mapper.ExportTemplateVarMapper")
 	public void setExportTemplateVarMapper(ExportTemplateVarMapper exportTemplateVarMapper) {
 		this.exportTemplateVarMapper = exportTemplateVarMapper;
+	}
+
+	@javax.annotation.Resource(name = "com.glaf.matrix.parameter.service.parameterConversionService")
+	public void setParameterConversionService(ParameterConversionService parameterConversionService) {
+		this.parameterConversionService = parameterConversionService;
 	}
 }

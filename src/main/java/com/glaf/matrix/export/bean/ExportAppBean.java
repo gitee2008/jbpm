@@ -20,16 +20,22 @@ package com.glaf.matrix.export.bean;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.dom4j.DocumentHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 
 import com.glaf.core.config.Environment;
 import com.glaf.core.context.ContextFactory;
@@ -37,15 +43,21 @@ import com.glaf.core.domain.Database;
 import com.glaf.core.service.IDatabaseService;
 import com.glaf.core.service.ITablePageService;
 import com.glaf.core.util.DBUtils;
+import com.glaf.core.util.Dom4jUtils;
 import com.glaf.core.util.LowerLinkedMap;
 import com.glaf.core.util.ParamUtils;
 import com.glaf.core.util.QueryUtils;
+import com.glaf.core.util.StaxonUtils;
 import com.glaf.core.util.StringTools;
 import com.glaf.core.util.UUID32;
 
 import com.glaf.matrix.export.domain.ExportApp;
 import com.glaf.matrix.export.domain.ExportItem;
+import com.glaf.matrix.export.domain.XmlExport;
+import com.glaf.matrix.export.handler.XmlDataHandler;
+import com.glaf.matrix.export.handler.XmlExportDataHandler;
 import com.glaf.matrix.export.service.ExportAppService;
+import com.glaf.matrix.export.service.XmlExportService;
 import com.glaf.matrix.util.SysParams;
 
 public class ExportAppBean {
@@ -56,6 +68,7 @@ public class ExportAppBean {
 		IDatabaseService databaseService = ContextFactory.getBean("databaseService");
 		ITablePageService tablePageService = ContextFactory.getBean("tablePageService");
 		ExportAppService exportAppService = ContextFactory.getBean("com.glaf.matrix.export.service.exportAppService");
+		XmlExportService xmlExportService = ContextFactory.getBean("com.glaf.matrix.export.service.xmlExportService");
 		ExportApp exportApp = exportAppService.getExportApp(expId);
 		if (exportApp == null || !StringUtils.equals(exportApp.getActive(), "Y")) {
 			return null;
@@ -75,6 +88,29 @@ public class ExportAppBean {
 		try {
 			srcDatabase = databaseService.getDatabaseById(exportApp.getSrcDatabaseId());
 			Environment.setCurrentSystemName(srcDatabase.getName());
+
+			for (ExportItem item : items) {
+				if (item.getLocked() == 1) {
+					continue;
+				}
+				if (StringUtils.isEmpty(item.getXmlExpId())) {
+					continue;
+				}
+				XmlExport xmlExport = xmlExportService.getXmlExport(expId);
+				if (xmlExport != null && StringUtils.equals(xmlExport.getActive(), "Y")) {
+					xmlExport.setParameter(params);
+					XmlDataHandler xmlDataHandler = new XmlExportDataHandler();
+					org.dom4j.Document document = DocumentHelper.createDocument();
+					org.dom4j.Element root = document.addElement(xmlExport.getXmlTag());
+					xmlExport.setElement(root);
+					xmlDataHandler.addChild(xmlExport, root, srcDatabase.getId());
+					byte[] data = Dom4jUtils.getBytesFromPrettyDocument(document, "UTF-8");
+					data = StaxonUtils.xml2json(new String(data, "UTF-8")).getBytes();
+					String json = new String(data, "UTF-8");
+					JSONObject jsonObject = JSON.parseObject(json);
+					item.setJsonData(jsonObject);
+				}
+			}
 
 			for (ExportItem item : items) {
 				if (item.getLocked() == 1) {
@@ -102,7 +138,7 @@ public class ExportAppBean {
 					continue;
 				}
 
-				Map<String, Map<String, Object>> dataListMap = new HashMap<String, Map<String, Object>>();
+				Map<String, Map<String, Object>> dataListMap = new LinkedHashMap<String, Map<String, Object>>();
 				List<String> recursionKeys = StringTools.splitLowerCase(item.getRecursionColumns(), ",");
 				boolean recursionKeyExists = false;
 				if (recursionKeys != null && !recursionKeys.isEmpty()) {

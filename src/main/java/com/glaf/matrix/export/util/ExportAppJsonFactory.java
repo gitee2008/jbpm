@@ -46,14 +46,14 @@ public class ExportAppJsonFactory {
 		if (jsonObject.containsKey("title")) {
 			model.setTitle(jsonObject.getString("title"));
 		}
- 
+
 		if (jsonObject.containsKey("syncFlag")) {
 			model.setSyncFlag(jsonObject.getString("syncFlag"));
 		}
 		if (jsonObject.containsKey("srcDatabaseId")) {
 			model.setSrcDatabaseId(jsonObject.getLong("srcDatabaseId"));
 		}
- 
+
 		if (jsonObject.containsKey("type")) {
 			model.setType(jsonObject.getString("type"));
 		}
@@ -71,6 +71,9 @@ public class ExportAppJsonFactory {
 		}
 		if (jsonObject.containsKey("externalColumnsFlag")) {
 			model.setExternalColumnsFlag(jsonObject.getString("externalColumnsFlag"));
+		}
+		if (jsonObject.containsKey("excelProcessChains")) {
+			model.setExcelProcessChains(jsonObject.getString("excelProcessChains"));
 		}
 		if (jsonObject.containsKey("interval")) {
 			model.setInterval(jsonObject.getInteger("interval"));
@@ -108,14 +111,14 @@ public class ExportAppJsonFactory {
 		if (model.getTitle() != null) {
 			jsonObject.put("title", model.getTitle());
 		}
-		 
+
 		if (model.getSyncFlag() != null) {
 			jsonObject.put("syncFlag", model.getSyncFlag());
 		}
 		if (model.getSrcDatabaseId() != 0) {
 			jsonObject.put("srcDatabaseId", model.getSrcDatabaseId());
 		}
-		 
+
 		if (model.getType() != null) {
 			jsonObject.put("type", model.getType());
 		}
@@ -133,6 +136,9 @@ public class ExportAppJsonFactory {
 		}
 		if (model.getExternalColumnsFlag() != null) {
 			jsonObject.put("externalColumnsFlag", model.getExternalColumnsFlag());
+		}
+		if (model.getExcelProcessChains() != null) {
+			jsonObject.put("excelProcessChains", model.getExcelProcessChains());
 		}
 		jsonObject.put("interval", model.getInterval());
 		if (model.getCreateBy() != null) {
@@ -168,7 +174,7 @@ public class ExportAppJsonFactory {
 		if (model.getTitle() != null) {
 			jsonObject.put("title", model.getTitle());
 		}
-		 
+
 		if (model.getSyncFlag() != null) {
 			jsonObject.put("syncFlag", model.getSyncFlag());
 		}
@@ -192,6 +198,9 @@ public class ExportAppJsonFactory {
 		}
 		if (model.getExternalColumnsFlag() != null) {
 			jsonObject.put("externalColumnsFlag", model.getExternalColumnsFlag());
+		}
+		if (model.getExcelProcessChains() != null) {
+			jsonObject.put("excelProcessChains", model.getExcelProcessChains());
 		}
 		jsonObject.put("interval", model.getInterval());
 		if (model.getCreateBy() != null) {

@@ -38,6 +38,8 @@ import javax.imageio.ImageIO;
 
 import org.apache.commons.compress.utils.IOUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.openxml4j.util.ZipSecureFile;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.jxls.common.Context;
 import org.jxls.transform.poi.PoiTransformer;
 import org.jxls.util.JxlsHelper;
@@ -50,12 +52,9 @@ import com.glaf.core.security.LoginContext;
 import com.glaf.core.util.FileUtils;
 import com.glaf.core.util.ParamUtils;
 import com.glaf.core.util.StringTools;
-import com.glaf.core.util.Tools;
 import com.glaf.jxls.ext.JxlsBuilder;
 import com.glaf.jxls.ext.JxlsImage;
 import com.glaf.jxls.ext.JxlsUtil;
-import com.glaf.jxls.ext.model.DataModel;
-import com.glaf.jxls.ext.model.ListModel;
 import com.glaf.matrix.export.bean.ExportAppBean;
 import com.glaf.matrix.export.domain.ExportApp;
 import com.glaf.matrix.export.domain.ExportItem;
@@ -76,7 +75,8 @@ public class JxlsExportHandler implements ExportHandler {
 		ITemplateService templateService = ContextFactory.getBean("templateService");
 		ExportAppService exportAppService = ContextFactory.getBean("com.glaf.matrix.export.service.exportAppService");
 		String useExt = ParamUtils.getString(params, "useExt");
-		InputStream is = null;
+		Workbook wb = null;
+
 		ByteArrayInputStream bais = null;
 		BufferedInputStream bis = null;
 		ByteArrayOutputStream baos = null;
@@ -115,16 +115,23 @@ public class JxlsExportHandler implements ExportHandler {
 			int pageNo = 0;
 			SysParams.putInternalParams(params);
 			params.put("_ignoreImageMiss", Boolean.valueOf(true));// 图片不存在跳过
-			final Collection<Map<String, Object>> pageList = new ArrayList<Map<String, Object>>();
-			final List<Map<String, Object>> dataList = new ArrayList<Map<String, Object>>();
+			Collection<Map<String, Object>> pageList = new ArrayList<Map<String, Object>>();
+			List<Map<String, Object>> dataList = new ArrayList<Map<String, Object>>();
 			ExportAppBean bean = new ExportAppBean();
 			exportApp = bean.execute(exportApp.getId(), params);
 			for (ExportItem item : exportApp.getItems()) {
 				pageNo = 0;
 				dataList.clear();
-				dataList.addAll(item.getDataList());
+				if (item.getDataList() != null && !item.getDataList().isEmpty()) {
+					dataList.addAll(item.getDataList());
+				}
+				if (item.getJsonData() != null) {
+					params.put(item.getName(), item.getJsonData());
+				}
+
 				params.put(item.getName(), item.getDataList());
 				params.put(item.getName() + "_size", item.getDataList().size());
+
 				int size = item.getDataList().size();
 				if (size == 1) {
 					Map<String, Object> rowMap = new HashMap<String, Object>();
@@ -147,6 +154,12 @@ public class JxlsExportHandler implements ExportHandler {
 								BufferedImage img = ImageIO.read(bis);
 								bytes = ImageUtils.zoomImage(img, item.getImageWidth(), item.getImageHeight(),
 										item.getImageMergeTargetType());
+							} else if (item.getImageScale() > 0 && item.getImageScale() < 1.0) {
+								if (bytes.length > item.getImageScaleSize() * FileUtils.MB_SIZE) {
+									BufferedImage img = ImageIO.read(bis);
+									bytes = ImageUtils.zoomByScale(img, item.getImageScale(),
+											item.getImageMergeTargetType());
+								}
 							}
 							IOUtils.closeQuietly(bis);
 							IOUtils.closeQuietly(bais);
@@ -169,6 +182,13 @@ public class JxlsExportHandler implements ExportHandler {
 								bytes = ImageUtils.zoomImage(img, item.getImageWidth(), item.getImageHeight(),
 										item.getImageMergeTargetType());
 								rowMap.put("_bytes_", bytes);
+							} else if (item.getImageScale() > 0 && item.getImageScale() < 1.0) {
+								if (bytes.length > item.getImageScaleSize() * FileUtils.MB_SIZE) {
+									BufferedImage img = ImageIO.read(bis);
+									bytes = ImageUtils.zoomByScale(img, item.getImageScale(),
+											item.getImageMergeTargetType());
+									rowMap.put("_bytes_", bytes);
+								}
 							}
 							IOUtils.closeQuietly(bis);
 							IOUtils.closeQuietly(bais);
@@ -209,11 +229,32 @@ public class JxlsExportHandler implements ExportHandler {
 									jxlsImage = JxlsUtil.me().getJxlsImage(bytes,
 											item.getName() + "." + item.getImageMergeTargetType());
 									params.put(item.getName() + "_image", jxlsImage);
+								} else if (item.getImageScale() > 0 && item.getImageScale() < 1.0) {
+									if (bytes.length > item.getImageScaleSize() * FileUtils.MB_SIZE) {
+										BufferedImage img = ImageIO.read(bis);
+										bytes = ImageUtils.zoomByScale(img, item.getImageScale(),
+												item.getImageMergeTargetType());
+										jxlsImage = JxlsUtil.me().getJxlsImage(bytes,
+												item.getName() + "." + item.getImageMergeTargetType());
+										params.put(item.getName() + "_image", jxlsImage);
+									}
 								}
 							}
 						}
 					}
-					params.put(item.getName() + "_row", rowMap);
+					params.put("obj_" + item.getName(), rowMap);
+					params.put("map_" + item.getName(), rowMap);
+
+					if (StringUtils.equals(item.getContextVarFlag(), "Y")) {
+						Set<Entry<String, Object>> entrySet = rowMap.entrySet();
+						for (Entry<String, Object> entry : entrySet) {
+							String key = entry.getKey();
+							Object value = entry.getValue();
+							if (params.get(key) == null) {
+								params.put(key, value);
+							}
+						}
+					}
 				}
 
 				List<BufferedImage> imageList = new ArrayList<BufferedImage>();
@@ -249,6 +290,12 @@ public class JxlsExportHandler implements ExportHandler {
 								BufferedImage img = ImageIO.read(bis);
 								bytes = ImageUtils.zoomImage(img, item.getImageWidth(), item.getImageHeight(),
 										item.getImageMergeTargetType());
+							} else if (item.getImageScale() > 0 && item.getImageScale() < 1.0) {
+								if (bytes.length > item.getImageScaleSize() * FileUtils.MB_SIZE) {
+									BufferedImage img = ImageIO.read(bis);
+									bytes = ImageUtils.zoomByScale(img, item.getImageScale(),
+											item.getImageMergeTargetType());
+								}
 							}
 							IOUtils.closeQuietly(bis);
 							IOUtils.closeQuietly(bais);
@@ -269,6 +316,12 @@ public class JxlsExportHandler implements ExportHandler {
 								BufferedImage img = ImageIO.read(bis);
 								bytes = ImageUtils.zoomImage(img, item.getImageWidth(), item.getImageHeight(),
 										item.getImageMergeTargetType());
+							} else if (item.getImageScale() > 0 && item.getImageScale() < 1.0) {
+								if (bytes.length > item.getImageScaleSize() * FileUtils.MB_SIZE) {
+									BufferedImage img = ImageIO.read(bis);
+									bytes = ImageUtils.zoomByScale(img, item.getImageScale(),
+											item.getImageMergeTargetType());
+								}
 							}
 							IOUtils.closeQuietly(bis);
 							IOUtils.closeQuietly(bais);
@@ -315,6 +368,12 @@ public class JxlsExportHandler implements ExportHandler {
 										BufferedImage img = ImageIO.read(bis);
 										bytes = ImageUtils.zoomImage(img, item.getImageWidth(), item.getImageHeight(),
 												item.getImageMergeTargetType());
+									} else if (item.getImageScale() > 0 && item.getImageScale() < 1.0) {
+										if (bytes.length > item.getImageScaleSize() * FileUtils.MB_SIZE) {
+											BufferedImage img = ImageIO.read(bis);
+											bytes = ImageUtils.zoomByScale(img, item.getImageScale(),
+													item.getImageMergeTargetType());
+										}
 									}
 									bais = new ByteArrayInputStream(bytes);
 									bis = new BufferedInputStream(bais);
@@ -330,6 +389,7 @@ public class JxlsExportHandler implements ExportHandler {
 					if (i > 0 && i % pageSize == 0) {
 						pageNo++;
 						params.put(item.getName() + "_rows" + pageNo, pageList);
+						params.put("rows_" + item.getName() + "_" + pageNo, pageList);
 						pageList.clear();
 					}
 				}
@@ -402,71 +462,16 @@ public class JxlsExportHandler implements ExportHandler {
 				}
 			}
 
-			for (ExportItem item : exportApp.getItems()) {
-				if (StringUtils.equals(item.getVariantFlag(), "Y")) {
-					if (item.getDataList() != null && !item.getDataList().isEmpty()) {
-						int startIndex = 1;
-						String rootPath = item.getRootPath();
-						if (StringUtils.startsWith(rootPath, "${ROOT_PATH}")) {
-							rootPath = StringTools.replace(rootPath, "${ROOT_PATH}", SystemProperties.getAppPath());
-						} else {
-							rootPath = SystemProperties.getAppPath();
-						}
-						ListModel listModel = new ListModel();
-						listModel.setGroupId(item.getName());
-						listModel.setGroupName(item.getTitle());
-						listModel.setJsonObject(item.toJsonObject());
-						for (Map<String, Object> dataMap : item.getDataList()) {
-							DataModel model = new DataModel();
-							Tools.populate(model, dataMap);
-							model.setData(dataMap);
-							model.setStartIndex(startIndex++);
-							if (ParamUtils.getString(dataMap, "imagepath1") != null) {
-								String imgPath1 = rootPath + "/" + ParamUtils.getString(dataMap, "imagepath1");
-								JxlsImage jxlsImage1 = JxlsUtil.me().getJxlsImage(imgPath1);
-								model.setImage1(jxlsImage1);
-								useExt = "Y";
-							}
+			DataXFactory.preprocess(params, exportApp);
 
-							if (ParamUtils.getString(dataMap, "imagepath2") != null) {
-								String imgPath2 = rootPath + "/" + ParamUtils.getString(dataMap, "imagepath2");
-								JxlsImage jxlsImage2 = JxlsUtil.me().getJxlsImage(imgPath2);
-								model.setImage2(jxlsImage2);
-								useExt = "Y";
-							}
-
-							if (ParamUtils.getString(dataMap, "imagepath3") != null) {
-								String imgPath3 = rootPath + "/" + ParamUtils.getString(dataMap, "imagepath3");
-								JxlsImage jxlsImage3 = JxlsUtil.me().getJxlsImage(imgPath3);
-								model.setImage3(jxlsImage3);
-								useExt = "Y";
-							}
-
-							if (ParamUtils.getString(dataMap, "imagepath4") != null) {
-								String imgPath4 = rootPath + "/" + ParamUtils.getString(dataMap, "imagepath4");
-								JxlsImage jxlsImage4 = JxlsUtil.me().getJxlsImage(imgPath4);
-								model.setImage4(jxlsImage4);
-								useExt = "Y";
-							}
-
-							if (ParamUtils.getString(dataMap, "imagepath5") != null) {
-								String imgPath5 = rootPath + "/" + ParamUtils.getString(dataMap, "imagepath5");
-								JxlsImage jxlsImage5 = JxlsUtil.me().getJxlsImage(imgPath5);
-								model.setImage5(jxlsImage5);
-								useExt = "Y";
-							}
-
-							listModel.addDataModel(model);
-						}
-						params.put(item.getName() + "_listmodel", listModel);
-					}
-				}
+			if (StringUtils.equals(exportApp.getUseExt(), "Y")) {
+				useExt = "Y";
 			}
 
 			logger.debug("rpt params:" + params);
 
 			bais = new ByteArrayInputStream(tpl.getData());
-			is = new BufferedInputStream(bais);
+			bis = new BufferedInputStream(bais);
 			baos = new ByteArrayOutputStream();
 			bos = new BufferedOutputStream(baos);
 
@@ -480,32 +485,45 @@ public class JxlsExportHandler implements ExportHandler {
 			}
 
 			if (StringUtils.equals(useExt, "Y")) {
-				JxlsBuilder jxlsBuilder = JxlsBuilder.getBuilder(is).out(bos).putAll(params);
+				JxlsBuilder jxlsBuilder = JxlsBuilder.getBuilder(bis).out(bos).putAll(params);
 				jxlsBuilder.putVar("_ignoreImageMiss", Boolean.valueOf(true));
 				jxlsBuilder.build();
 			} else {
 				try {
-					JxlsHelper.getInstance().processTemplate(is, bos, context2);
+					JxlsHelper.getInstance().processTemplate(bis, bos, context2);
 				} catch (Exception ex) {
-					JxlsBuilder jxlsBuilder = JxlsBuilder.getBuilder(is).out(bos).putAll(params);
+					JxlsBuilder jxlsBuilder = JxlsBuilder.getBuilder(bis).out(bos).putAll(params);
 					jxlsBuilder.putVar("_ignoreImageMiss", Boolean.valueOf(true));
 					jxlsBuilder.build();
 				}
 			}
 
-			IOUtils.closeQuietly(is);
+			IOUtils.closeQuietly(bis);
 			IOUtils.closeQuietly(bais);
 
 			bos.flush();
 			baos.flush();
 			byte[] data = baos.toByteArray();
+			bais = new ByteArrayInputStream(data);
+			bis = new BufferedInputStream(bais);
+
+			ZipSecureFile.setMinInflateRatio(-1.0d);// 延迟解析比率
+			wb = org.apache.poi.ss.usermodel.WorkbookFactory.create(bis);
+			WorkbookFactory.process(wb, exportApp);
+			baos = new ByteArrayOutputStream();
+			bos = new BufferedOutputStream(baos);
+			wb.write(bos);
+			bos.flush();
+			baos.flush();
+			data = baos.toByteArray();
+
 			return data;
 
 		} catch (Exception ex) {
 			// ex.printStackTrace();
 			logger.error("export error", ex);
 		} finally {
-			IOUtils.closeQuietly(is);
+			IOUtils.closeQuietly(bis);
 			IOUtils.closeQuietly(bais);
 			IOUtils.closeQuietly(bos);
 			IOUtils.closeQuietly(baos);

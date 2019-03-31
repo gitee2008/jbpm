@@ -1,9 +1,13 @@
 package com.glaf.matrix.export.web.springmvc;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.StringTokenizer;
+import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentMap;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -18,17 +22,23 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.glaf.core.base.BaseItem;
 import com.glaf.core.config.ViewProperties;
 import com.glaf.core.security.LoginContext;
 import com.glaf.core.util.Paging;
 import com.glaf.core.util.ParamUtils;
 import com.glaf.core.util.RequestUtils;
 import com.glaf.core.util.ResponseUtils;
+import com.glaf.core.util.StringTools;
 import com.glaf.core.util.Tools;
 
 import com.glaf.matrix.export.domain.ExportItem;
+import com.glaf.matrix.export.domain.XmlExport;
+import com.glaf.matrix.export.handler.DataXFactory;
 import com.glaf.matrix.export.query.ExportItemQuery;
+import com.glaf.matrix.export.query.XmlExportQuery;
 import com.glaf.matrix.export.service.ExportItemService;
+import com.glaf.matrix.export.service.XmlExportService;
 
 /**
  * 
@@ -42,6 +52,8 @@ public class ExportItemController {
 	protected static final Log logger = LogFactory.getLog(ExportItemController.class);
 
 	protected ExportItemService exportItemService;
+
+	protected XmlExportService xmlExportService;
 
 	public ExportItemController() {
 
@@ -81,10 +93,62 @@ public class ExportItemController {
 	public ModelAndView edit(HttpServletRequest request, ModelMap modelMap) {
 		RequestUtils.setRequestParameterToAttribute(request);
 
+		ConcurrentMap<String, String> nameMap01 = DataXFactory.getNameMap();
+
+		List<BaseItem> allDataItems01 = new ArrayList<BaseItem>();
+		List<BaseItem> selectedDataItems01 = new ArrayList<BaseItem>();
+		List<String> selecteds01 = new ArrayList<String>();
+
+		Set<Entry<String, String>> entrySet = nameMap01.entrySet();
+		for (Entry<String, String> entry : entrySet) {
+			String key = entry.getKey();
+			String value = entry.getValue();
+			BaseItem item = new BaseItem();
+			item.setName(key);
+			item.setTitle(value);
+			allDataItems01.add(item);
+		}
+
 		ExportItem exportItem = exportItemService.getExportItem(RequestUtils.getString(request, "id"));
 		if (exportItem != null) {
 			request.setAttribute("exportItem", exportItem);
+
+			if (StringUtils.isNotEmpty(exportItem.getDataHandlerChains())) {
+				List<String> chains = StringTools.split(exportItem.getDataHandlerChains());
+				for (String name : chains) {
+					BaseItem item = new BaseItem();
+					item.setName(name);
+					item.setTitle(nameMap01.get(name));
+					// allDataItems01.remove(item);
+					selectedDataItems01.add(item);
+					selecteds01.add(name);
+				}
+			}
 		}
+
+		StringBuffer bufferx = new StringBuffer();
+		StringBuffer buffery = new StringBuffer();
+
+		for (int j = 0; j < allDataItems01.size(); j++) {
+			BaseItem item = (BaseItem) allDataItems01.get(j);
+			if (selecteds01.contains(item.getName())) {
+				buffery.append("\n<option value=\"").append(item.getName()).append("\">").append(item.getTitle())
+						.append(" [").append(item.getName()).append("]").append("</option>");
+			} else {
+				bufferx.append("\n<option value=\"").append(item.getName()).append("\">").append(item.getTitle())
+						.append(" [").append(item.getName()).append("]").append("</option>");
+			}
+		}
+
+		request.setAttribute("bufferx", bufferx.toString());
+		request.setAttribute("buffery", buffery.toString());
+
+		request.setAttribute("allDataItems01", allDataItems01);
+		request.setAttribute("selectedDataItems01", selectedDataItems01);
+
+		XmlExportQuery query = new XmlExportQuery();
+		List<XmlExport> xmlExportList = xmlExportService.list(query);
+		request.setAttribute("xmlExportList", xmlExportList);
 
 		String view = request.getParameter("view");
 		if (StringUtils.isNotEmpty(view)) {
@@ -101,7 +165,7 @@ public class ExportItemController {
 
 	@RequestMapping("/json")
 	@ResponseBody
-	public byte[] json(HttpServletRequest request, ModelMap modelMap) throws IOException {
+	public byte[] json(HttpServletRequest request) throws IOException {
 		LoginContext loginContext = RequestUtils.getLoginContext(request);
 		Map<String, Object> params = RequestUtils.getParameterMap(request);
 		ExportItemQuery query = new ExportItemQuery();
@@ -220,6 +284,7 @@ public class ExportItemController {
 			exportItem.setDeploymentId(request.getParameter("deploymentId"));
 			exportItem.setTitle(request.getParameter("title"));
 			exportItem.setDatasetId(request.getParameter("datasetId"));
+			exportItem.setXmlExpId(request.getParameter("xmlExpId"));
 			exportItem.setSql(request.getParameter("sql"));
 			exportItem.setRecursionSql(request.getParameter("recursionSql"));
 			exportItem.setRecursionColumns(request.getParameter("recursionColumns"));
@@ -233,8 +298,19 @@ public class ExportItemController {
 			exportItem.setImageMergeTargetType(request.getParameter("imageMergeTargetType"));
 			exportItem.setImageWidth(RequestUtils.getInt(request, "imageWidth"));
 			exportItem.setImageHeight(RequestUtils.getInt(request, "imageHeight"));
+			exportItem.setImageScale(RequestUtils.getDouble(request, "imageScale"));
+			exportItem.setImageScaleSize(RequestUtils.getDouble(request, "imageScaleSize"));
+			exportItem.setImageNumPerUnit(RequestUtils.getInt(request, "imageNumPerUnit"));
 			exportItem.setRootPath(request.getParameter("rootPath"));
+			exportItem.setLineBreakColumn(request.getParameter("lineBreakColumn"));
+			exportItem.setLineHeight(RequestUtils.getInt(request, "lineHeight"));
+			exportItem.setCharNumPerRow(RequestUtils.getInt(request, "charNumPerRow"));
 			exportItem.setPageSize(RequestUtils.getInt(request, "pageSize"));
+			exportItem.setContextVarFlag(request.getParameter("contextVarFlag"));
+			exportItem.setGenEmptyFlag(request.getParameter("genEmptyFlag"));
+			exportItem.setDataHandlerChains(request.getParameter("dataHandlerChains"));
+			exportItem.setSubTotalFlag(request.getParameter("subTotalFlag"));
+			exportItem.setSubTotalColumn(request.getParameter("subTotalColumn"));
 			exportItem.setVarTemplate(request.getParameter("varTemplate"));
 			exportItem.setVariantFlag(request.getParameter("variantFlag"));
 			exportItem.setSortNo(RequestUtils.getInt(request, "sortNo"));
@@ -253,6 +329,11 @@ public class ExportItemController {
 	@javax.annotation.Resource(name = "com.glaf.matrix.export.service.exportItemService")
 	public void setExportItemService(ExportItemService exportItemService) {
 		this.exportItemService = exportItemService;
+	}
+
+	@javax.annotation.Resource(name = "com.glaf.matrix.export.service.xmlExportService")
+	public void setXmlExportService(XmlExportService xmlExportService) {
+		this.xmlExportService = xmlExportService;
 	}
 
 }

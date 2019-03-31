@@ -21,11 +21,11 @@ package com.glaf.core.base;
 public class BaseItem implements java.io.Serializable {
 	private static final long serialVersionUID = 1L;
 
-	protected String id;
-
-	protected String text;
-
 	protected String name;
+
+	protected String type;
+
+	protected String title;
 
 	protected String value;
 
@@ -50,16 +50,16 @@ public class BaseItem implements java.io.Serializable {
 		return true;
 	}
 
-	public String getId() {
-		return id;
-	}
-
 	public String getName() {
 		return name;
 	}
 
-	public String getText() {
-		return text;
+	public String getTitle() {
+		return title;
+	}
+
+	public String getType() {
+		return type;
 	}
 
 	public String getValue() {
@@ -74,16 +74,16 @@ public class BaseItem implements java.io.Serializable {
 		return result;
 	}
 
-	public void setId(String id) {
-		this.id = id;
-	}
-
 	public void setName(String name) {
 		this.name = name;
 	}
 
-	public void setText(String text) {
-		this.text = text;
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
+	public void setType(String type) {
+		this.type = type;
 	}
 
 	public void setValue(String value) {

@@ -24,6 +24,8 @@
 			jdbcType="VARCHAR" />
 		<result property="externalColumnsFlag"
 			column="EXTERNALCOLUMNSFLAG_" jdbcType="VARCHAR" />
+		<result property="excelProcessChains"
+			column="EXCELPROCESSCHAINS_" jdbcType="VARCHAR" />
 		<result property="interval" column="INTERVAL_"
 			jdbcType="INTEGER" />
 		<result property="sortNo" column="SORTNO_" jdbcType="INTEGER" />
@@ -73,6 +75,9 @@
 			</if>
 			<if test="externalColumnsFlag != null">
 				,EXTERNALCOLUMNSFLAG_
+			</if>
+			<if test="excelProcessChains != null">
+				,EXCELPROCESSCHAINS_
 			</if>
 			<if test="interval != null">
 				,INTERVAL_
@@ -129,6 +134,9 @@
 			</if>
 			<if test="externalColumnsFlag != null">
 				,#{externalColumnsFlag, jdbcType=VARCHAR}
+			</if>
+			<if test="excelProcessChains != null">
+				,#{excelProcessChains, jdbcType=VARCHAR}
 			</if>
 			<if test="interval != null">
 				,#{interval, jdbcType=INTEGER}
@@ -190,6 +198,10 @@
 			</if>
 			<if test="externalColumnsFlag != null">
 				EXTERNALCOLUMNSFLAG_ = #{externalColumnsFlag,
+				jdbcType=VARCHAR},
+			</if>
+			<if test="excelProcessChains != null">
+				EXCELPROCESSCHAINS_ = #{excelProcessChains,
 				jdbcType=VARCHAR},
 			</if>
 			<if test="interval != null">

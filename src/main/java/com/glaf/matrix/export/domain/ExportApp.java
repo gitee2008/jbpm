@@ -25,7 +25,8 @@ import com.alibaba.fastjson.*;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
-import com.glaf.core.base.*;
+
+import com.glaf.core.base.JSONable;
 import com.glaf.core.util.DateUtils;
 import com.glaf.matrix.export.util.*;
 
@@ -105,6 +106,12 @@ public class ExportApp implements Serializable, JSONable {
 	protected String exportFileExpr;
 
 	/**
+	 * Excel后置处理器
+	 */
+	@Column(name = "EXCELPROCESSCHAINS_", length = 500)
+	protected String excelProcessChains;
+
+	/**
 	 * 时间间隔
 	 */
 	@Column(name = "INTERVAL_")
@@ -147,6 +154,9 @@ public class ExportApp implements Serializable, JSONable {
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "UPDATETIME_")
 	protected Date updateTime;
+
+	@javax.persistence.Transient
+	protected String useExt;
 
 	@javax.persistence.Transient
 	protected List<ExportItem> items = new ArrayList<ExportItem>();
@@ -216,6 +226,10 @@ public class ExportApp implements Serializable, JSONable {
 		return this.deploymentId;
 	}
 
+	public String getExcelProcessChains() {
+		return excelProcessChains;
+	}
+
 	public String getExportFileExpr() {
 		return exportFileExpr;
 	}
@@ -279,6 +293,10 @@ public class ExportApp implements Serializable, JSONable {
 		return "";
 	}
 
+	public String getUseExt() {
+		return useExt;
+	}
+
 	public List<ExportTemplateVar> getVariables() {
 		return variables;
 	}
@@ -313,6 +331,10 @@ public class ExportApp implements Serializable, JSONable {
 
 	public void setDeploymentId(String deploymentId) {
 		this.deploymentId = deploymentId;
+	}
+
+	public void setExcelProcessChains(String excelProcessChains) {
+		this.excelProcessChains = excelProcessChains;
 	}
 
 	public void setExportFileExpr(String exportFileExpr) {
@@ -369,6 +391,10 @@ public class ExportApp implements Serializable, JSONable {
 
 	public void setUpdateTime(Date updateTime) {
 		this.updateTime = updateTime;
+	}
+
+	public void setUseExt(String useExt) {
+		this.useExt = useExt;
 	}
 
 	public void setVariables(List<ExportTemplateVar> variables) {

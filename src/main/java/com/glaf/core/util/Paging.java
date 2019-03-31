@@ -20,6 +20,7 @@ package com.glaf.core.util;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -38,8 +39,7 @@ public class Paging implements java.io.Serializable {
 	/**
 	 * 空白页
 	 */
-	public final static Paging EMPTY_PAGE = new Paging(Collections.emptyList(),
-			0, 0, 0);
+	public final static Paging EMPTY_PAGE = new Paging(Collections.emptyList(), 0, 0, 0);
 
 	/**
 	 * 每页记录条数
@@ -57,6 +57,11 @@ public class Paging implements java.io.Serializable {
 	private int currentPage = 1;
 
 	/**
+	 * 页数
+	 */
+	private int pageCount = 0;
+
+	/**
 	 * 每页记录数
 	 */
 	private int pageSize = DEFAULT_PAGE_SIZE;
@@ -71,6 +76,17 @@ public class Paging implements java.io.Serializable {
 	 */
 	private List<Object> rows = new java.util.ArrayList<Object>();
 
+	private List<Map<String, Object>> dataList = new java.util.ArrayList<Map<String, Object>>();
+
+	/**
+	 * 本页小计数据
+	 */
+	private Map<String, Object> subTotalMap = new HashMap<String, Object>();
+
+	/**
+	 * 合计数据
+	 */
+	private Map<String, Object> aggregateMap = new HashMap<String, Object>();
 	/**
 	 * 是否需要缓存结果集
 	 */
@@ -82,6 +98,10 @@ public class Paging implements java.io.Serializable {
 	private String title;
 
 	private String prefix;
+
+	private int subTotalFlag;
+
+	private int aggregateTotalFlag;
 
 	/**
 	 * 环境变量
@@ -125,6 +145,17 @@ public class Paging implements java.io.Serializable {
 		}
 	}
 
+	public Map<String, Object> getAggregateMap() {
+		return aggregateMap;
+	}
+
+	public int getAggregateTotalFlag() {
+		if (aggregateMap != null && !aggregateMap.isEmpty()) {
+			aggregateTotalFlag = 1;
+		}
+		return aggregateTotalFlag;
+	}
+
 	public Map<String, Object> getContextMap() {
 		return contextMap;
 	}
@@ -138,6 +169,10 @@ public class Paging implements java.io.Serializable {
 		return currentPage;
 	}
 
+	public List<Map<String, Object>> getDataList() {
+		return dataList;
+	}
+
 	/**
 	 * 获得每页最大记录数。
 	 * 
@@ -145,6 +180,10 @@ public class Paging implements java.io.Serializable {
 	 */
 	public int getMaxPageRecordCount() {
 		return pageSize;
+	}
+
+	public int getPageCount() {
+		return pageCount;
 	}
 
 	public int getPageSize() {
@@ -167,6 +206,17 @@ public class Paging implements java.io.Serializable {
 			rows = new ArrayList<Object>();
 		}
 		return rows;
+	}
+
+	public int getSubTotalFlag() {
+		if (subTotalMap != null && !subTotalMap.isEmpty()) {
+			subTotalFlag = 1;
+		}
+		return subTotalFlag;
+	}
+
+	public Map<String, Object> getSubTotalMap() {
+		return subTotalMap;
 	}
 
 	public String getTitle() {
@@ -206,6 +256,14 @@ public class Paging implements java.io.Serializable {
 		return cacheable;
 	}
 
+	public void setAggregateMap(Map<String, Object> aggregateMap) {
+		this.aggregateMap = aggregateMap;
+	}
+
+	public void setAggregateTotalFlag(int aggregateTotalFlag) {
+		this.aggregateTotalFlag = aggregateTotalFlag;
+	}
+
 	public void setCacheable(boolean cacheable) {
 		this.cacheable = cacheable;
 	}
@@ -223,11 +281,18 @@ public class Paging implements java.io.Serializable {
 		this.currentPage = currentPage;
 	}
 
+	public void setDataList(List<Map<String, Object>> dataList) {
+		this.dataList = dataList;
+	}
+
+	public void setPageCount(int pageCount) {
+		this.pageCount = pageCount;
+	}
+
 	/**
 	 * 设置每页最大记录数。
 	 * 
-	 * @param pageSize
-	 *            每页最大记录数
+	 * @param pageSize 每页最大记录数
 	 */
 	public void setPageSize(int pageSize) {
 		this.pageSize = pageSize;
@@ -243,6 +308,14 @@ public class Paging implements java.io.Serializable {
 
 	public void setRows(List<Object> rows) {
 		this.rows = rows;
+	}
+
+	public void setSubTotalFlag(int subTotalFlag) {
+		this.subTotalFlag = subTotalFlag;
+	}
+
+	public void setSubTotalMap(Map<String, Object> subTotalMap) {
+		this.subTotalMap = subTotalMap;
 	}
 
 	public void setTitle(String title) {

@@ -52,6 +52,9 @@ public class ExportItemJsonFactory {
 		if (jsonObject.containsKey("datasetId")) {
 			model.setDatasetId(jsonObject.getString("datasetId"));
 		}
+		if (jsonObject.containsKey("xmlExpId")) {
+			model.setXmlExpId(jsonObject.getString("xmlExpId"));
+		}
 		if (jsonObject.containsKey("sql")) {
 			model.setSql(jsonObject.getString("sql"));
 		}
@@ -91,6 +94,15 @@ public class ExportItemJsonFactory {
 		if (jsonObject.containsKey("imageHeight")) {
 			model.setImageHeight(jsonObject.getInteger("imageHeight"));
 		}
+		if (jsonObject.containsKey("imageScale")) {
+			model.setImageScale(jsonObject.getDouble("imageScale"));
+		}
+		if (jsonObject.containsKey("imageScaleSize")) {
+			model.setImageScaleSize(jsonObject.getDouble("imageScaleSize"));
+		}
+		if (jsonObject.containsKey("imageNumPerUnit")) {
+			model.setImageNumPerUnit(jsonObject.getInteger("imageNumPerUnit"));
+		}
 		if (jsonObject.containsKey("rootPath")) {
 			model.setRootPath(jsonObject.getString("rootPath"));
 		}
@@ -99,6 +111,31 @@ public class ExportItemJsonFactory {
 		}
 		if (jsonObject.containsKey("variantFlag")) {
 			model.setVariantFlag(jsonObject.getString("variantFlag"));
+		}
+		if (jsonObject.containsKey("lineBreakColumn")) {
+			model.setLineBreakColumn(jsonObject.getString("lineBreakColumn"));
+		}
+		if (jsonObject.containsKey("lineHeight")) {
+			model.setLineHeight(jsonObject.getInteger("lineHeight"));
+		}
+		if (jsonObject.containsKey("charNumPerRow")) {
+			model.setCharNumPerRow(jsonObject.getInteger("charNumPerRow"));
+		}
+
+		if (jsonObject.containsKey("contextVarFlag")) {
+			model.setContextVarFlag(jsonObject.getString("contextVarFlag"));
+		}
+		if (jsonObject.containsKey("genEmptyFlag")) {
+			model.setGenEmptyFlag(jsonObject.getString("genEmptyFlag"));
+		}
+		if (jsonObject.containsKey("dataHandlerChains")) {
+			model.setDataHandlerChains(jsonObject.getString("dataHandlerChains"));
+		}
+		if (jsonObject.containsKey("subTotalFlag")) {
+			model.setSubTotalFlag(jsonObject.getString("subTotalFlag"));
+		}
+		if (jsonObject.containsKey("subTotalColumn")) {
+			model.setSubTotalColumn(jsonObject.getString("subTotalColumn"));
 		}
 		if (jsonObject.containsKey("pageSize")) {
 			model.setPageSize(jsonObject.getInteger("pageSize"));
@@ -140,6 +177,9 @@ public class ExportItemJsonFactory {
 		if (model.getDatasetId() != null) {
 			jsonObject.put("datasetId", model.getDatasetId());
 		}
+		if (model.getXmlExpId() != null) {
+			jsonObject.put("xmlExpId", model.getXmlExpId());
+		}
 		if (model.getSql() != null) {
 			jsonObject.put("sql", model.getSql());
 		}
@@ -175,8 +215,26 @@ public class ExportItemJsonFactory {
 		}
 		jsonObject.put("imageWidth", model.getImageWidth());
 		jsonObject.put("imageHeight", model.getImageHeight());
+		jsonObject.put("imageScale", model.getImageScale());
+		jsonObject.put("imageScaleSize", model.getImageScaleSize());
+		jsonObject.put("imageNumPerUnit", model.getImageNumPerUnit());
 		if (model.getRootPath() != null) {
 			jsonObject.put("rootPath", model.getRootPath());
+		}
+		if (model.getContextVarFlag() != null) {
+			jsonObject.put("contextVarFlag", model.getContextVarFlag());
+		}
+		if (model.getGenEmptyFlag() != null) {
+			jsonObject.put("genEmptyFlag", model.getGenEmptyFlag());
+		}
+		if (model.getDataHandlerChains() != null) {
+			jsonObject.put("dataHandlerChains", model.getDataHandlerChains());
+		}
+		if (model.getSubTotalFlag() != null) {
+			jsonObject.put("subTotalFlag", model.getSubTotalFlag());
+		}
+		if (model.getSubTotalColumn() != null) {
+			jsonObject.put("subTotalColumn", model.getSubTotalColumn());
 		}
 		if (model.getVarTemplate() != null) {
 			jsonObject.put("varTemplate", model.getVarTemplate());
@@ -184,6 +242,11 @@ public class ExportItemJsonFactory {
 		if (model.getVariantFlag() != null) {
 			jsonObject.put("variantFlag", model.getVariantFlag());
 		}
+		if (model.getLineBreakColumn() != null) {
+			jsonObject.put("lineBreakColumn", model.getLineBreakColumn());
+		}
+		jsonObject.put("lineHeight", model.getLineHeight());
+		jsonObject.put("charNumPerRow", model.getCharNumPerRow());
 		jsonObject.put("pageSize", model.getPageSize());
 		if (model.getCreateBy() != null) {
 			jsonObject.put("createBy", model.getCreateBy());
@@ -217,6 +280,9 @@ public class ExportItemJsonFactory {
 		if (model.getDatasetId() != null) {
 			jsonObject.put("datasetId", model.getDatasetId());
 		}
+		if (model.getXmlExpId() != null) {
+			jsonObject.put("xmlExpId", model.getXmlExpId());
+		}
 		if (model.getSql() != null) {
 			jsonObject.put("sql", model.getSql());
 		}
@@ -252,11 +318,34 @@ public class ExportItemJsonFactory {
 		}
 		jsonObject.put("imageWidth", model.getImageWidth());
 		jsonObject.put("imageHeight", model.getImageHeight());
+		jsonObject.put("imageScale", model.getImageScale());
+		jsonObject.put("imageScaleSize", model.getImageScaleSize());
+		jsonObject.put("imageNumPerUnit", model.getImageNumPerUnit());
 		if (model.getRootPath() != null) {
 			jsonObject.put("rootPath", model.getRootPath());
 		}
+		if (model.getLineBreakColumn() != null) {
+			jsonObject.put("lineBreakColumn", model.getLineBreakColumn());
+		}
+		jsonObject.put("lineHeight", model.getLineHeight());
+		jsonObject.put("charNumPerRow", model.getCharNumPerRow());
 		jsonObject.put("pageSize", model.getPageSize());
 
+		if (model.getContextVarFlag() != null) {
+			jsonObject.put("contextVarFlag", model.getContextVarFlag());
+		}
+		if (model.getGenEmptyFlag() != null) {
+			jsonObject.put("genEmptyFlag", model.getGenEmptyFlag());
+		}
+		if (model.getDataHandlerChains() != null) {
+			jsonObject.put("dataHandlerChains", model.getDataHandlerChains());
+		}
+		if (model.getSubTotalFlag() != null) {
+			jsonObject.put("subTotalFlag", model.getSubTotalFlag());
+		}
+		if (model.getSubTotalColumn() != null) {
+			jsonObject.put("subTotalColumn", model.getSubTotalColumn());
+		}
 		if (model.getVariantFlag() != null) {
 			jsonObject.put("variantFlag", model.getVariantFlag());
 		}

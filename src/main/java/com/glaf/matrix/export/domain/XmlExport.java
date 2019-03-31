@@ -27,7 +27,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.dom4j.Element;
 
-import com.glaf.core.base.*;
+import com.glaf.core.base.JSONable;
 import com.glaf.core.util.DateUtils;
 import com.glaf.matrix.export.util.*;
 
@@ -75,6 +75,12 @@ public class XmlExport implements Serializable, JSONable {
 	 */
 	@Column(name = "TITLE_", length = 200)
 	protected String title;
+
+	/**
+	 * 数据集编号
+	 */
+	@Column(name = "DATASETID_", length = 50)
+	protected String datasetId;
 
 	/**
 	 * SQL语句
@@ -294,6 +300,10 @@ public class XmlExport implements Serializable, JSONable {
 		return dataList;
 	}
 
+	public String getDatasetId() {
+		return datasetId;
+	}
+
 	public Element getElement() {
 		return element;
 	}
@@ -446,6 +456,10 @@ public class XmlExport implements Serializable, JSONable {
 
 	public void setDataList(List<Map<String, Object>> dataList) {
 		this.dataList = dataList;
+	}
+
+	public void setDatasetId(String datasetId) {
+		this.datasetId = datasetId;
 	}
 
 	public void setElement(Element element) {

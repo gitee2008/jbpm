@@ -195,6 +195,38 @@ public class XmlExportServiceImpl implements XmlExportService {
 	}
 
 	@Transactional
+	public void importAll(JSONObject jsonObject) {
+		XmlExport xmlExport = XmlExportJsonFactory.jsonToObject(jsonObject);
+		xmlExport.setId(UUID32.getUUID());
+		xmlExport.setNodeId(idGenerator.nextId("SYS_XML_EXPORT"));
+		xmlExport.setNodeParentId(0);
+		xmlExport.setCreateTime(new Date());
+		xmlExport.setCreateBy(Authentication.getAuthenticatedActorId());
+		xmlExport.setActive("Y");
+
+		xmlExportMapper.insertXmlExport(xmlExport);
+
+		if (xmlExport.getItems() != null && !xmlExport.getItems().isEmpty()) {
+			for (XmlExportItem item : xmlExport.getItems()) {
+				item.setId(UUID32.getUUID());
+				item.setCreateTime(new Date());
+				item.setCreateBy(Authentication.getAuthenticatedActorId());
+				item.setExpId(xmlExport.getId());
+				item.setLocked(0);
+				xmlExportItemMapper.insertXmlExportItem(item);
+			}
+		}
+		if (jsonObject.containsKey("children")) {
+			JSONArray array = jsonObject.getJSONArray("children");
+			int len = array.size();
+			for (int i = 0; i < len; i++) {
+				JSONObject json = array.getJSONObject(i);
+				this.importAll(xmlExport.getId(), json);
+			}
+		}
+	}
+
+	@Transactional
 	public void importAll(String expId, JSONObject jsonObject) {
 		XmlExport model = this.getXmlExport(expId);
 		if (model != null) {

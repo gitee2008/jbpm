@@ -13,6 +13,8 @@
 		<result property="name" column="NAME_" jdbcType="VARCHAR" />
 		<result property="mapping" column="MAPPING_" jdbcType="VARCHAR" />
 		<result property="title" column="TITLE_" jdbcType="VARCHAR" />
+		<result property="datasetId" column="DATASETID_"
+			jdbcType="VARCHAR" />
 		<result property="sql" column="SQL_" jdbcType="VARCHAR" />
 		<result property="resultFlag" column="RESULTFLAG_"
 			jdbcType="VARCHAR" />
@@ -62,6 +64,9 @@
 			</if>
 			<if test="title != null">
 				,TITLE_
+			</if>
+			<if test="datasetId != null">
+				,DATASETID_
 			</if>
 			<if test="sql != null">
 				,SQL_
@@ -131,6 +136,9 @@
 			<if test="title != null">
 				,#{title, jdbcType=VARCHAR}
 			</if>
+			<if test="datasetId != null">
+				,#{datasetId, jdbcType=VARCHAR}
+			</if>
 			<if test="sql != null">
 				,#{sql, jdbcType=VARCHAR}
 			</if>
@@ -199,6 +207,9 @@
 			</if>
 			<if test="title != null">
 				TITLE_ = #{title, jdbcType=VARCHAR},
+			</if>
+			<if test="datasetId != null">
+				DATASETID_ = #{datasetId, jdbcType=VARCHAR},
 			</if>
 			<if test="sql != null">
 				SQL_ = #{sql, jdbcType=VARCHAR},

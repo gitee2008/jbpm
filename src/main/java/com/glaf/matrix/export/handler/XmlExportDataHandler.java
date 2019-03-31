@@ -49,6 +49,8 @@ public class XmlExportDataHandler implements XmlDataHandler {
 
 	protected static final Log logger = LogFactory.getLog(XmlExportDataHandler.class);
 
+	protected XmlExportDataBean bean = new XmlExportDataBean();
+
 	protected IDatabaseService databaseService;
 
 	public XmlExportDataHandler() {
@@ -87,7 +89,6 @@ public class XmlExportDataHandler implements XmlDataHandler {
 					try {
 						Map<String, Object> dataMap = null;
 						if (StringUtils.equals(xmlExport.getResultFlag(), "S")) {
-							XmlExportDataBean bean = new XmlExportDataBean();
 							dataMap = bean.getMapData(xmlExport, databaseId);
 						}
 						for (XmlExportItem item : xmlExport.getItems()) {
@@ -143,9 +144,10 @@ public class XmlExportDataHandler implements XmlDataHandler {
 			}
 
 			String sql = current.getSql();
-			if (current.getItems() != null && !current.getItems().isEmpty() && StringUtils.isNotEmpty(sql)
-					&& DBUtils.isLegalQuerySql(sql)) {
-				XmlExportDataBean bean = new XmlExportDataBean();
+			String datasetId = current.getDatasetId();
+			if (current.getItems() != null && !current.getItems().isEmpty()
+					&& ((StringUtils.isNotEmpty(sql) && DBUtils.isLegalQuerySql(sql))
+							|| StringUtils.isNotEmpty(datasetId))) {
 
 				if (StringUtils.equals(current.getResultFlag(), "S")) {
 					dataMap = bean.getMapData(current, srcDatabase);

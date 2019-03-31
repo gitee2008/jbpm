@@ -1,13 +1,21 @@
 package com.glaf.matrix.export.web.springmvc;
 
+import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.StringTokenizer;
+import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentMap;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -15,6 +23,13 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.http.HttpEntity;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.ContentType;
+import org.apache.http.entity.mime.MultipartEntityBuilder;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,7 +38,10 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+
+import com.glaf.core.base.BaseItem;
 import com.glaf.core.config.DatabaseConnectionConfig;
+import com.glaf.core.config.SystemConfig;
 import com.glaf.core.config.ViewProperties;
 import com.glaf.core.domain.Database;
 import com.glaf.core.el.ExpressionTools;
@@ -32,15 +50,20 @@ import com.glaf.core.security.IdentityFactory;
 import com.glaf.core.security.LoginContext;
 import com.glaf.core.service.IDatabaseService;
 import com.glaf.core.util.DateUtils;
+import com.glaf.core.util.ExcelToHtml;
+import com.glaf.core.util.FileUtils;
+import com.glaf.core.util.IOUtils;
 import com.glaf.core.util.Paging;
 import com.glaf.core.util.ParamUtils;
 import com.glaf.core.util.RequestUtils;
 import com.glaf.core.util.ResponseUtils;
 import com.glaf.core.util.StringTools;
 import com.glaf.core.util.Tools;
+
 import com.glaf.matrix.export.domain.ExportApp;
 import com.glaf.matrix.export.handler.ExportHandler;
 import com.glaf.matrix.export.handler.JxlsExportHandler;
+import com.glaf.matrix.export.handler.WorkbookFactory;
 import com.glaf.matrix.export.query.ExportAppQuery;
 import com.glaf.matrix.export.service.ExportAppService;
 import com.glaf.matrix.export.service.ExportHistoryService;
@@ -105,10 +128,58 @@ public class ExportAppController {
 	public ModelAndView edit(HttpServletRequest request, ModelMap modelMap) {
 		RequestUtils.setRequestParameterToAttribute(request);
 
+		ConcurrentMap<String, String> nameMap02 = WorkbookFactory.getNameMap();
+
+		List<BaseItem> allDataItems02 = new ArrayList<BaseItem>();
+		List<BaseItem> selectedDataItems02 = new ArrayList<BaseItem>();
+		List<String> selecteds02 = new ArrayList<String>();
+
+		Set<Entry<String, String>> entrySet2 = nameMap02.entrySet();
+		for (Entry<String, String> entry2 : entrySet2) {
+			String key = entry2.getKey();
+			String value = entry2.getValue();
+			BaseItem item = new BaseItem();
+			item.setName(key);
+			item.setTitle(value);
+			allDataItems02.add(item);
+		}
+
 		ExportApp exportApp = exportAppService.getExportApp(RequestUtils.getString(request, "id"));
 		if (exportApp != null) {
 			request.setAttribute("exportApp", exportApp);
+
+			if (StringUtils.isNotEmpty(exportApp.getExcelProcessChains())) {
+				List<String> chains = StringTools.split(exportApp.getExcelProcessChains());
+				for (String name : chains) {
+					BaseItem item = new BaseItem();
+					item.setName(name);
+					item.setTitle(nameMap02.get(name));
+					// allDataItems02.remove(item);
+					selectedDataItems02.add(item);
+					selecteds02.add(name);
+				}
+			}
 		}
+
+		StringBuffer bufferx2 = new StringBuffer();
+		StringBuffer buffery2 = new StringBuffer();
+
+		for (int j = 0; j < allDataItems02.size(); j++) {
+			BaseItem item = (BaseItem) allDataItems02.get(j);
+			if (selecteds02.contains(item.getName())) {
+				buffery2.append("\n<option value=\"").append(item.getName()).append("\">").append(item.getTitle())
+						.append(" [").append(item.getName()).append("]").append("</option>");
+			} else {
+				bufferx2.append("\n<option value=\"").append(item.getName()).append("\">").append(item.getTitle())
+						.append(" [").append(item.getName()).append("]").append("</option>");
+			}
+		}
+
+		request.setAttribute("bufferx2", bufferx2.toString());
+		request.setAttribute("buffery2", buffery2.toString());
+
+		request.setAttribute("allDataItems02", allDataItems02);
+		request.setAttribute("selectedDataItems02", selectedDataItems02);
 
 		List<Role> roles = IdentityFactory.getRoles();
 		request.setAttribute("roles", roles);
@@ -140,6 +211,37 @@ public class ExportAppController {
 		return new ModelAndView("/matrix/exportApp/edit", modelMap);
 	}
 
+	public byte[] execute(String url, String filename, byte[] data) {
+		CloseableHttpClient httpClient = HttpClients.createDefault();
+		InputStream inputStream = null;
+		try {
+			HttpPost httpPost = new HttpPost(url);
+			MultipartEntityBuilder builder = MultipartEntityBuilder.create();
+			builder.addBinaryBody("file", data, ContentType.MULTIPART_FORM_DATA, filename);// 文件流
+
+			HttpEntity entity = builder.build();
+			httpPost.setEntity(entity);
+			CloseableHttpResponse response = httpClient.execute(httpPost);// 执行提交
+			HttpEntity responseEntity = response.getEntity();
+			if (responseEntity != null) {
+				inputStream = responseEntity.getContent();
+				return FileUtils.getBytes(inputStream);
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			IOUtils.closeQuietly(inputStream);
+			try {
+				httpClient.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		return null;
+	}
+
 	@ResponseBody
 	@RequestMapping("/exportXls")
 	public void exportXls(HttpServletRequest request, HttpServletResponse response) {
@@ -149,6 +251,12 @@ public class ExportAppController {
 		params.put("login_userid", loginContext.getActorId());
 		logger.debug("request params:" + params);
 		String expId = RequestUtils.getString(request, "expId");
+		String toPDF = RequestUtils.getString(request, "toPDF");
+		String outputFormat = request.getParameter("outputFormat");
+		int precision = RequestUtils.getInt(request, "precision", 2);
+		InputStream is = null;
+		PrintWriter writer = null;
+		ByteArrayInputStream bais = null;
 		try {
 			ExportApp exportApp = exportAppService.getExportApp(expId);
 			if (exportApp != null && StringUtils.equals(exportApp.getActive(), "Y")) {
@@ -184,10 +292,39 @@ public class ExportAppController {
 							filename = exportApp.getTitle();
 						}
 
-						if (StringUtils.endsWithIgnoreCase(tpl.getDataFile(), ".xlsx")) {
-							ResponseUtils.download(request, response, data, filename + ".xlsx");
+						if (StringUtils.equals(toPDF, "Y")) {
+							String url = SystemConfig.getString("pdf_convert_url");
+							if (StringUtils.isNotEmpty(url)) {
+								if (StringUtils.endsWithIgnoreCase(tpl.getDataFile(), ".xlsx")) {
+									byte[] output = this.execute(url, filename + ".xlsx", data);
+									if (output != null) {
+										ResponseUtils.download(request, response, output, filename + ".pdf");
+									}
+								} else {
+									byte[] output = this.execute(url, filename + ".xls", data);
+									if (output != null) {
+										ResponseUtils.download(request, response, output, filename + ".pdf");
+									}
+								}
+							}
 						} else {
-							ResponseUtils.download(request, response, data, filename + ".xls");
+							if (StringUtils.equals(outputFormat, "html")) {
+								request.setCharacterEncoding("UTF-8");
+								response.setCharacterEncoding("UTF-8");
+								response.setContentType("text/html; charset=UTF-8");
+								bais = new ByteArrayInputStream(data);
+								is = new BufferedInputStream(bais);
+								String content = new String(ExcelToHtml.toHtml(is, precision), "UTF-8");
+								writer = response.getWriter();
+								writer.write(content);
+								writer.flush();
+							} else {
+								if (StringUtils.endsWithIgnoreCase(tpl.getDataFile(), ".xlsx")) {
+									ResponseUtils.download(request, response, data, filename + ".xlsx");
+								} else {
+									ResponseUtils.download(request, response, data, filename + ".xls");
+								}
+							}
 						}
 					}
 				}
@@ -195,6 +332,9 @@ public class ExportAppController {
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			logger.error(ex);
+		} finally {
+			IOUtils.closeQuietly(is);
+			IOUtils.closeQuietly(bais);
 		}
 	}
 
@@ -353,6 +493,7 @@ public class ExportAppController {
 			exportApp.setTemplateId(request.getParameter("templateId"));
 			exportApp.setExportFileExpr(request.getParameter("exportFileExpr"));
 			exportApp.setExternalColumnsFlag(request.getParameter("externalColumnsFlag"));
+			exportApp.setExcelProcessChains(request.getParameter("excelProcessChains"));
 			exportApp.setInterval(RequestUtils.getInt(request, "interval"));
 			exportApp.setSortNo(RequestUtils.getInt(request, "sortNo"));
 			exportApp.setCreateBy(actorId);

@@ -15,6 +15,8 @@
 		<result property="title" column="TITLE_" jdbcType="VARCHAR" />
 		<result property="datasetId" column="DATASETID_"
 			jdbcType="VARCHAR" />
+		<result property="xmlExpId" column="XMLEXPID_"
+			jdbcType="VARCHAR" />
 		<result property="sql" column="SQL_" jdbcType="VARCHAR" />
 		<result property="recursionSql" column="RECURSIONSQL_"
 			jdbcType="VARCHAR" />
@@ -40,10 +42,32 @@
 			jdbcType="INTEGER" />
 		<result property="imageHeight" column="IMAGEHEIGHT_"
 			jdbcType="INTEGER" />
+		<result property="imageScale" column="IMAGESCALE_"
+			jdbcType="DOUBLE" />
+		<result property="imageScaleSize" column="IMAGESCALESIZE_"
+			jdbcType="DOUBLE" />
+		<result property="imageNumPerUnit" column="IMAGENUMPERUNIT_"
+			jdbcType="INTEGER" />
 		<result property="rootPath" column="ROOTPATH_"
 			jdbcType="VARCHAR" />
+		<result property="lineBreakColumn" column="LINEBREAKCOLUMN_"
+			jdbcType="VARCHAR" />
+		<result property="lineHeight" column="LINEHEIGHT_"
+			jdbcType="INTEGER" />
+		<result property="charNumPerRow" column="CHARNUMPERROW_"
+			jdbcType="INTEGER" />
 		<result property="pageSize" column="PAGESIZE_"
 			jdbcType="INTEGER" />
+		<result property="contextVarFlag" column="CONTEXTVARFLAG_"
+			jdbcType="VARCHAR" />
+		<result property="genEmptyFlag" column="GENEMPTYFLAG_"
+			jdbcType="VARCHAR" />
+		<result property="dataHandlerChains"
+			column="DATAHANDLERCHAINS_" jdbcType="VARCHAR" />
+		<result property="subTotalFlag" column="SUBTOTALFLAG_"
+			jdbcType="VARCHAR" />
+		<result property="subTotalColumn" column="SUBTOTALCOLUMN_"
+			jdbcType="VARCHAR" />
 		<result property="varTemplate" column="VAR_TEMPLATE_"
 			jdbcType="VARCHAR" />
 		<result property="variantFlag" column="VARIANTFLAG_"
@@ -76,6 +100,9 @@
 			</if>
 			<if test="datasetId != null">
 				,DATASETID_
+			</if>
+			<if test="xmlExpId != null">
+				,XMLEXPID_
 			</if>
 			<if test="sql != null">
 				,SQL_
@@ -116,11 +143,44 @@
 			<if test="imageHeight != null">
 				,IMAGEHEIGHT_
 			</if>
+			<if test="imageScale != null">
+				,IMAGESCALE_
+			</if>
+			<if test="imageScaleSize != null">
+				,IMAGESCALESIZE_
+			</if>
+			<if test="imageNumPerUnit != null">
+				,IMAGENUMPERUNIT_
+			</if>
 			<if test="rootPath != null">
 				,ROOTPATH_
 			</if>
+			<if test="lineBreakColumn != null">
+				,LINEBREAKCOLUMN_
+			</if>
+			<if test="lineHeight != null">
+				,LINEHEIGHT_
+			</if>
+			<if test="charNumPerRow != null">
+				,CHARNUMPERROW_
+			</if>
 			<if test="pageSize != null">
 				,PAGESIZE_
+			</if>
+			<if test="contextVarFlag != null">
+				,CONTEXTVARFLAG_
+			</if>
+			<if test="genEmptyFlag != null">
+				,GENEMPTYFLAG_
+			</if>
+			<if test="dataHandlerChains != null">
+				,DATAHANDLERCHAINS_
+			</if>
+			<if test="subTotalFlag != null">
+				,SUBTOTALFLAG_
+			</if>
+			<if test="subTotalColumn != null">
+				,SUBTOTALCOLUMN_
 			</if>
 			<if test="varTemplate != null">
 				,VAR_TEMPLATE_
@@ -159,6 +219,9 @@
 			</if>
 			<if test="datasetId != null">
 				,#{datasetId, jdbcType=VARCHAR}
+			</if>
+			<if test="xmlExpId != null">
+				,#{xmlExpId, jdbcType=VARCHAR}
 			</if>
 			<if test="sql != null">
 				,#{sql, jdbcType=VARCHAR}
@@ -199,11 +262,44 @@
 			<if test="imageHeight != null">
 				,#{imageHeight, jdbcType=INTEGER}
 			</if>
+			<if test="imageScale != null">
+				,#{imageScale, jdbcType=DOUBLE}
+			</if>
+			<if test="imageScaleSize != null">
+				,#{imageScaleSize, jdbcType=DOUBLE}
+			</if>
+			<if test="imageNumPerUnit != null">
+				,#{imageNumPerUnit, jdbcType=INTEGER}
+			</if>
 			<if test="rootPath != null">
 				,#{rootPath, jdbcType=VARCHAR}
 			</if>
+			<if test="lineBreakColumn != null">
+				,#{lineBreakColumn, jdbcType=VARCHAR}
+			</if>
+			<if test="lineHeight != null">
+				,#{lineHeight, jdbcType=INTEGER}
+			</if>
+			<if test="charNumPerRow != null">
+				,#{charNumPerRow, jdbcType=INTEGER}
+			</if>
 			<if test="pageSize != null">
 				,#{pageSize, jdbcType=INTEGER}
+			</if>
+			<if test="contextVarFlag != null">
+				,#{contextVarFlag, jdbcType=VARCHAR}
+			</if>
+			<if test="genEmptyFlag != null">
+				,#{genEmptyFlag, jdbcType=VARCHAR}
+			</if>
+			<if test="dataHandlerChains != null">
+				,#{dataHandlerChains, jdbcType=VARCHAR}
+			</if>
+			<if test="subTotalFlag != null">
+				,#{subTotalFlag, jdbcType=VARCHAR}
+			</if>
+			<if test="subTotalColumn != null">
+				,#{subTotalColumn, jdbcType=VARCHAR}
 			</if>
 			<if test="varTemplate != null">
 				,#{varTemplate, jdbcType=VARCHAR}
@@ -240,6 +336,9 @@
 			</if>
 			<if test="datasetId != null">
 				DATASETID_ = #{datasetId, jdbcType=VARCHAR},
+			</if>
+			<if test="xmlExpId != null">
+				XMLEXPID_ = #{xmlExpId, jdbcType=VARCHAR},
 			</if>
 			<if test="sql != null">
 				SQL_ = #{sql, jdbcType=VARCHAR},
@@ -283,11 +382,45 @@
 			<if test="imageHeight != null">
 				IMAGEHEIGHT_ = #{imageHeight, jdbcType=INTEGER},
 			</if>
+			<if test="imageScale != null">
+				IMAGESCALE_ = #{imageScale, jdbcType=DOUBLE},
+			</if>
+			<if test="imageScaleSize != null">
+				IMAGESCALESIZE_ = #{imageScaleSize, jdbcType=DOUBLE},
+			</if>
+			<if test="imageNumPerUnit != null">
+				IMAGENUMPERUNIT_ = #{imageNumPerUnit, jdbcType=INTEGER},
+			</if>
+			<if test="lineBreakColumn != null">
+				LINEBREAKCOLUMN_ = #{lineBreakColumn, jdbcType=VARCHAR},
+			</if>
+			<if test="lineHeight != null">
+				LINEHEIGHT_ = #{lineHeight, jdbcType=INTEGER},
+			</if>
+			<if test="charNumPerRow != null">
+				CHARNUMPERROW_ = #{charNumPerRow, jdbcType=INTEGER},
+			</if>
 			<if test="pageSize != null">
 				PAGESIZE_ = #{pageSize, jdbcType=INTEGER},
 			</if>
 			<if test="rootPath != null">
 				ROOTPATH_ = #{rootPath, jdbcType=VARCHAR},
+			</if>
+			<if test="contextVarFlag != null">
+				CONTEXTVARFLAG_ = #{contextVarFlag, jdbcType=VARCHAR},
+			</if>
+			<if test="genEmptyFlag != null">
+				GENEMPTYFLAG_ = #{genEmptyFlag, jdbcType=VARCHAR},
+			</if>
+			<if test="dataHandlerChains != null">
+				DATAHANDLERCHAINS_ = #{dataHandlerChains,
+				jdbcType=VARCHAR},
+			</if>
+			<if test="subTotalFlag != null">
+				SUBTOTALFLAG_ = #{subTotalFlag, jdbcType=VARCHAR},
+			</if>
+			<if test="subTotalColumn != null">
+				SUBTOTALCOLUMN_ = #{subTotalColumn, jdbcType=VARCHAR},
 			</if>
 			<if test="varTemplate != null">
 				VAR_TEMPLATE_ = #{varTemplate, jdbcType=VARCHAR},

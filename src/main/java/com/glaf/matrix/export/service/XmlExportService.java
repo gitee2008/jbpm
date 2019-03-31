@@ -93,7 +93,15 @@ public interface XmlExportService {
 	List<XmlExport> getXmlExportsByQueryCriteria(int start, int pageSize, XmlExportQuery query);
 
 	/**
-	 * 批量保存
+	 * 批量导入
+	 * 
+	 * @param jsonObject
+	 */
+	@Transactional
+	void importAll(JSONObject jsonObject);
+	
+	/**
+	 * 批量导入
 	 * 
 	 * @param expId
 	 * @param jsonObject
