@@ -18,54 +18,54 @@
 
 package com.glaf.matrix.export.handler;
 
-import org.apache.commons.lang3.StringUtils;
-
-import org.apache.poi.ss.usermodel.*;
+import org.apache.commons.lang.StringUtils;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.glaf.matrix.export.domain.ExportApp;
 
-public class PageBreakHandler implements WorkbookHandler {
+public class RemoveCommentHandler implements WorkbookHandler {
 	protected final Logger logger = LoggerFactory.getLogger(getClass());
 
 	@Override
 	public void processWorkbook(Workbook wb, ExportApp exportApp) {
-		logger.debug("----------------------PageBreakHandler-------------------");
+		logger.debug("----------------------RemoveCommentHandler-------------------");
 		int sheetCnt = wb.getNumberOfSheets();
-		Row row = null;
-		Cell cell = null;
 		for (int i = 0; i < sheetCnt; i++) {
 			Sheet sheet = wb.getSheetAt(i);
-			sheet.setAutobreaks(false);
 			int rows = sheet.getLastRowNum();
+			logger.debug("行记录数:" + (rows + 1));
+			Row row = null;
+			Cell cell = null;
 			for (int rowIndex = 0; rowIndex <= rows; rowIndex++) {
 				row = sheet.getRow(rowIndex);
+				logger.debug("rowIndex:" + rowIndex);
 				if (row == null) {
 					continue;
 				}
-				cell = row.getCell(0);
-				if (cell == null) {
-					continue;
-				}
-				if (cell.getCellComment() != null) {
-					String str = cell.getCellComment().getString().getString();
-					// logger.debug("读取到注释:" + str);
-					if (str != null) {
-						if (StringUtils.contains(str.trim(), "xe:pageBreak")) {
-							sheet.setRowBreak(rowIndex); // 设置分页符
-							// logger.debug(rowIndex + "行插入分页符.");
-							cell.removeCellComment();
-						}
+				int cols = row.getLastCellNum();
+				for (int colIndex = 0; colIndex < cols; colIndex++) {
+					cell = row.getCell(colIndex);
+					if (cell == null) {
+						continue;
 					}
-				} else {
-					String str = cell.getRichStringCellValue().getString();
-					if (str != null) {
-						if (StringUtils.contains(str.trim(), "xe:pageBreak")) {
-							// logger.debug("读取到分页标识:" + str);
-							cell.setCellValue("");
-							sheet.setRowBreak(rowIndex); // 设置分页符
-							// logger.debug(rowIndex + "行插入分页符!");
+					if (cell.getCellComment() != null) {
+						if (StringUtils.contains(cell.getCellComment().getString().getString(), "mergeCell")) {
+							cell.removeCellComment();
+						} else if (StringUtils.contains(cell.getCellComment().getString().getString(),
+								"mergeCellHorz")) {
+							cell.removeCellComment();
+						} else if (StringUtils.contains(cell.getCellComment().getString().getString(),
+								"pageFooterBorder")) {
+							cell.removeCellComment();
+						} else if (StringUtils.contains(cell.getCellComment().getString().getString(), "xe:rh{")) {
+							cell.removeCellComment();
+						} else if (StringUtils.contains(cell.getCellComment().getString().getString(), "xe:ph{")) {
+							cell.removeCellComment();
 						}
 					}
 				}

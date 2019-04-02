@@ -75,6 +75,9 @@ public class ExportAppJsonFactory {
 		if (jsonObject.containsKey("excelProcessChains")) {
 			model.setExcelProcessChains(jsonObject.getString("excelProcessChains"));
 		}
+		if (jsonObject.containsKey("pageHeight")) {
+			model.setPageHeight(jsonObject.getInteger("pageHeight"));
+		}
 		if (jsonObject.containsKey("interval")) {
 			model.setInterval(jsonObject.getInteger("interval"));
 		}
@@ -140,6 +143,7 @@ public class ExportAppJsonFactory {
 		if (model.getExcelProcessChains() != null) {
 			jsonObject.put("excelProcessChains", model.getExcelProcessChains());
 		}
+		jsonObject.put("pageHeight", model.getPageHeight());
 		jsonObject.put("interval", model.getInterval());
 		if (model.getCreateBy() != null) {
 			jsonObject.put("createBy", model.getCreateBy());
@@ -202,6 +206,7 @@ public class ExportAppJsonFactory {
 		if (model.getExcelProcessChains() != null) {
 			jsonObject.put("excelProcessChains", model.getExcelProcessChains());
 		}
+		jsonObject.put("pageHeight", model.getPageHeight());
 		jsonObject.put("interval", model.getInterval());
 		if (model.getCreateBy() != null) {
 			jsonObject.put("createBy", model.getCreateBy());

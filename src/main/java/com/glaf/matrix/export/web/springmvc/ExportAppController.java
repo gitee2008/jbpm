@@ -494,6 +494,7 @@ public class ExportAppController {
 			exportApp.setExportFileExpr(request.getParameter("exportFileExpr"));
 			exportApp.setExternalColumnsFlag(request.getParameter("externalColumnsFlag"));
 			exportApp.setExcelProcessChains(request.getParameter("excelProcessChains"));
+			exportApp.setPageHeight(RequestUtils.getInt(request, "pageHeight"));
 			exportApp.setInterval(RequestUtils.getInt(request, "interval"));
 			exportApp.setSortNo(RequestUtils.getInt(request, "sortNo"));
 			exportApp.setCreateBy(actorId);

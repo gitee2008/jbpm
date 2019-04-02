@@ -25,8 +25,7 @@ import com.alibaba.fastjson.*;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
-
-import com.glaf.core.base.JSONable;
+import com.glaf.core.base.*;
 import com.glaf.core.util.DateUtils;
 import com.glaf.matrix.export.util.*;
 
@@ -110,6 +109,12 @@ public class ExportApp implements Serializable, JSONable {
 	 */
 	@Column(name = "EXCELPROCESSCHAINS_", length = 500)
 	protected String excelProcessChains;
+
+	/**
+	 * 页高
+	 */
+	@Column(name = "PAGEHEIGHT_")
+	protected int pageHeight;
 
 	/**
 	 * 时间间隔
@@ -254,6 +259,10 @@ public class ExportApp implements Serializable, JSONable {
 		return this.nodeId;
 	}
 
+	public int getPageHeight() {
+		return pageHeight;
+	}
+
 	public int getSortNo() {
 		return sortNo;
 	}
@@ -359,6 +368,10 @@ public class ExportApp implements Serializable, JSONable {
 
 	public void setNodeId(long nodeId) {
 		this.nodeId = nodeId;
+	}
+
+	public void setPageHeight(int pageHeight) {
+		this.pageHeight = pageHeight;
 	}
 
 	public void setSortNo(int sortNo) {

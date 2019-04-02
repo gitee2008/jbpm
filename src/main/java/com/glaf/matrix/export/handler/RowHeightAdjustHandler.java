@@ -83,35 +83,6 @@ public class RowHeightAdjustHandler implements WorkbookHandler {
 									// break;
 								}
 							}
-							cell.removeCellComment();
-							logger.debug("删除批注信息.");
-						}
-					} else {
-						cellVal = cell.getStringCellValue();
-						// logger.debug("cellVal:" + cellVal);
-						if (StringUtils.isNotEmpty(cellVal) && StringUtils.startsWith(cellVal.trim(), "xe:rh")) {
-							int beginIndex = cellVal.indexOf("xe:rh{");
-							int endIndex = cellVal.indexOf("}", beginIndex);
-							json = cellVal.substring(beginIndex + 5, endIndex + 1);
-							// logger.debug("json:" + json);
-							jsonObject = JSON.parseObject(json);
-							int charNumPerRow = jsonObject.getIntValue("charNumPerRow");
-							float lineHeight = jsonObject.getFloatValue("lineHeight");
-							cellVal = cellVal.substring(endIndex + 1, cellVal.length());
-							// logger.debug("->cellVal:" + cellVal);
-							if (StringUtils.isNotEmpty(cellVal)) {
-								cell.setCellValue(cellVal);
-							} else {
-								cell.setCellValue("  ");
-							}
-							if (charNumPerRow > 0 && lineHeight > 10) {
-								int factor = (int) Math.ceil(cellVal.length() * 1.0d / charNumPerRow * 1.0d);
-								if (factor > 1) {
-									row.setHeightInPoints(factor * lineHeight);
-									// logger.debug(rowIndex + "->[" + cellVal + "]行高已经调整因子:" + factor);
-									// break;
-								}
-							}
 						}
 					}
 				}

@@ -26,6 +26,8 @@
 			column="EXTERNALCOLUMNSFLAG_" jdbcType="VARCHAR" />
 		<result property="excelProcessChains"
 			column="EXCELPROCESSCHAINS_" jdbcType="VARCHAR" />
+		<result property="pageHeight" column="PAGEHEIGHT_"
+			jdbcType="INTEGER" />
 		<result property="interval" column="INTERVAL_"
 			jdbcType="INTEGER" />
 		<result property="sortNo" column="SORTNO_" jdbcType="INTEGER" />
@@ -78,6 +80,9 @@
 			</if>
 			<if test="excelProcessChains != null">
 				,EXCELPROCESSCHAINS_
+			</if>
+			<if test="pageHeight != null">
+				,PAGEHEIGHT_
 			</if>
 			<if test="interval != null">
 				,INTERVAL_
@@ -137,6 +142,9 @@
 			</if>
 			<if test="excelProcessChains != null">
 				,#{excelProcessChains, jdbcType=VARCHAR}
+			</if>
+			<if test="pageHeight != null">
+				,#{pageHeight, jdbcType=INTEGER}
 			</if>
 			<if test="interval != null">
 				,#{interval, jdbcType=INTEGER}
@@ -203,6 +211,9 @@
 			<if test="excelProcessChains != null">
 				EXCELPROCESSCHAINS_ = #{excelProcessChains,
 				jdbcType=VARCHAR},
+			</if>
+			<if test="pageHeight != null">
+				PAGEHEIGHT_ = #{pageHeight, jdbcType=INTEGER},
 			</if>
 			<if test="interval != null">
 				INTERVAL_ = #{interval, jdbcType=INTEGER},

@@ -152,7 +152,7 @@ public class MyBatisDbIdGenerator implements IdGenerator {
 		if (lastId < nextId) {
 			this.getNewBlock();
 		}
-		return nextId++;
+		return ++nextId;
 	}
 
 	@Transactional(propagation = Propagation.REQUIRED)

@@ -20,11 +20,10 @@ package com.glaf.matrix.export.handler;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
-import java.util.Map.Entry;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -38,13 +37,29 @@ public class WorkbookFactory {
 
 	protected static ConcurrentMap<String, String> nameMap = new ConcurrentHashMap<String, String>();
 
+	protected static List<String> handerList = new CopyOnWriteArrayList<String>();
+
 	static {
 		handlerMap.put("cellMerge", new CellMergeHandler());
+		handlerMap.put("autoPageBreak", new AutoPageBreakHandler());
 		handlerMap.put("pageBreak", new PageBreakHandler());
 		handlerMap.put("rowHeightAdjust", new RowHeightAdjustHandler());
+		handlerMap.put("pageFooterBorder", new PageFooterBorderHandler());
+		handlerMap.put("xRemoveComment", new RemoveCommentHandler());
+
 		nameMap.put("pageBreak", "分页处理器");
+		nameMap.put("autoPageBreak", "设置页分隔符");
 		nameMap.put("cellMerge", "合并单元格处理器");
 		nameMap.put("rowHeightAdjust", "行高调整处理器");
+		nameMap.put("pageFooterBorder", "设置页脚边框");
+		nameMap.put("xRemoveComment", "去除标注");
+
+		handerList.add("rowHeightAdjust");// 最先执行
+		handerList.add("autoPageBreak");
+		handerList.add("pageBreak");
+		handerList.add("pageFooterBorder");
+		handerList.add("cellMerge");
+		handerList.add("xRemoveComment");// 最后执行
 	}
 
 	public static ConcurrentMap<String, String> getNameMap() {
@@ -57,14 +72,16 @@ public class WorkbookFactory {
 		if (StringUtils.isNotEmpty(handlerChains)) {
 			handlers.addAll(StringTools.split(handlerChains));
 		}
-		Set<Entry<String, WorkbookHandler>> entrySet = handlerMap.entrySet();
-		for (Entry<String, WorkbookHandler> entry : entrySet) {
-			String key = entry.getKey();
-			if (!handlers.isEmpty() && !handlers.contains(key)) {
-				continue;
+		/**
+		 * 按默认顺序执行，必须按先后顺序，否则引起错乱
+		 */
+		for (String hander : handerList) {
+			if (handlers.contains(hander)) {
+				if (handlerMap.get(hander) != null) {
+					WorkbookHandler preprocessor = handlerMap.get(hander);
+					preprocessor.processWorkbook(wb, exportApp);
+				}
 			}
-			WorkbookHandler preprocessor = entry.getValue();
-			preprocessor.processWorkbook(wb, exportApp);
 		}
 	}
 

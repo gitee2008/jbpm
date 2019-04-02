@@ -18,7 +18,9 @@
 
 package com.glaf.matrix.export.handler;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
@@ -149,8 +151,19 @@ public class CellMergeHandler implements WorkbookHandler {
 			Row tmpRow = null;
 			Cell cell = null;
 			int endRow = 0;
+			int[] rowBreaks = sheet.getRowBreaks();
+			List<Integer> breaks = new ArrayList<Integer>();
+			if (rowBreaks != null && rowBreaks.length > 0) {
+				for (int xbreak : rowBreaks) {
+					breaks.add(xbreak);
+				}
+			}
 			Map<String, Integer> mergeMap = new HashMap<String, Integer>();
 			for (int rowIndex = 0; rowIndex <= rows; rowIndex++) {
+				if (breaks.contains(rowIndex)) {// 遇到分页符，跳过
+					logger.debug(">>>>跳过分页符:" + rowIndex);
+					continue;
+				}
 				row = sheet.getRow(rowIndex);
 				// logger.debug("rowIndex:" + rowIndex);
 				endRow = rowIndex;
@@ -174,6 +187,10 @@ public class CellMergeHandler implements WorkbookHandler {
 							endRow = rowIndex;
 							boolean mergeFlag = false;
 							while (endRow < rows) {
+								if (breaks.contains(endRow)) {// 遇到分页符，跳过
+									logger.debug(">>>>@跳过分页符:" + endRow);
+									break;
+								}
 								tmpRow = sheet.getRow(++endRow);
 								String nextVal = getCellValue(tmpRow, colIndex);
 								if (nextVal == null) {
