@@ -1,3 +1,20 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.glaf.jxls.ext.command;
 
 import org.apache.poi.ss.usermodel.*;
@@ -9,12 +26,9 @@ import org.jxls.common.CellRef;
 import org.jxls.common.Context;
 import org.jxls.common.Size;
 import org.jxls.transform.Transformer;
-import org.jxls.transform.jexcel.JexcelTransformer;
 import org.jxls.transform.poi.PoiCellData;
 import org.jxls.transform.poi.PoiTransformer;
 import com.glaf.jxls.ext.JxlsUtil;
-
-import jxl.write.WriteException;
 
 /**
  * <p>
@@ -23,8 +37,6 @@ import jxl.write.WriteException;
  * jx:merge( lastCell="单元格" [, cols="合并的列数"] [, rows="合并的行数"] [,
  * minCols="最小合并的列数"] [, minRows="最小合并的行数"] )
  * 
- * @Author lnk
- * @Date 2018/1/23
  */
 public class MergeCommand extends AbstractCommand {
 	private String cols; // 合并的列数
@@ -61,8 +73,6 @@ public class MergeCommand extends AbstractCommand {
 			Transformer transformer = this.getTransformer();
 			if (transformer instanceof PoiTransformer) {
 				poiMerge(cellRef, context, (PoiTransformer) transformer, rows, cols);
-			} else if (transformer instanceof JexcelTransformer) {
-				jexcelMerge(cellRef, context, (JexcelTransformer) transformer, rows, cols);
 			}
 		}
 		area.applyAt(cellRef, context);
@@ -84,17 +94,6 @@ public class MergeCommand extends AbstractCommand {
 			}
 		}
 		setRegionStyle(cellStyle, region, sheet);
-		return new Size(cols, rows);
-	}
-
-	protected Size jexcelMerge(CellRef cellRef, Context context, JexcelTransformer transformer, int rows, int cols) {
-		try {
-			transformer.getWritableWorkbook().getSheet(cellRef.getSheetName()).mergeCells(cellRef.getRow(),
-					cellRef.getCol(), cellRef.getRow() + rows - 1, cellRef.getCol() + cols - 1);
-			area.applyAt(cellRef, context);
-		} catch (WriteException ex) {
-			throw new IllegalArgumentException("合并单元格失败", ex);
-		}
 		return new Size(cols, rows);
 	}
 
