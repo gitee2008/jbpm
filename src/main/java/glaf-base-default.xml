@@ -4,7 +4,7 @@
 
 	<property>
 		<name>bpm.system</name>
-		<value>activiti</value>
+		<value>jbpm</value>
 	</property>
  
 
