@@ -22,12 +22,60 @@ import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFDataFormat;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.CellValue;
+import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.poi.ss.usermodel.FormulaEvaluator;
 
 public class ExcelUtils {
+
+	/**
+	 * 获取表格单元格Cell内容
+	 * 
+	 * @param cell
+	 * @return
+	 */
+	public static String getCellValue(Cell cell) {
+		String result = new String();
+		if (cell.getCellType() == CellType.NUMERIC) {// 数字类型
+			if (DateUtil.isCellDateFormatted(cell)) {// 处理日期格式、时间格式
+				SimpleDateFormat sdf = null;
+				if (cell.getCellStyle().getDataFormat() == HSSFDataFormat.getBuiltinFormat("h:mm")) {
+					sdf = new SimpleDateFormat("HH:mm");
+				} else {// 日期
+					sdf = new SimpleDateFormat("yyyy-MM-dd");
+				}
+				Date date = cell.getDateCellValue();
+				result = sdf.format(date);
+			} else if (cell.getCellStyle().getDataFormat() == 58) {
+				// 处理自定义日期格式：m月d日(通过判断单元格的格式id解决，id的值是58)
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+				double value = cell.getNumericCellValue();
+				Date date = DateUtil.getJavaDate(value);
+				result = sdf.format(date);
+			} else {
+				double value = cell.getNumericCellValue();
+				CellStyle style = cell.getCellStyle();
+				DecimalFormat format = new DecimalFormat();
+				String temp = style.getDataFormatString();
+				// 单元格设置成常规
+				if (temp.equals("General")) {
+					format.applyPattern("#");
+				}
+				result = format.format(value);
+			}
+		} else if (cell.getCellType() == CellType.STRING) {// String类型
+			result = cell.getRichStringCellValue().getString();
+		} else if (cell.getCellType() == CellType.BLANK) {
+			result = "";
+		} else {
+			result = "";
+		}
+		return result;
+	}
 
 	public static String getCellValue(CellValue cell, int precision) {
 		String cellValue = null;
@@ -48,7 +96,7 @@ public class ExcelUtils {
 		return cellValue;
 	}
 
-	public static String getString(HSSFCell cell, int precision) {
+	public static String getString(Cell cell, int precision) {
 		String strValue = null;
 		if (cell.getCellType() == CellType.NUMERIC) {
 			double value = cell.getNumericCellValue();
@@ -65,7 +113,7 @@ public class ExcelUtils {
 		return "";
 	}
 
-	public static String getStringOrDateValue(HSSFCell cell, int precision) {
+	public static String getStringOrDateValue(Cell cell, int precision) {
 		String strValue = null;
 		if (cell.getCellType() == CellType.NUMERIC) {
 			short format = cell.getCellStyle().getDataFormat();
@@ -110,7 +158,30 @@ public class ExcelUtils {
 		return "";
 	}
 
-	public static String getValue(FormulaEvaluator evaluator, HSSFCell cell, int precision) {
+	public static String getValue(Cell cell, int precision) {
+		String strValue = null;
+		if (cell.getCellType() == CellType.NUMERIC) {
+			double value = cell.getNumericCellValue();
+			if (precision > 0) {
+				value = Math.round(value * Math.pow(10, precision)) / Math.pow(10, precision);
+			}
+			strValue = String.valueOf(value);
+			if (strValue != null && strValue.trim().endsWith(".0")) {
+				strValue = strValue.substring(0, strValue.length() - 2);
+			}
+			return strValue;
+		} else if (cell.getCellType() == CellType.STRING) {
+			strValue = cell.getStringCellValue();
+		} else if (cell.getCellType() == CellType.FORMULA) {
+
+		}
+		if (strValue != null) {
+			return strValue;
+		}
+		return "";
+	}
+
+	public static String getValue(FormulaEvaluator evaluator, Cell cell, int precision) {
 		String strValue = null;
 		if (cell.getCellType() == CellType.NUMERIC) {
 			double value = cell.getNumericCellValue();
@@ -127,29 +198,6 @@ public class ExcelUtils {
 		} else if (cell.getCellType() == CellType.FORMULA) {
 			CellValue cellValue = evaluator.evaluate(cell);
 			strValue = getCellValue(cellValue, precision);
-		}
-		if (strValue != null) {
-			return strValue;
-		}
-		return "";
-	}
-
-	public static String getValue(HSSFCell cell, int precision) {
-		String strValue = null;
-		if (cell.getCellType() == CellType.NUMERIC) {
-			double value = cell.getNumericCellValue();
-			if (precision > 0) {
-				value = Math.round(value * Math.pow(10, precision)) / Math.pow(10, precision);
-			}
-			strValue = String.valueOf(value);
-			if (strValue != null && strValue.trim().endsWith(".0")) {
-				strValue = strValue.substring(0, strValue.length() - 2);
-			}
-			return strValue;
-		} else if (cell.getCellType() == CellType.STRING) {
-			strValue = cell.getStringCellValue();
-		} else if (cell.getCellType() == CellType.FORMULA) {
-
 		}
 		if (strValue != null) {
 			return strValue;
