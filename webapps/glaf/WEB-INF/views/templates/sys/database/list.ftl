@@ -20,16 +20,16 @@
 				singleSelect: true,
 				idField: 'id',
 				columns:[[
-					    {title:'编号', field:'id', width:60, sortable:false},
-					    {title:'主题', field:'title', width:150, sortable:false},
+					    {title:'编号', field:'id', width:50, sortable:false},
+					    {title:'主题', field:'title', width:130, sortable:false},
 					    {title:'别名', field:'mapping', width:90, sortable:false},
-					    {title:'主机', field:'host', width:240, sortable:false},
+					    {title:'主机', field:'host', width:200, sortable:false},
 					    {title:'端口', field:'port', width:60, sortable:false},
 					    {title:'库名', field:'dbname', width:120, sortable:false},
 					    {title:'数据库类型', field:'type', width:90, sortable:false},
 					    {title:'是否验证', field:'verify', width:90, sortable:false, formatter:formatterVerify},
 					    {title:'是否有效', field:'active', width:90, sortable:false, formatter:formatterActive},
-					    {field:'functionKey',title:'功能键',width:130, formatter:formatterKeys }
+					    {field:'functionKey',title:'功能键',width:150, formatter:formatterKeys }
 				]],
 				rownumbers: true,
 				pagination: true,
