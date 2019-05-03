@@ -43,7 +43,7 @@ import net.iharder.Base64;
 
 public class JwtUtils {
 
-	private static volatile byte[] SECRET = null;
+	private static volatile byte[] SECRET;
 
 	private final static int expiresSeconds = 7200;
 
