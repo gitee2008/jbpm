@@ -374,7 +374,7 @@ public class DataFileServiceImpl implements IDataFileService {
 	@Transactional
 	public String insertDataFile(String tenantId, DataFile dataFile) {
 		if (StringUtils.isEmpty(dataFile.getId())) {
-			dataFile.setId(UUID32.getUUID());
+			dataFile.setId(UUID32.generateShortUuid());
 		}
 
 		if (StringUtils.isNotEmpty(tenantId)) {
@@ -382,7 +382,9 @@ public class DataFileServiceImpl implements IDataFileService {
 			dataFile.setTableSuffix(String.valueOf(IdentityFactory.getTenantHash(tenantId)));
 		}
 
-		dataFile.setCreateDate(new Date());
+		if (dataFile.getCreateDate() == null) {
+			dataFile.setCreateDate(new Date());
+		}
 
 		String filePath = dataFile.getPath();
 		if (filePath != null && filePath.length() > 0) {
@@ -392,7 +394,7 @@ public class DataFileServiceImpl implements IDataFileService {
 			}
 		}
 
-		if (dataFile.getLastModified() == 0) {
+		if (dataFile.getLastModified() <= 0) {
 			dataFile.setLastModified(System.currentTimeMillis());
 		}
 
