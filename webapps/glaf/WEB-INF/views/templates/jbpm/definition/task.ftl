@@ -36,7 +36,6 @@
 					<#else>
 						<font color="#FFCC33"><b>否</b></font>
 				</#if></td>
-				<td align="center" noWrap>&nbsp;</td>
 			</tr>
 		<#assign sortNo = sortNo + 1 />
 		</#list>
