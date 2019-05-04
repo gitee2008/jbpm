@@ -10,7 +10,6 @@
 	src="${request.contextPath}/static/images/window.png"
 	alt="${processDefinition.description}任务信息">&nbsp;${processDefinition.description}任务信息</div>
 <br>
-
 <table align="center" class="x-table-border table table-striped table-bordered table-condensed" cellspacing="1"
 	cellpadding="4" width="90%">
 	<thead>
@@ -31,16 +30,17 @@
 				<td align="left" noWrap>&nbsp;${task.description}</td>
 				<td align="center" noWrap>&nbsp;${task.priority}</td>
 				<td align="center" noWrap>&nbsp;
-					<#if task.signalling >
-						<font color="#6666FF"><b>是</b></font>
-					<#else>
-						<font color="#FFCC33"><b>否</b></font>
-				</#if></td>
+				<#if task.signalling >
+					<font color="#6666FF"><b>是</b></font>
+				<#else>
+					<font color="#FFCC33"><b>否</b></font>
+				</#if>
+				</td>
 			</tr>
-		<#assign sortNo = sortNo + 1 />
+		  <#assign sortNo = sortNo + 1 />
 		</#list>
 	</tbody>
 </table>
 </center>
-
-
+</body>
+</html>
