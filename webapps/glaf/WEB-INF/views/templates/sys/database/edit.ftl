@@ -133,7 +133,7 @@
   <input type="hidden" id="id" name="id" value="${database.id}"/>
   <input type="hidden" id="databaseId_enc" name="databaseId_enc" value="${databaseId_enc}"/>
   <input type="hidden" id="nodeId" name="nodeId" value="${nodeId}"/>
-  <table class="easyui-form" style="width:800px;" align="left">
+  <table class="easyui-form" style="width:850px;" align="left">
     <tbody>
 	<tr>
 		<td width="18%" align="left">主题</td>
