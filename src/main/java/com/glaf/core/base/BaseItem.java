@@ -27,6 +27,8 @@ public class BaseItem implements java.io.Serializable {
 
 	protected String title;
 
+	protected String text;
+
 	protected String value;
 
 	public BaseItem() {
@@ -54,6 +56,10 @@ public class BaseItem implements java.io.Serializable {
 		return name;
 	}
 
+	public String getText() {
+		return text;
+	}
+
 	public String getTitle() {
 		return title;
 	}
@@ -76,6 +82,10 @@ public class BaseItem implements java.io.Serializable {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public void setText(String text) {
+		this.text = text;
 	}
 
 	public void setTitle(String title) {
