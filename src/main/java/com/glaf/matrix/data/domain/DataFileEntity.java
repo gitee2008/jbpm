@@ -22,6 +22,14 @@ import java.io.InputStream;
 import java.io.Serializable;
 import java.util.Date;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Lob;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
@@ -31,61 +39,90 @@ import com.glaf.core.base.DataFile;
 import com.glaf.core.base.JSONable;
 import com.glaf.matrix.data.util.DataFileJsonFactory;
 
+@Entity
+@Table(name = "DATA_FILE")
 public class DataFileEntity implements DataFile, Serializable, JSONable {
 	private static final long serialVersionUID = 1L;
 
+	@Id
+	@Column(name = "ID_", length = 64, nullable = false)
 	protected String id;
 
+	@Column(name = "DATABASEID_")
 	protected long databaseId;
 
 	/**
 	 * 租户编号
 	 */
+	@Column(name = "TENANTID_", length = 50)
 	protected String tenantId;
 
+	@Column(name = "BUSINESSKEY_", length = 50)
 	protected String businessKey;
 
+	@Column(name = "SERVICEKEY_", length = 50)
 	protected String serviceKey;
 
+	@Column(name = "MASTERDATAID_", length = 50)
 	protected String masterDataId;
 
+	@Column(name = "CONTENTTYPE_", length = 50)
 	protected String contentType;
 
+	@Lob
+	@Column(name = "DATA_")
 	protected byte[] data = null;
 
+	@Column(name = "DEVICEID_", length = 50)
 	protected String deviceId;
 
+	@Column(name = "FILENAME_", length = 500)
 	protected String filename;
 
+	@Column(name = "LASTMODIFIED_")
 	protected long lastModified = -1;
 
-	protected int locked = 0;
-
+	@Column(name = "NAME_", length = 50)
 	protected String name;
 
+	@Column(name = "OBJECTID_")
 	protected String objectId;
 
+	@Column(name = "OBJECTVALUE_")
 	protected String objectValue;
 
+	@Column(name = "PATH_", length = 500)
 	protected String path = null;
 
+	@Column(name = "SIZE_")
 	protected long size = -1;
 
-	protected int status = 0;
-
+	@Column(name = "TYPE_", length = 50)
 	protected String type;
 
+	@Column(name = "STATUS_")
+	protected int status = 0;
+
+	@Column(name = "LOCKED_")
+	protected int locked = 0;
+
+	@Column(name = "DELETEFLAG_")
+	protected int deleteFlag = 0;
+
+	@Column(name = "CREATEBY_", length = 50)
 	protected String createBy;
 
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "CREATEDATE_")
 	protected Date createDate;
-
-	protected int deleteFlag = 0;
 
 	/**
 	 * 表后缀
 	 */
+	@javax.persistence.Transient
 	protected String tableSuffix;
 
+	@javax.persistence.Transient
 	protected transient InputStream inputStream = null;
 
 	public DataFileEntity() {
