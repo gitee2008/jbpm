@@ -210,6 +210,12 @@ public class ExportItem implements Serializable, JSONable {
 	protected String genEmptyFlag;
 
 	/**
+	 * 结果标识（O-单一记录，M-多条记录）
+	 */
+	@Column(name = "RESULTFLAG_", length = 1)
+	protected String resultFlag;
+
+	/**
 	 * 数据处理器
 	 */
 	@Column(name = "DATAHANDLERCHAINS_", length = 500)
@@ -450,6 +456,10 @@ public class ExportItem implements Serializable, JSONable {
 		return recursionSql;
 	}
 
+	public String getResultFlag() {
+		return resultFlag;
+	}
+
 	public String getRootPath() {
 		return rootPath;
 	}
@@ -624,6 +634,10 @@ public class ExportItem implements Serializable, JSONable {
 
 	public void setRecursionSql(String recursionSql) {
 		this.recursionSql = recursionSql;
+	}
+
+	public void setResultFlag(String resultFlag) {
+		this.resultFlag = resultFlag;
 	}
 
 	public void setRootPath(String rootPath) {

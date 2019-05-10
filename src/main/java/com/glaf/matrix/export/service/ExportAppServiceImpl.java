@@ -142,8 +142,14 @@ public class ExportAppServiceImpl implements ExportAppService {
 			if (StringUtils.isEmpty(exportApp.getDeploymentId())) {
 				exportApp.setDeploymentId(UUID32.getUUID());
 			}
+			if (exportApp.getPageNumPerSheet() > 800) {
+				exportApp.setPageNumPerSheet(800);
+			}
 			exportAppMapper.insertExportApp(exportApp);
 		} else {
+			if (exportApp.getPageNumPerSheet() > 800) {
+				exportApp.setPageNumPerSheet(800);
+			}
 			exportAppMapper.updateExportApp(exportApp);
 		}
 	}

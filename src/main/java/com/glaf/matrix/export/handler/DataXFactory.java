@@ -27,12 +27,15 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.glaf.core.util.StringTools;
 import com.glaf.matrix.export.domain.ExportApp;
 import com.glaf.matrix.export.domain.ExportItem;
 
 public class DataXFactory {
+	protected static final Logger logger = LoggerFactory.getLogger(DataXFactory.class);
 
 	protected static ConcurrentMap<String, DataXPreprocessor> preprocessorMap = new ConcurrentHashMap<String, DataXPreprocessor>();
 
@@ -63,8 +66,12 @@ public class DataXFactory {
 					if (!handlers.isEmpty() && !handlers.contains(key)) {
 						continue;
 					}
+					logger.debug(nameMap.get(key) + "开始处理...");
+					long start = System.currentTimeMillis();
 					DataXPreprocessor preprocessor = entry.getValue();
 					preprocessor.preprocess(parameter, exportApp);
+					long ts = System.currentTimeMillis() - start;
+					logger.debug(nameMap.get(key) + "用时(ms):" + ts);
 				}
 			}
 		}

@@ -128,6 +128,9 @@ public class ExportItemJsonFactory {
 		if (jsonObject.containsKey("genEmptyFlag")) {
 			model.setGenEmptyFlag(jsonObject.getString("genEmptyFlag"));
 		}
+		if (jsonObject.containsKey("resultFlag")) {
+			model.setResultFlag(jsonObject.getString("resultFlag"));
+		}
 		if (jsonObject.containsKey("dataHandlerChains")) {
 			model.setDataHandlerChains(jsonObject.getString("dataHandlerChains"));
 		}
@@ -226,6 +229,9 @@ public class ExportItemJsonFactory {
 		}
 		if (model.getGenEmptyFlag() != null) {
 			jsonObject.put("genEmptyFlag", model.getGenEmptyFlag());
+		}
+		if (model.getResultFlag() != null) {
+			jsonObject.put("resultFlag", model.getResultFlag());
 		}
 		if (model.getDataHandlerChains() != null) {
 			jsonObject.put("dataHandlerChains", model.getDataHandlerChains());
@@ -336,6 +342,9 @@ public class ExportItemJsonFactory {
 		}
 		if (model.getGenEmptyFlag() != null) {
 			jsonObject.put("genEmptyFlag", model.getGenEmptyFlag());
+		}
+		if (model.getResultFlag() != null) {
+			jsonObject.put("resultFlag", model.getResultFlag());
 		}
 		if (model.getDataHandlerChains() != null) {
 			jsonObject.put("dataHandlerChains", model.getDataHandlerChains());

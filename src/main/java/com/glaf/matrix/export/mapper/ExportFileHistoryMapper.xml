@@ -1,0 +1,286 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper
+	namespace="com.glaf.matrix.export.mapper.ExportFileHistoryMapper">
+
+	<resultMap id="exportFileHistoryResultMap"
+		type="com.glaf.matrix.export.domain.ExportFileHistory">
+		<id property="id" column="ID_" jdbcType="VARCHAR" />
+		<result property="expId" column="EXPID_" jdbcType="VARCHAR" />
+		<result property="deploymentId" column="DEPLOYMENTID_"
+			jdbcType="VARCHAR" />
+		<result property="title" column="TITLE_" jdbcType="VARCHAR" />
+		<result property="filename" column="FILENAME_"
+			jdbcType="VARCHAR" />
+		<result property="path" column="PATH_" jdbcType="VARCHAR" />
+		<result property="jobNo" column="JOBNO_" jdbcType="VARCHAR" />
+		<result property="genYmd" column="GENYMD_" jdbcType="INTEGER" />
+		<result property="lastModified" column="LASTMODIFIED_"
+			jdbcType="BIGINT" />
+		<result property="sortNo" column="SORTNO_" jdbcType="INTEGER" />
+		<result property="viewCount" column="VIEWCOUNT_"
+			jdbcType="INTEGER" />
+		<result property="createBy" column="CREATEBY_"
+			jdbcType="VARCHAR" />
+		<result property="createTime" column="CREATETIME_"
+			jdbcType="TIMESTAMP" />
+	</resultMap>
+
+
+	<insert id="insertExportFileHistory"
+		parameterType="com.glaf.matrix.export.domain.ExportFileHistory">
+		insert into SYS_EXPORT_FILE_HISTORY
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			ID_
+			<if test="expId != null">
+				,EXPID_
+			</if>
+			<if test="deploymentId != null">
+				,DEPLOYMENTID_
+			</if>
+			<if test="title != null">
+				,TITLE_
+			</if>
+			<if test="filename != null">
+				,FILENAME_
+			</if>
+			<if test="path != null">
+				,PATH_
+			</if>
+			<if test="jobNo != null">
+				,JOBNO_
+			</if>
+			<if test="genYmd != null">
+				,GENYMD_
+			</if>
+			<if test="lastModified != null">
+				,LASTMODIFIED_
+			</if>
+			<if test="sortNo != null">
+				,SORTNO_
+			</if>
+			<if test="viewCount != null">
+				,VIEWCOUNT_
+			</if>
+			<if test="createBy != null">
+				,CREATEBY_
+			</if>
+			<if test="createTime != null">
+				,CREATETIME_
+			</if>
+		</trim>
+
+		<trim prefix=" values (" suffix=")" suffixOverrides=",">
+			#{id, jdbcType=VARCHAR}
+
+			<if test="expId != null">
+				,#{expId, jdbcType=VARCHAR}
+			</if>
+			<if test="deploymentId != null">
+				,#{deploymentId, jdbcType=VARCHAR}
+			</if>
+			<if test="title != null">
+				,#{title, jdbcType=VARCHAR}
+			</if>
+			<if test="filename != null">
+				,#{filename, jdbcType=VARCHAR}
+			</if>
+			<if test="path != null">
+				,#{path, jdbcType=VARCHAR}
+			</if>
+			<if test="jobNo != null">
+				,#{jobNo, jdbcType=VARCHAR}
+			</if>
+			<if test="genYmd != null">
+				,#{genYmd, jdbcType=INTEGER}
+			</if>
+			<if test="lastModified != null">
+				,#{lastModified, jdbcType=BIGINT}
+			</if>
+			<if test="sortNo != null">
+				,#{sortNo, jdbcType=INTEGER}
+			</if>
+			<if test="viewCount != null">
+				,#{viewCount, jdbcType=INTEGER}
+			</if>
+			<if test="createBy != null">
+				,#{createBy, jdbcType=VARCHAR}
+			</if>
+			<if test="createTime != null">
+				,#{createTime, jdbcType=TIMESTAMP}
+			</if>
+		</trim>
+	</insert>
+
+
+	<insert id="bulkInsertExportFileHistory"
+		parameterType="java.util.List">
+		insert into SYS_EXPORT_FILE_HISTORY (
+		ID_
+		,EXPID_
+		,DEPLOYMENTID_
+		,TITLE_
+		,FILENAME_
+		,PATH_
+		,JOBNO_
+		,GENYMD_
+		,LASTMODIFIED_
+		,SORTNO_
+		,VIEWCOUNT_
+		,CREATEBY_
+		,CREATETIME_
+		) values
+		<foreach collection="list" item="exportFileHistory"
+			index="index" separator=",">
+			(
+			#{exportFileHistory.id, jdbcType=VARCHAR}
+			,#{exportFileHistory.expId, jdbcType=VARCHAR}
+			,#{exportFileHistory.deploymentId, jdbcType=VARCHAR}
+			,#{exportFileHistory.title, jdbcType=VARCHAR}
+			,#{exportFileHistory.filename, jdbcType=VARCHAR}
+			,#{exportFileHistory.path, jdbcType=VARCHAR}
+			,#{exportFileHistory.jobNo, jdbcType=VARCHAR}
+			,#{exportFileHistory.genYmd, jdbcType=INTEGER}
+			,#{exportFileHistory.lastModified, jdbcType=BIGINT}
+			,#{exportFileHistory.sortNo, jdbcType=INTEGER}
+			,#{exportFileHistory.viewCount, jdbcType=INTEGER}
+			,#{exportFileHistory.createBy, jdbcType=VARCHAR}
+			,#{exportFileHistory.createTime, jdbcType=TIMESTAMP}
+			)
+		</foreach>
+	</insert>
+
+
+	<insert id="bulkInsertExportFileHistory_oracle"
+		parameterType="java.util.List">
+		INSERT ALL
+		<foreach collection="list" item="exportFileHistory"
+			index="index">
+			insert into SYS_EXPORT_FILE_HISTORY (
+			ID_
+			,EXPID_
+			,DEPLOYMENTID_
+			,TITLE_
+			,FILENAME_
+			,PATH_
+			,JOBNO_
+			,GENYMD_
+			,LASTMODIFIED_
+			,SORTNO_
+			,VIEWCOUNT_
+			,CREATEBY_
+			,CREATETIME_
+			) values (
+			#{exportFileHistory.id,
+			jdbcType=VARCHAR}
+			,#{exportFileHistory.expId, jdbcType=VARCHAR}
+			,#{exportFileHistory.deploymentId, jdbcType=VARCHAR}
+			,#{exportFileHistory.title, jdbcType=VARCHAR}
+			,#{exportFileHistory.filename, jdbcType=VARCHAR}
+			,#{exportFileHistory.path, jdbcType=VARCHAR}
+			,#{exportFileHistory.jobNo, jdbcType=VARCHAR}
+			,#{exportFileHistory.genYmd, jdbcType=INTEGER}
+			,#{exportFileHistory.lastModified, jdbcType=BIGINT}
+			,#{exportFileHistory.sortNo, jdbcType=INTEGER}
+			,#{exportFileHistory.viewCount, jdbcType=INTEGER}
+			,#{exportFileHistory.createBy, jdbcType=VARCHAR}
+			,#{exportFileHistory.createTime, jdbcType=TIMESTAMP}
+			)
+		</foreach>
+		SELECT * FROM dual
+	</insert>
+
+
+	<update id="updateExportFileHistory"
+		parameterType="com.glaf.matrix.export.domain.ExportFileHistory">
+		update SYS_EXPORT_FILE_HISTORY
+		set
+		<trim prefix="" suffix="" suffixOverrides=",">
+			<if test="viewCount != null">
+				VIEWCOUNT_ = #{viewCount, jdbcType=INTEGER},
+			</if>
+		</trim>
+		where
+		ID_ = #{id, jdbcType=VARCHAR}
+
+	</update>
+
+
+	<delete id="deleteExportFileHistoryById" parameterType="string">
+		delete
+		from SYS_EXPORT_FILE_HISTORY
+		where ID_ = #{id}
+	</delete>
+
+
+	<select id="getExportFileHistoryById" parameterType="string"
+		resultMap="exportFileHistoryResultMap">
+		select * from SYS_EXPORT_FILE_HISTORY where ID_ = #{id}
+	</select>
+
+
+	<select id="getExportFileHistorys"
+		parameterType="com.glaf.matrix.export.query.ExportFileHistoryQuery"
+		resultMap="exportFileHistoryResultMap">
+		select distinct E.*
+		<include refid="selectExportFileHistorysSql" />
+		<choose>
+			<when test="orderBy != null">
+				order by ${orderBy}
+			</when>
+			<otherwise>
+				order by E.LASTMODIFIED_ desc
+			</otherwise>
+		</choose>
+	</select>
+
+
+	<select id="getExportFileHistoryCount"
+		parameterType="com.glaf.matrix.export.query.ExportFileHistoryQuery"
+		resultType="int">
+		select count(*)
+		<include refid="selectExportFileHistorysSql" />
+	</select>
+
+
+	<sql id="selectExportFileHistorysSql">
+
+		from SYS_EXPORT_FILE_HISTORY E
+
+		<where>
+			1 = 1
+
+			<if test="expId != null and expId != '' ">
+				and E.EXPID_ = #{expId}
+			</if>
+
+			<if test="deploymentId != null and deploymentId != '' ">
+				and E.DEPLOYMENTID_ = #{deploymentId}
+			</if>
+
+			<if test="jobNo != null and jobNo != '' ">
+				and E.JOBNO_ = #{jobNo}
+			</if>
+
+			<if test="genYmd != null">
+				and E.GENYMD_ = #{genYmd}
+			</if>
+
+			<if test="createBy != null and createBy != '' ">
+				and E.CREATEBY_ = #{createBy}
+			</if>
+
+			<if test="createTimeGreaterThanOrEqual != null">
+				and E.CREATETIME_ &gt;= #{createTimeGreaterThanOrEqual}
+			</if>
+
+			<if test="createTimeLessThanOrEqual != null">
+				and E.CREATETIME_ &lt;= #{createTimeLessThanOrEqual}
+			</if>
+
+		</where>
+	</sql>
+
+</mapper>

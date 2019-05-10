@@ -32,6 +32,7 @@ import org.slf4j.LoggerFactory;
 
 import com.glaf.core.util.Paging;
 import com.glaf.core.util.ParamUtils;
+import com.glaf.core.util.UUID32;
 import com.glaf.matrix.export.domain.ExportApp;
 import com.glaf.matrix.export.domain.ExportItem;
 
@@ -124,7 +125,7 @@ public class AggregateDataPreprocessor implements DataXPreprocessor {
 							List<Map<String, Object>> subList = groupListMap.get(splitColumn);
 							if (subList == null) {
 								subList = new ArrayList<Map<String, Object>>();
-								logger.debug("splitColumn:" + splitColumn);
+								// logger.debug("splitColumn:" + splitColumn);
 							}
 							subList.add(dataMap);
 							groupListMap.put(splitColumn, subList);// 数据分组
@@ -151,7 +152,7 @@ public class AggregateDataPreprocessor implements DataXPreprocessor {
 							}
 							if (str != null && item.getCharNumPerRow() > 0) {
 								int row = (int) Math.ceil(str.length() * 1.0d / item.getCharNumPerRow());
-								logger.debug("[" + str + "]占行数:" + row);
+								// logger.debug("[" + str + "]占行数:" + row);
 								pageSizeX++;
 								index = index + row;
 								onePageList.add(dataMap);
@@ -177,7 +178,7 @@ public class AggregateDataPreprocessor implements DataXPreprocessor {
 									onePageList.clear();
 									pageSizeX = 0;
 									index = 0;
-									logger.debug("dataList.size():" + paging.getDataList().size());
+									// logger.debug("dataList.size():" + paging.getDataList().size());
 								}
 							} else {
 								pageSizeX++;
@@ -204,7 +205,7 @@ public class AggregateDataPreprocessor implements DataXPreprocessor {
 									onePageList.clear();
 									pageSizeX = 0;
 									index = 0;
-									logger.debug("dataList.size():" + paging.getDataList().size());
+									// logger.debug("dataList.size():" + paging.getDataList().size());
 								}
 							}
 
@@ -225,7 +226,7 @@ public class AggregateDataPreprocessor implements DataXPreprocessor {
 							}
 							pagingList.add(paging);
 							onePageList.clear();
-							logger.debug("dataList.size():" + paging.getDataList().size());
+							// logger.debug("dataList.size():" + paging.getDataList().size());
 						}
 					}
 				} else {
@@ -241,7 +242,7 @@ public class AggregateDataPreprocessor implements DataXPreprocessor {
 						if (str != null && item.getCharNumPerRow() > 0) {
 							int row = (int) Math.ceil(str.length() * 1.0d / item.getCharNumPerRow());
 							index = index + row;
-							logger.debug("[" + str + "]占行数:" + row);
+							// logger.debug("[" + str + "]占行数:" + row);
 							onePageList.add(dataMap);
 							pageSizeX++;
 							if (index > 0 && ((index % item.getPageSize() == 0) || index > item.getPageSize())) {
@@ -263,7 +264,7 @@ public class AggregateDataPreprocessor implements DataXPreprocessor {
 								onePageList.clear();
 								pageSizeX = 0;
 								index = 0;
-								logger.debug("dataList.size():" + paging.getDataList().size());
+								// logger.debug("dataList.size():" + paging.getDataList().size());
 							}
 						} else {
 							pageSizeX++;
@@ -288,7 +289,7 @@ public class AggregateDataPreprocessor implements DataXPreprocessor {
 								onePageList.clear();
 								pageSizeX = 0;
 								index = 0;
-								logger.debug("dataList.size():" + paging.getDataList().size());
+								// logger.debug("dataList.size():" + paging.getDataList().size());
 							}
 						}
 
@@ -303,7 +304,7 @@ public class AggregateDataPreprocessor implements DataXPreprocessor {
 						paging.setDataList(this.copy(onePageList, item.getPageSize() - 2));// 不足一页，空行补齐
 						paging.setPageSize(pageSizeX);
 						paging.setCurrentPage(++pageNoX);
-						logger.debug("dataList.size():" + paging.getDataList().size());
+						// logger.debug("dataList.size():" + paging.getDataList().size());
 
 						if (StringUtils.equals(item.getSubTotalFlag(), "Y")) {
 							Map<String, Object> subTotalMap = new HashMap<String, Object>();
@@ -325,7 +326,9 @@ public class AggregateDataPreprocessor implements DataXPreprocessor {
 				} else {
 					if (item.getDataList().size() == 0) {
 						if (StringUtils.equals(item.getGenEmptyFlag(), "Y")) {
+							logger.debug("生成空行数据填充......");
 							Map<String, Object> dataMap = new HashMap<String, Object>();
+							dataMap.put(UUID32.generateShortUuid(), UUID32.getUUID());
 							onePageList.add(dataMap);
 							Paging paging = new Paging();
 							paging.setContextMap(parameter);
@@ -335,7 +338,7 @@ public class AggregateDataPreprocessor implements DataXPreprocessor {
 							paging.setCurrentPage(++pageNoX);
 							logger.debug("dataList.size():" + paging.getDataList().size());
 							pagingList.add(paging);
-							onePageList.clear();
+							// onePageList.clear();
 						}
 					}
 				}

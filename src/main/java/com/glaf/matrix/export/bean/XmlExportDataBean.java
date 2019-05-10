@@ -116,6 +116,19 @@ public class XmlExportDataBean {
 		}
 	}
 
+	public List<Map<String, Object>> getListData(XmlExport xmlExport, long databaseId) {
+		Connection srcConn = null;
+		try {
+			Database srcDatabase = getDatabaseService().getDatabaseById(databaseId);
+			srcConn = DBConnectionFactory.getConnection(srcDatabase.getName());
+			return this.getListData(xmlExport, srcConn);
+		} catch (Exception ex) {
+			throw new RuntimeException(ex);
+		} finally {
+			JdbcUtils.close(srcConn);
+		}
+	}
+
 	@SuppressWarnings("unchecked")
 	public Map<String, Object> getMapData(XmlExport xmlExport, Connection srcConn) {
 		Map<String, Object> dataMap = new HashMap<String, Object>();

@@ -43,7 +43,7 @@ public class RemoveCommentHandler implements WorkbookHandler {
 			Cell cell = null;
 			for (int rowIndex = 0; rowIndex <= rows; rowIndex++) {
 				row = sheet.getRow(rowIndex);
-				logger.debug("rowIndex:" + rowIndex);
+				//logger.debug("rowIndex:" + rowIndex);
 				if (row == null) {
 					continue;
 				}

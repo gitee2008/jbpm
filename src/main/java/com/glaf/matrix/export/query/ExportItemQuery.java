@@ -28,7 +28,6 @@ public class ExportItemQuery extends DataQuery {
 	protected String deploymentId;
 	protected List<String> deploymentIds;
 	protected String sqlLike;
-
 	protected Date createTimeGreaterThanOrEqual;
 	protected Date createTimeLessThanOrEqual;
 

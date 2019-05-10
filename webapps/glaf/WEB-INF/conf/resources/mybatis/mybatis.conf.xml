@@ -21,6 +21,7 @@
         <plugin interceptor="com.github.pagehelper.PageInterceptor">
             <!-- 设置数据库类型 oracle,mysql,mariadb,sqlite,hsqldb,postgresql六种数据库-->
             <!-- <property name="helperDialect" value="mysql"/> -->
+			<property name="autoRuntimeDialect" value="TRUE"/>
         </plugin>
     </plugins>
 

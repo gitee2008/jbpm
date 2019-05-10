@@ -1,0 +1,266 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper
+	namespace="com.glaf.matrix.export.mapper.ExportPreprocessorMapper">
+
+	<resultMap id="exportPreprocessorResultMap"
+		type="com.glaf.matrix.export.domain.ExportPreprocessor">
+		<id property="id" column="ID_" jdbcType="VARCHAR" />
+		<result property="expId" column="EXPID_" jdbcType="VARCHAR" />
+		<result property="currentStep" column="CURRENTSTEP_"
+			jdbcType="VARCHAR" />
+		<result property="currentType" column="CURRENTTYPE_"
+			jdbcType="VARCHAR" />
+		<result property="previousStep" column="PREVIOUSSTEP_"
+			jdbcType="VARCHAR" />
+		<result property="previousType" column="PREVIOUSTYPE_"
+			jdbcType="VARCHAR" />
+		<result property="nextStep" column="NEXTSTEP_"
+			jdbcType="VARCHAR" />
+		<result property="nextType" column="NEXTTYPE_"
+			jdbcType="VARCHAR" />
+		<result property="sort" column="SORT_" jdbcType="INTEGER" />
+		<result property="createBy" column="CREATEBY_"
+			jdbcType="VARCHAR" />
+		<result property="createTime" column="CREATETIME_"
+			jdbcType="TIMESTAMP" />
+	</resultMap>
+
+
+	<insert id="insertExportPreprocessor"
+		parameterType="com.glaf.matrix.export.domain.ExportPreprocessor">
+		insert into SYS_EXPORT_PREPROCESSOR
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			ID_
+			<if test="expId != null">
+				,EXPID_
+			</if>
+			<if test="currentStep != null">
+				,CURRENTSTEP_
+			</if>
+			<if test="currentType != null">
+				,CURRENTTYPE_
+			</if>
+			<if test="previousStep != null">
+				,PREVIOUSSTEP_
+			</if>
+			<if test="previousType != null">
+				,PREVIOUSTYPE_
+			</if>
+			<if test="nextStep != null">
+				,NEXTSTEP_
+			</if>
+			<if test="nextType != null">
+				,NEXTTYPE_
+			</if>
+			<if test="sort != null">
+				,SORT_
+			</if>
+			<if test="createBy != null">
+				,CREATEBY_
+			</if>
+			<if test="createTime != null">
+				,CREATETIME_
+			</if>
+		</trim>
+
+		<trim prefix=" values (" suffix=")" suffixOverrides=",">
+			#{id, jdbcType=VARCHAR}
+			<if test="expId != null">
+				,#{expId, jdbcType=VARCHAR}
+			</if>
+			<if test="currentStep != null">
+				,#{currentStep, jdbcType=VARCHAR}
+			</if>
+			<if test="currentType != null">
+				,#{currentType, jdbcType=VARCHAR}
+			</if>
+			<if test="previousStep != null">
+				,#{previousStep, jdbcType=VARCHAR}
+			</if>
+			<if test="previousType != null">
+				,#{previousType, jdbcType=VARCHAR}
+			</if>
+			<if test="nextStep != null">
+				,#{nextStep, jdbcType=VARCHAR}
+			</if>
+			<if test="nextType != null">
+				,#{nextType, jdbcType=VARCHAR}
+			</if>
+			<if test="sort != null">
+				,#{sort, jdbcType=INTEGER}
+			</if>
+			<if test="createBy != null">
+				,#{createBy, jdbcType=VARCHAR}
+			</if>
+			<if test="createTime != null">
+				,#{createTime, jdbcType=TIMESTAMP}
+			</if>
+		</trim>
+	</insert>
+
+
+	<insert id="bulkInsertExportPreprocessor"
+		parameterType="java.util.List">
+		insert into SYS_EXPORT_PREPROCESSOR (
+		ID_
+		,EXPID_
+		,CURRENTSTEP_
+		,CURRENTTYPE_
+		,PREVIOUSSTEP_
+		,PREVIOUSTYPE_
+		,NEXTSTEP_
+		,NEXTTYPE_
+		,SORT_
+		,CREATEBY_
+		,CREATETIME_
+		) values
+		<foreach collection="list" item="exportPreprocessor"
+			index="index" separator=",">
+			(
+			#{exportPreprocessor.id, jdbcType=VARCHAR}
+			,#{exportPreprocessor.expId, jdbcType=VARCHAR}
+			,#{exportPreprocessor.currentStep, jdbcType=VARCHAR}
+			,#{exportPreprocessor.currentType, jdbcType=VARCHAR}
+			,#{exportPreprocessor.previousStep, jdbcType=VARCHAR}
+			,#{exportPreprocessor.previousType, jdbcType=VARCHAR}
+			,#{exportPreprocessor.nextStep, jdbcType=VARCHAR}
+			,#{exportPreprocessor.nextType, jdbcType=VARCHAR}
+			,#{exportPreprocessor.sort,
+			jdbcType=INTEGER}
+			,#{exportPreprocessor.createBy, jdbcType=VARCHAR}
+			,#{exportPreprocessor.createTime, jdbcType=TIMESTAMP}
+			)
+		</foreach>
+	</insert>
+
+
+	<insert id="bulkInsertExportPreprocessor_oracle"
+		parameterType="java.util.List">
+		INSERT ALL
+		<foreach collection="list" item="exportPreprocessor"
+			index="index">
+			insert
+			into SYS_EXPORT_PREPROCESSOR (
+			ID_
+			,EXPID_
+			,CURRENTSTEP_
+			,CURRENTTYPE_
+			,PREVIOUSSTEP_
+			,PREVIOUSTYPE_
+			,NEXTSTEP_
+			,NEXTTYPE_
+			,SORT_
+			,CREATEBY_
+			,CREATETIME_
+			)
+			values (
+			#{exportPreprocessor.id,
+			jdbcType=VARCHAR}
+			,#{exportPreprocessor.expId, jdbcType=VARCHAR}
+			,#{exportPreprocessor.currentStep, jdbcType=VARCHAR}
+			,#{exportPreprocessor.currentType, jdbcType=VARCHAR}
+			,#{exportPreprocessor.previousStep, jdbcType=VARCHAR}
+			,#{exportPreprocessor.previousType, jdbcType=VARCHAR}
+			,#{exportPreprocessor.nextStep, jdbcType=VARCHAR}
+			,#{exportPreprocessor.nextType, jdbcType=VARCHAR}
+			,#{exportPreprocessor.sort,
+			jdbcType=INTEGER}
+			,#{exportPreprocessor.createBy, jdbcType=VARCHAR}
+			,#{exportPreprocessor.createTime, jdbcType=TIMESTAMP}
+			)
+		</foreach>
+		SELECT * FROM dual
+	</insert>
+
+	<delete id="deleteExportPreprocessorById" parameterType="string">
+		delete
+		from
+		SYS_EXPORT_PREPROCESSOR
+		where ID_ = #{id}
+	</delete>
+
+
+	<select id="getExportPreprocessorById" parameterType="string"
+		resultMap="exportPreprocessorResultMap">
+		select * from SYS_EXPORT_PREPROCESSOR where ID_ = #{id}
+	</select>
+
+
+	<select id="getExportPreprocessors"
+		parameterType="com.glaf.matrix.export.query.ExportPreprocessorQuery"
+		resultMap="exportPreprocessorResultMap">
+		select distinct E.*
+		<include refid="selectExportPreprocessorsSql" />
+		<choose>
+			<when test="orderBy != null">
+				order by ${orderBy}
+			</when>
+			<otherwise>
+				order by E.SORT_ asc
+			</otherwise>
+		</choose>
+	</select>
+
+
+	<select id="getExportPreprocessorCount"
+		parameterType="com.glaf.matrix.export.query.ExportPreprocessorQuery"
+		resultType="int">
+		select count(*)
+		<include refid="selectExportPreprocessorsSql" />
+	</select>
+
+
+	<sql id="selectExportPreprocessorsSql">
+
+		from SYS_EXPORT_PREPROCESSOR E
+
+		<where>
+			1 = 1
+
+			<if test="expId != null and expId != '' ">
+				and E.EXPID_ = #{expId}
+			</if>
+
+			<if test="currentStep != null and currentStep != '' ">
+				and E.CURRENTSTEP_ = #{currentStep}
+			</if>
+
+			<if test="currentType != null and currentType != '' ">
+				and E.CURRENTTYPE_ = #{currentType}
+			</if>
+
+			<if test="previousStep != null and previousStep != '' ">
+				and E.PREVIOUSSTEP_ = #{previousStep}
+			</if>
+
+			<if test="previousType != null and previousType != '' ">
+				and E.PREVIOUSTYPE_ = #{previousType}
+			</if>
+
+			<if test="nextStep != null and nextStep != '' ">
+				and E.NEXTSTEP_ = #{nextStep}
+			</if>
+
+			<if test="nextType != null and nextType != '' ">
+				and E.NEXTTYPE_ = #{nextType}
+			</if>
+
+			<if test="createBy != null and createBy != '' ">
+				and E.CREATEBY_ = #{createBy}
+			</if>
+
+			<if test="createTimeGreaterThanOrEqual != null">
+				and E.CREATETIME_ &gt;= #{createTimeGreaterThanOrEqual}
+			</if>
+
+			<if test="createTimeLessThanOrEqual != null">
+				and E.CREATETIME_ &lt;= #{createTimeLessThanOrEqual}
+			</if>
+
+		</where>
+	</sql>
+
+</mapper>

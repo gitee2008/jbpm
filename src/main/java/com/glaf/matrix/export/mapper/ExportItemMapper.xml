@@ -62,6 +62,8 @@
 			jdbcType="VARCHAR" />
 		<result property="genEmptyFlag" column="GENEMPTYFLAG_"
 			jdbcType="VARCHAR" />
+		<result property="resultFlag" column="RESULTFLAG_"
+			jdbcType="VARCHAR" />
 		<result property="dataHandlerChains"
 			column="DATAHANDLERCHAINS_" jdbcType="VARCHAR" />
 		<result property="subTotalFlag" column="SUBTOTALFLAG_"
@@ -172,6 +174,9 @@
 			</if>
 			<if test="genEmptyFlag != null">
 				,GENEMPTYFLAG_
+			</if>
+			<if test="resultFlag != null">
+				,RESULTFLAG_
 			</if>
 			<if test="dataHandlerChains != null">
 				,DATAHANDLERCHAINS_
@@ -292,6 +297,9 @@
 			<if test="genEmptyFlag != null">
 				,#{genEmptyFlag, jdbcType=VARCHAR}
 			</if>
+			<if test="resultFlag != null">
+				,#{resultFlag, jdbcType=VARCHAR}
+			</if>
 			<if test="dataHandlerChains != null">
 				,#{dataHandlerChains, jdbcType=VARCHAR}
 			</if>
@@ -411,6 +419,9 @@
 			</if>
 			<if test="genEmptyFlag != null">
 				GENEMPTYFLAG_ = #{genEmptyFlag, jdbcType=VARCHAR},
+			</if>
+			<if test="resultFlag != null">
+				RESULTFLAG_ = #{resultFlag, jdbcType=VARCHAR},
 			</if>
 			<if test="dataHandlerChains != null">
 				DATAHANDLERCHAINS_ = #{dataHandlerChains,

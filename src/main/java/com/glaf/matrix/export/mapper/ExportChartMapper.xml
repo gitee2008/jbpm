@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper
+	namespace="com.glaf.matrix.export.mapper.ExportChartMapper">
+
+	<resultMap id="exportChartResultMap"
+		type="com.glaf.matrix.export.domain.ExportChart">
+		<id property="id" column="ID_" jdbcType="VARCHAR" />
+		<result property="expId" column="EXPID_" jdbcType="VARCHAR" />
+		<result property="name" column="NAME_" jdbcType="VARCHAR" />
+		<result property="title" column="TITLE_" jdbcType="VARCHAR" />
+		<result property="height" column="HEIGHT_" jdbcType="INTEGER" />
+		<result property="width" column="WIDTH_" jdbcType="INTEGER" />
+		<result property="imageType" column="IMAGETYPE_"
+			jdbcType="VARCHAR" />
+		<result property="chartId" column="CHARTID_" jdbcType="VARCHAR" />
+		<result property="chartType" column="CHARTTYPE_"
+			jdbcType="VARCHAR" />
+		<result property="chartUrl" column="CHARTURL_"
+			jdbcType="VARCHAR" />
+		<result property="snapshotFlag" column="SNAPSHOTFLAG_"
+			jdbcType="VARCHAR" />
+		<result property="locked" column="LOCKED_" jdbcType="INTEGER" />
+		<result property="createBy" column="CREATEBY_"
+			jdbcType="VARCHAR" />
+		<result property="createTime" column="CREATETIME_"
+			jdbcType="TIMESTAMP" />
+	</resultMap>
+
+
+	<insert id="insertExportChart"
+		parameterType="com.glaf.matrix.export.domain.ExportChart">
+		insert into SYS_EXPORT_CHART
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			ID_
+			<if test="expId != null">
+				,EXPID_
+			</if>
+			<if test="name != null">
+				,NAME_
+			</if>
+			<if test="title != null">
+				,TITLE_
+			</if>
+			<if test="height != null">
+				,HEIGHT_
+			</if>
+			<if test="width != null">
+				,WIDTH_
+			</if>
+			<if test="imageType != null">
+				,IMAGETYPE_
+			</if>
+			<if test="chartId != null">
+				,CHARTID_
+			</if>
+			<if test="chartType != null">
+				,CHARTTYPE_
+			</if>
+			<if test="chartUrl != null">
+				,CHARTURL_
+			</if>
+			<if test="snapshotFlag != null">
+				,SNAPSHOTFLAG_
+			</if>
+			<if test="locked != null">
+				,LOCKED_
+			</if>
+			<if test="createBy != null">
+				,CREATEBY_
+			</if>
+			<if test="createTime != null">
+				,CREATETIME_
+			</if>
+		</trim>
+
+		<trim prefix=" values (" suffix=")" suffixOverrides=",">
+			#{id, jdbcType=VARCHAR}
+
+			<if test="expId != null">
+				,#{expId, jdbcType=VARCHAR}
+			</if>
+			<if test="name != null">
+				,#{name, jdbcType=VARCHAR}
+			</if>
+			<if test="title != null">
+				,#{title, jdbcType=VARCHAR}
+			</if>
+			<if test="height != null">
+				,#{height, jdbcType=INTEGER}
+			</if>
+			<if test="width != null">
+				,#{width, jdbcType=INTEGER}
+			</if>
+			<if test="imageType != null">
+				,#{imageType, jdbcType=VARCHAR}
+			</if>
+			<if test="chartId != null">
+				,#{chartId, jdbcType=VARCHAR}
+			</if>
+			<if test="chartType != null">
+				,#{chartType, jdbcType=VARCHAR}
+			</if>
+			<if test="chartUrl != null">
+				,#{chartUrl, jdbcType=VARCHAR}
+			</if>
+			<if test="snapshotFlag != null">
+				,#{snapshotFlag, jdbcType=VARCHAR}
+			</if>
+			<if test="locked != null">
+				,#{locked, jdbcType=INTEGER}
+			</if>
+			<if test="createBy != null">
+				,#{createBy, jdbcType=VARCHAR}
+			</if>
+			<if test="createTime != null">
+				,#{createTime, jdbcType=TIMESTAMP}
+			</if>
+		</trim>
+	</insert>
+
+
+	<update id="updateExportChart"
+		parameterType="com.glaf.matrix.export.domain.ExportChart">
+		update SYS_EXPORT_CHART
+		set
+		<trim prefix="" suffix="" suffixOverrides=",">
+			<if test="name != null">
+				NAME_ = #{name, jdbcType=VARCHAR},
+			</if>
+			<if test="title != null">
+				TITLE_ = #{title, jdbcType=VARCHAR},
+			</if>
+			<if test="height != null">
+				HEIGHT_ = #{height, jdbcType=INTEGER},
+			</if>
+			<if test="width != null">
+				WIDTH_ = #{width, jdbcType=INTEGER},
+			</if>
+			<if test="imageType != null">
+				IMAGETYPE_ = #{imageType, jdbcType=VARCHAR},
+			</if>
+			<if test="chartId != null">
+				CHARTID_ = #{chartId, jdbcType=VARCHAR},
+			</if>
+			<if test="chartType != null">
+				CHARTTYPE_ = #{chartType, jdbcType=VARCHAR},
+			</if>
+			<if test="chartUrl != null">
+				CHARTURL_ = #{chartUrl, jdbcType=VARCHAR},
+			</if>
+			<if test="snapshotFlag != null">
+				SNAPSHOTFLAG_ = #{snapshotFlag, jdbcType=VARCHAR},
+			</if>
+			<if test="locked != null">
+				LOCKED_ = #{locked, jdbcType=INTEGER},
+			</if>
+
+		</trim>
+		where
+		ID_ = #{id, jdbcType=VARCHAR}
+
+	</update>
+
+
+	<delete id="deleteExportChartById" parameterType="string">
+		delete from
+		SYS_EXPORT_CHART
+		where ID_ = #{id}
+	</delete>
+
+
+	<delete id="deleteExportChartsByExpId" parameterType="string">
+		delete from
+		SYS_EXPORT_CHART
+		where EXPID_ = #{expId}
+	</delete>
+
+
+	<select id="getExportChartById" parameterType="string"
+		resultMap="exportChartResultMap">
+		select * from SYS_EXPORT_CHART where ID_ = #{id}
+	</select>
+
+
+	<select id="getExportCharts"
+		parameterType="com.glaf.matrix.export.query.ExportChartQuery"
+		resultMap="exportChartResultMap">
+		select E.*
+		<include refid="selectExportChartsSql" />
+		<choose>
+			<when test="orderBy != null">
+				order by ${orderBy}
+			</when>
+			<otherwise>
+				order by E.CREATETIME_ desc
+			</otherwise>
+		</choose>
+	</select>
+
+
+	<select id="getExportChartCount"
+		parameterType="com.glaf.matrix.export.query.ExportChartQuery"
+		resultType="int">
+		select count(*)
+		<include refid="selectExportChartsSql" />
+	</select>
+
+
+	<sql id="selectExportChartsSql">
+
+		from SYS_EXPORT_CHART E
+
+		<where>
+			1 = 1
+
+			<if test="expId != null and expId != '' ">
+				and E.EXPID_ = #{expId}
+			</if>
+
+			<if test="expIds != null and expIds.size() &gt; 0">
+				and E.EXPID_ IN
+				<foreach item="x_expId" index="index" collection="expIds"
+					open="(" separator="," close=")">
+					#{x_expId}
+				</foreach>
+			</if>
+
+			<if test="nameLike != null and nameLike != '' ">
+				and E.NAME_ like #{nameLike}
+			</if>
+
+			<if test="titleLike != null and titleLike != '' ">
+				and E.TITLE_ like #{titleLike}
+			</if>
+
+			<if test="locked != null">
+				and E.LOCKED_ = #{locked}
+			</if>
+
+			<if test="createBy != null and createBy != '' ">
+				and E.CREATEBY_ = #{createBy}
+			</if>
+
+			<if test="createTimeGreaterThanOrEqual != null">
+				and E.CREATETIME_ &gt;= #{createTimeGreaterThanOrEqual}
+			</if>
+
+			<if test="createTimeLessThanOrEqual != null">
+				and E.CREATETIME_ &lt;= #{createTimeLessThanOrEqual}
+			</if>
+
+		</where>
+	</sql>
+
+</mapper>

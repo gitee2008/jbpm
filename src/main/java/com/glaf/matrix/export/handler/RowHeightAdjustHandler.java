@@ -46,12 +46,15 @@ public class RowHeightAdjustHandler implements WorkbookHandler {
 			sheet.setAutobreaks(false);
 			rowCnt = sheet.getLastRowNum();
 			for (int rowIndex = 0; rowIndex <= rowCnt; rowIndex++) {
+				if (rowIndex % 100 == 0) {
+					//logger.debug("准备处理第" + rowIndex + "行...");
+				}
 				row = sheet.getRow(rowIndex);
 				if (row == null) {
 					continue;
 				}
 				colCnt = row.getLastCellNum();
-				logger.debug("列数:" + colCnt);
+				// logger.debug("列数:" + colCnt);
 				for (int k = 0; k < colCnt; k++) {
 					Cell cell = row.getCell(k);
 					if (cell == null) {
@@ -59,11 +62,11 @@ public class RowHeightAdjustHandler implements WorkbookHandler {
 					}
 					if (cell.getCellComment() != null) {
 						String str = cell.getCellComment().getString().getString();
-						logger.debug("读取到批注:" + str);
+						// logger.debug("读取到批注:" + str);
 						if (StringUtils.isNotEmpty(str) && StringUtils.contains(str.trim(), "xe:rh")) {
 							// cell.getCellComment().setVisible(false);
 							cell.removeCellComment();
-							logger.debug("删除批注信息.");
+							// logger.debug("删除批注信息.");
 							int beginIndex = str.indexOf("xe:rh{");
 							int endIndex = str.indexOf("}", beginIndex);
 							json = str.substring(beginIndex + 5, endIndex + 1);

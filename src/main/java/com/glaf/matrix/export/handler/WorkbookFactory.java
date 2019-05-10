@@ -27,11 +27,14 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.glaf.core.util.StringTools;
 import com.glaf.matrix.export.domain.ExportApp;
 
 public class WorkbookFactory {
+	protected static final Logger logger = LoggerFactory.getLogger(WorkbookFactory.class);
 
 	protected static ConcurrentMap<String, WorkbookHandler> handlerMap = new ConcurrentHashMap<String, WorkbookHandler>();
 
@@ -44,6 +47,7 @@ public class WorkbookFactory {
 		handlerMap.put("autoPageBreak", new AutoPageBreakHandler());
 		handlerMap.put("pageBreak", new PageBreakHandler());
 		handlerMap.put("rowHeightAdjust", new RowHeightAdjustHandler());
+		handlerMap.put("hiddenRow", new HiddenRowHandler());
 		handlerMap.put("pageFooterBorder", new PageFooterBorderHandler());
 		handlerMap.put("xRemoveComment", new RemoveCommentHandler());
 
@@ -51,10 +55,12 @@ public class WorkbookFactory {
 		nameMap.put("autoPageBreak", "设置页分隔符");
 		nameMap.put("cellMerge", "合并单元格处理器");
 		nameMap.put("rowHeightAdjust", "行高调整处理器");
+		nameMap.put("hiddenRow", "隐藏行处理器");
 		nameMap.put("pageFooterBorder", "设置页脚边框");
 		nameMap.put("xRemoveComment", "去除标注");
 
 		handerList.add("rowHeightAdjust");// 最先执行
+		handerList.add("hiddenRow");
 		handerList.add("autoPageBreak");
 		handerList.add("pageBreak");
 		handerList.add("pageFooterBorder");
@@ -78,8 +84,12 @@ public class WorkbookFactory {
 		for (String hander : handerList) {
 			if (handlers.contains(hander)) {
 				if (handlerMap.get(hander) != null) {
+					logger.debug(nameMap.get(hander) +"开始处理...");
+					long start = System.currentTimeMillis();
 					WorkbookHandler preprocessor = handlerMap.get(hander);
 					preprocessor.processWorkbook(wb, exportApp);
+					long ts = System.currentTimeMillis() - start;
+					logger.debug(nameMap.get(hander) + "用时(ms):" + ts);
 				}
 			}
 		}

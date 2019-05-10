@@ -16,6 +16,9 @@ import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -40,6 +43,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
 import com.glaf.core.base.BaseItem;
+import com.glaf.core.base.DataFile;
 import com.glaf.core.config.DatabaseConnectionConfig;
 import com.glaf.core.config.SystemConfig;
 import com.glaf.core.config.ViewProperties;
@@ -59,7 +63,8 @@ import com.glaf.core.util.RequestUtils;
 import com.glaf.core.util.ResponseUtils;
 import com.glaf.core.util.StringTools;
 import com.glaf.core.util.Tools;
-
+import com.glaf.core.util.ZipUtils;
+import com.glaf.matrix.export.bean.ExportTask;
 import com.glaf.matrix.export.domain.ExportApp;
 import com.glaf.matrix.export.handler.ExportHandler;
 import com.glaf.matrix.export.handler.JxlsExportHandler;
@@ -244,7 +249,9 @@ public class ExportAppController {
 
 	@ResponseBody
 	@RequestMapping("/exportXls")
-	public void exportXls(HttpServletRequest request, HttpServletResponse response) {
+	public void exportXls(HttpServletRequest request, HttpServletResponse response) throws IOException {
+		request.setCharacterEncoding("UTF-8");
+		response.setCharacterEncoding("UTF-8");
 		LoginContext loginContext = RequestUtils.getLoginContext(request);
 		Map<String, Object> params = getParameterMap(request);
 		params.put("login_user", loginContext.getUser());
@@ -282,47 +289,51 @@ public class ExportAppController {
 						ParameterFactory.getInstance().processAll(expId, params);
 						ExportHandler handler = new JxlsExportHandler();
 						byte[] data = handler.export(loginContext, expId, params);
-						String filename = exportApp.getExportFileExpr();
-						params.put("yyyyMMdd", DateUtils.getDateTime("yyyyMMdd", new Date()));
-						params.put("yyyyMMddHHmm", DateUtils.getDateTime("yyyyMMddHHmm", new Date()));
-						params.put("yyyyMMddHHmmss", DateUtils.getDateTime("yyyyMMddHHmmss", new Date()));
+						if (data != null) {
+							String filename = exportApp.getExportFileExpr();
+							params.put("yyyyMMdd", DateUtils.getDateTime("yyyyMMdd", new Date()));
+							params.put("yyyyMMddHHmm", DateUtils.getDateTime("yyyyMMddHHmm", new Date()));
+							params.put("yyyyMMddHHmmss", DateUtils.getDateTime("yyyyMMddHHmmss", new Date()));
 
-						filename = ExpressionTools.evaluate(filename, params);
-						if (filename == null) {
-							filename = exportApp.getTitle();
-						}
+							filename = ExpressionTools.evaluate(filename, params);
+							if (filename == null) {
+								filename = exportApp.getTitle();
+							}
 
-						if (StringUtils.equals(toPDF, "Y")) {
-							String url = SystemConfig.getString("pdf_convert_url");
-							if (StringUtils.isNotEmpty(url)) {
-								if (StringUtils.endsWithIgnoreCase(tpl.getDataFile(), ".xlsx")) {
-									byte[] output = this.execute(url, filename + ".xlsx", data);
-									if (output != null) {
-										ResponseUtils.download(request, response, output, filename + ".pdf");
-									}
-								} else {
-									byte[] output = this.execute(url, filename + ".xls", data);
-									if (output != null) {
-										ResponseUtils.download(request, response, output, filename + ".pdf");
+							if (StringUtils.equals(toPDF, "Y")) {
+								String url = SystemConfig.getString("pdf_convert_url");
+								if (StringUtils.isNotEmpty(url)) {
+									if (StringUtils.endsWithIgnoreCase(tpl.getDataFile(), ".xlsx")) {
+										byte[] output = this.execute(url, filename + ".xlsx", data);
+										if (output != null) {
+											ResponseUtils.download(request, response, output, filename + ".pdf");
+										}
+									} else {
+										byte[] output = this.execute(url, filename + ".xls", data);
+										if (output != null) {
+											ResponseUtils.download(request, response, output, filename + ".pdf");
+										}
 									}
 								}
-							}
-						} else {
-							if (StringUtils.equals(outputFormat, "html")) {
-								request.setCharacterEncoding("UTF-8");
-								response.setCharacterEncoding("UTF-8");
-								response.setContentType("text/html; charset=UTF-8");
-								bais = new ByteArrayInputStream(data);
-								is = new BufferedInputStream(bais);
-								String content = new String(ExcelToHtml.toHtml(is, precision), "UTF-8");
-								writer = response.getWriter();
-								writer.write(content);
-								writer.flush();
 							} else {
-								if (StringUtils.endsWithIgnoreCase(tpl.getDataFile(), ".xlsx")) {
-									ResponseUtils.download(request, response, data, filename + ".xlsx");
+								if (StringUtils.equals(outputFormat, "html")) {
+									response.setContentType("text/html; charset=UTF-8");
+									bais = new ByteArrayInputStream(data);
+									is = new BufferedInputStream(bais);
+									String content = new String(ExcelToHtml.toHtml(is, precision), "UTF-8");
+									writer = response.getWriter();
+									writer.write(content);
+									writer.flush();
 								} else {
-									ResponseUtils.download(request, response, data, filename + ".xls");
+									if (params.get("_zip_") != null) {
+										ResponseUtils.download(request, response, data, filename + ".zip");
+									} else {
+										if (StringUtils.endsWithIgnoreCase(tpl.getDataFile(), ".xlsx")) {
+											ResponseUtils.download(request, response, data, filename + ".xlsx");
+										} else {
+											ResponseUtils.download(request, response, data, filename + ".xls");
+										}
+									}
 								}
 							}
 						}
@@ -335,6 +346,153 @@ public class ExportAppController {
 		} finally {
 			IOUtils.closeQuietly(is);
 			IOUtils.closeQuietly(bais);
+		}
+	}
+
+	@ResponseBody
+	@RequestMapping("/exportZip")
+	public void exportZip(HttpServletRequest request, HttpServletResponse response) throws IOException {
+		request.setCharacterEncoding("UTF-8");
+		response.setCharacterEncoding("UTF-8");
+		LoginContext loginContext = RequestUtils.getLoginContext(request);
+		Map<String, Object> params = getParameterMap(request);
+		params.put("login_user", loginContext.getUser());
+		params.put("login_userid", loginContext.getActorId());
+		logger.debug("request params:" + params);
+		String expIdx = RequestUtils.getString(request, "expIds");
+		String toPDF = RequestUtils.getString(request, "toPDF");
+		Map<String, byte[]> zipMap = new HashMap<String, byte[]>();
+		List<String> expIds = StringTools.split(expIdx);
+		InputStream is = null;
+		ByteArrayInputStream bais = null;
+		try {
+			for (String expId : expIds) {
+				ExportApp exportApp = exportAppService.getExportApp(expId);
+				if (exportApp != null && StringUtils.equals(exportApp.getActive(), "Y")) {
+					Template tpl = templateService.getTemplate(exportApp.getTemplateId());
+					if (tpl != null && tpl.getData() != null) {
+						boolean hasPerm = true;
+						if (StringUtils.isNotEmpty(exportApp.getAllowRoles())) {
+							hasPerm = false;
+							List<String> roles = StringTools.split(exportApp.getAllowRoles());
+							if (loginContext.isSystemAdministrator()) {
+								hasPerm = true;
+							}
+							Collection<String> permissions = loginContext.getPermissions();
+							for (String perm : permissions) {
+								if (roles.contains(perm)) {
+									hasPerm = true;
+									break;
+								}
+							}
+						}
+
+						if (!hasPerm) {
+							continue;
+						}
+
+						Map<String, Object> parameter = new HashMap<String, Object>();
+						parameter.putAll(params);
+
+						ParameterFactory.getInstance().processAll(expId, parameter);
+						ExportHandler handler = new JxlsExportHandler();
+						byte[] data = handler.export(loginContext, expId, parameter);
+						if (data != null) {
+							String filename = exportApp.getExportFileExpr();
+							parameter.put("yyyyMMdd", DateUtils.getDateTime("yyyyMMdd", new Date()));
+							parameter.put("yyyyMMddHHmm", DateUtils.getDateTime("yyyyMMddHHmm", new Date()));
+							parameter.put("yyyyMMddHHmmss", DateUtils.getDateTime("yyyyMMddHHmmss", new Date()));
+
+							filename = ExpressionTools.evaluate(filename, parameter);
+							if (filename == null) {
+								filename = exportApp.getTitle();
+							}
+
+							if (StringUtils.equals(toPDF, "Y")) {
+								String url = SystemConfig.getString("pdf_convert_url");
+								if (StringUtils.isNotEmpty(url)) {
+									if (StringUtils.endsWithIgnoreCase(tpl.getDataFile(), ".xlsx")) {
+										byte[] output = this.execute(url, filename + ".xlsx", data);
+										if (output != null) {
+											zipMap.put(filename + ".pdf", output);
+										}
+									} else {
+										byte[] output = this.execute(url, filename + ".xls", data);
+										if (output != null) {
+											zipMap.put(filename + ".pdf", output);
+										}
+									}
+								}
+							} else {
+								if (parameter.get("_zip_") != null) {
+									zipMap.put(filename + ".zip", data);
+								} else {
+									if (StringUtils.endsWithIgnoreCase(tpl.getDataFile(), ".xlsx")) {
+										zipMap.put(filename + ".xlsx", data);
+									} else {
+										zipMap.put(filename + ".xls", data);
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+
+			byte[] data = ZipUtils.toZipBytes(zipMap);
+			ResponseUtils.download(request, response, data, DateUtils.getNowYearMonthDayHHmmss() + ".zip");
+
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			logger.error(ex);
+		} finally {
+			zipMap.clear();
+			zipMap = null;
+			IOUtils.closeQuietly(is);
+			IOUtils.closeQuietly(bais);
+		}
+	}
+
+	@ResponseBody
+	@RequestMapping("/exportZip2")
+	public void exportZip2(HttpServletRequest request, HttpServletResponse response) throws IOException {
+		request.setCharacterEncoding("UTF-8");
+		response.setCharacterEncoding("UTF-8");
+		LoginContext loginContext = RequestUtils.getLoginContext(request);
+		Map<String, Object> params = getParameterMap(request);
+		params.put("login_user", loginContext.getUser());
+		params.put("login_userid", loginContext.getActorId());
+		logger.debug("request params:" + params);
+		String expIdx = RequestUtils.getString(request, "expIds");
+		String toPDF = RequestUtils.getString(request, "toPDF");
+		Map<String, byte[]> zipMap = new HashMap<String, byte[]>();
+		List<String> expIds = StringTools.split(expIdx);
+		ForkJoinPool pool = ForkJoinPool.commonPool();
+		logger.info("准备执行并行任务...");
+		try {
+			for (String expId : expIds) {
+				ExportTask task = new ExportTask(loginContext, expId, params, toPDF);
+				Future<DataFile> result = pool.submit(task);
+				if (result != null && result.get() != null) {
+					DataFile dataFile = result.get();
+					zipMap.put(dataFile.getFilename(), dataFile.getData());
+				}
+			}
+			// 线程阻塞，等待所有任务完成
+			try {
+				pool.awaitTermination(500, TimeUnit.MILLISECONDS);
+			} catch (InterruptedException ex) {
+			}
+			byte[] data = ZipUtils.toZipBytes(zipMap);
+			ResponseUtils.download(request, response, data, DateUtils.getNowYearMonthDayHHmmss() + ".zip");
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			logger.error(ex);
+		} finally {
+			zipMap.clear();
+			zipMap = null;
+			pool.shutdown();
+			logger.info("并行任务已经结束。");
 		}
 	}
 
@@ -495,6 +653,11 @@ public class ExportAppController {
 			exportApp.setExternalColumnsFlag(request.getParameter("externalColumnsFlag"));
 			exportApp.setExcelProcessChains(request.getParameter("excelProcessChains"));
 			exportApp.setPageHeight(RequestUtils.getInt(request, "pageHeight"));
+			exportApp.setPageNumPerSheet(RequestUtils.getInt(request, "pageNumPerSheet"));
+			exportApp.setPageVarName(request.getParameter("pageVarName"));
+			exportApp.setHistoryFlag(request.getParameter("historyFlag"));
+			exportApp.setMulitiFlag(request.getParameter("mulitiFlag"));
+			exportApp.setShedulerFlag(request.getParameter("shedulerFlag"));
 			exportApp.setInterval(RequestUtils.getInt(request, "interval"));
 			exportApp.setSortNo(RequestUtils.getInt(request, "sortNo"));
 			exportApp.setCreateBy(actorId);

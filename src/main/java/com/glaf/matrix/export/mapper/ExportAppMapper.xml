@@ -28,6 +28,16 @@
 			column="EXCELPROCESSCHAINS_" jdbcType="VARCHAR" />
 		<result property="pageHeight" column="PAGEHEIGHT_"
 			jdbcType="INTEGER" />
+		<result property="pageNumPerSheet" column="PAGENUMPERSHEET_"
+			jdbcType="INTEGER" />
+		<result property="pageVarName" column="PAGEVARNAME_"
+			jdbcType="VARCHAR" />
+		<result property="historyFlag" column="HISTORYFLAG_"
+			jdbcType="VARCHAR" />
+		<result property="mulitiFlag" column="MULITIFLAG_"
+			jdbcType="VARCHAR" />
+		<result property="shedulerFlag" column="SHEDULERFLAG_"
+			jdbcType="VARCHAR" />
 		<result property="interval" column="INTERVAL_"
 			jdbcType="INTEGER" />
 		<result property="sortNo" column="SORTNO_" jdbcType="INTEGER" />
@@ -83,6 +93,21 @@
 			</if>
 			<if test="pageHeight != null">
 				,PAGEHEIGHT_
+			</if>
+			<if test="pageNumPerSheet != null">
+				,PAGENUMPERSHEET_
+			</if>
+			<if test="pageVarName != null">
+				,PAGEVARNAME_
+			</if>
+			<if test="historyFlag != null">
+				,HISTORYFLAG_
+			</if>
+			<if test="mulitiFlag != null">
+				,MULITIFLAG_
+			</if>
+			<if test="shedulerFlag != null">
+				,SHEDULERFLAG_
 			</if>
 			<if test="interval != null">
 				,INTERVAL_
@@ -145,6 +170,21 @@
 			</if>
 			<if test="pageHeight != null">
 				,#{pageHeight, jdbcType=INTEGER}
+			</if>
+			<if test="pageNumPerSheet != null">
+				,#{pageNumPerSheet, jdbcType=INTEGER}
+			</if>
+			<if test="pageVarName != null">
+				,#{pageVarName, jdbcType=VARCHAR}
+			</if>
+			<if test="historyFlag != null">
+				,#{historyFlag, jdbcType=VARCHAR}
+			</if>
+			<if test="mulitiFlag != null">
+				,#{mulitiFlag, jdbcType=VARCHAR}
+			</if>
+			<if test="shedulerFlag != null">
+				,#{shedulerFlag, jdbcType=VARCHAR}
 			</if>
 			<if test="interval != null">
 				,#{interval, jdbcType=INTEGER}
@@ -215,6 +255,21 @@
 			<if test="pageHeight != null">
 				PAGEHEIGHT_ = #{pageHeight, jdbcType=INTEGER},
 			</if>
+			<if test="pageNumPerSheet != null">
+				PAGENUMPERSHEET_ = #{pageNumPerSheet, jdbcType=INTEGER},
+			</if>
+			<if test="pageVarName != null">
+				PAGEVARNAME_ = #{pageVarName, jdbcType=VARCHAR},
+			</if>
+			<if test="historyFlag != null">
+				HISTORYFLAG_ = #{historyFlag, jdbcType=VARCHAR},
+			</if>
+			<if test="mulitiFlag != null">
+				MULITIFLAG_ = #{mulitiFlag, jdbcType=VARCHAR},
+			</if>
+			<if test="shedulerFlag != null">
+				SHEDULERFLAG_ = #{shedulerFlag, jdbcType=VARCHAR},
+			</if>
 			<if test="interval != null">
 				INTERVAL_ = #{interval, jdbcType=INTEGER},
 			</if>
@@ -257,7 +312,7 @@
 				order by ${orderBy}
 			</when>
 			<otherwise>
-				order by E.SORTNO_ asc
+				order by E.ACTIVE_ desc, E.SORTNO_ asc
 			</otherwise>
 		</choose>
 	</select>

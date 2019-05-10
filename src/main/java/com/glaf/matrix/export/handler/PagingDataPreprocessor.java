@@ -31,6 +31,7 @@ import org.slf4j.LoggerFactory;
 
 import com.glaf.core.util.Paging;
 import com.glaf.core.util.ParamUtils;
+import com.glaf.core.util.UUID32;
 import com.glaf.matrix.export.domain.ExportApp;
 import com.glaf.matrix.export.domain.ExportItem;
 
@@ -172,7 +173,9 @@ public class PagingDataPreprocessor implements DataXPreprocessor {
 				} else {
 					if (item.getDataList().size() == 0) {
 						if (StringUtils.equals(item.getGenEmptyFlag(), "Y")) {
+							logger.debug("生成空行数据填充......");
 							Map<String, Object> dataMap = new HashMap<String, Object>();
+							dataMap.put(UUID32.generateShortUuid(), UUID32.getUUID());
 							onePageList.add(dataMap);
 							Paging paging = new Paging();
 							paging.setContextMap(parameter);
@@ -182,7 +185,7 @@ public class PagingDataPreprocessor implements DataXPreprocessor {
 							paging.setCurrentPage(++pageNoX);
 							logger.debug("dataList.size():" + paging.getDataList().size());
 							pagingList.add(paging);
-							onePageList.clear();
+							//onePageList.clear();
 						}
 					}
 				}

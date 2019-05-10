@@ -117,6 +117,36 @@ public class ExportApp implements Serializable, JSONable {
 	protected int pageHeight;
 
 	/**
+	 * 每个Sheet的Paging对象数
+	 */
+	@Column(name = "PAGENUMPERSHEET_")
+	protected int pageNumPerSheet;
+
+	/**
+	 * 分页变量名称
+	 */
+	@Column(name = "PAGEVARNAME_", length = 100)
+	protected String pageVarName;
+
+	/**
+	 * 是否生成历史文件
+	 */
+	@Column(name = "HISTORYFLAG_", length = 1)
+	protected String historyFlag;
+
+	/**
+	 * 是否生成多个文件
+	 */
+	@Column(name = "MULITIFLAG_", length = 1)
+	protected String mulitiFlag;
+
+	/**
+	 * 是否定时调度
+	 */
+	@Column(name = "SHEDULERFLAG_", length = 1)
+	protected String shedulerFlag;
+
+	/**
 	 * 时间间隔
 	 */
 	@Column(name = "INTERVAL_")
@@ -243,6 +273,10 @@ public class ExportApp implements Serializable, JSONable {
 		return externalColumnsFlag;
 	}
 
+	public String getHistoryFlag() {
+		return historyFlag;
+	}
+
 	public String getId() {
 		return this.id;
 	}
@@ -255,12 +289,28 @@ public class ExportApp implements Serializable, JSONable {
 		return items;
 	}
 
+	public String getMulitiFlag() {
+		return mulitiFlag;
+	}
+
 	public long getNodeId() {
 		return this.nodeId;
 	}
 
 	public int getPageHeight() {
 		return pageHeight;
+	}
+
+	public int getPageNumPerSheet() {
+		return pageNumPerSheet;
+	}
+
+	public String getPageVarName() {
+		return pageVarName;
+	}
+
+	public String getShedulerFlag() {
+		return shedulerFlag;
 	}
 
 	public int getSortNo() {
@@ -354,6 +404,10 @@ public class ExportApp implements Serializable, JSONable {
 		this.externalColumnsFlag = externalColumnsFlag;
 	}
 
+	public void setHistoryFlag(String historyFlag) {
+		this.historyFlag = historyFlag;
+	}
+
 	public void setId(String id) {
 		this.id = id;
 	}
@@ -366,12 +420,28 @@ public class ExportApp implements Serializable, JSONable {
 		this.items = items;
 	}
 
+	public void setMulitiFlag(String mulitiFlag) {
+		this.mulitiFlag = mulitiFlag;
+	}
+
 	public void setNodeId(long nodeId) {
 		this.nodeId = nodeId;
 	}
 
 	public void setPageHeight(int pageHeight) {
 		this.pageHeight = pageHeight;
+	}
+
+	public void setPageNumPerSheet(int pageNumPerSheet) {
+		this.pageNumPerSheet = pageNumPerSheet;
+	}
+
+	public void setPageVarName(String pageVarName) {
+		this.pageVarName = pageVarName;
+	}
+
+	public void setShedulerFlag(String shedulerFlag) {
+		this.shedulerFlag = shedulerFlag;
 	}
 
 	public void setSortNo(int sortNo) {

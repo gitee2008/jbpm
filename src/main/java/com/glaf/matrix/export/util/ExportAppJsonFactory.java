@@ -78,6 +78,21 @@ public class ExportAppJsonFactory {
 		if (jsonObject.containsKey("pageHeight")) {
 			model.setPageHeight(jsonObject.getInteger("pageHeight"));
 		}
+		if (jsonObject.containsKey("pageNumPerSheet")) {
+			model.setPageNumPerSheet(jsonObject.getInteger("pageNumPerSheet"));
+		}
+		if (jsonObject.containsKey("pageVarName")) {
+			model.setPageVarName(jsonObject.getString("pageVarName"));
+		}
+		if (jsonObject.containsKey("historyFlag")) {
+			model.setHistoryFlag(jsonObject.getString("historyFlag"));
+		}
+		if (jsonObject.containsKey("mulitiFlag")) {
+			model.setMulitiFlag(jsonObject.getString("mulitiFlag"));
+		}
+		if (jsonObject.containsKey("shedulerFlag")) {
+			model.setShedulerFlag(jsonObject.getString("shedulerFlag"));
+		}
 		if (jsonObject.containsKey("interval")) {
 			model.setInterval(jsonObject.getInteger("interval"));
 		}
@@ -144,6 +159,19 @@ public class ExportAppJsonFactory {
 			jsonObject.put("excelProcessChains", model.getExcelProcessChains());
 		}
 		jsonObject.put("pageHeight", model.getPageHeight());
+		jsonObject.put("pageNumPerSheet", model.getPageNumPerSheet());
+		if (model.getPageVarName() != null) {
+			jsonObject.put("pageVarName", model.getPageVarName());
+		}
+		if (model.getHistoryFlag() != null) {
+			jsonObject.put("historyFlag", model.getHistoryFlag());
+		}
+		if (model.getMulitiFlag() != null) {
+			jsonObject.put("mulitiFlag", model.getMulitiFlag());
+		}
+		if (model.getShedulerFlag() != null) {
+			jsonObject.put("shedulerFlag", model.getShedulerFlag());
+		}
 		jsonObject.put("interval", model.getInterval());
 		if (model.getCreateBy() != null) {
 			jsonObject.put("createBy", model.getCreateBy());
@@ -207,6 +235,19 @@ public class ExportAppJsonFactory {
 			jsonObject.put("excelProcessChains", model.getExcelProcessChains());
 		}
 		jsonObject.put("pageHeight", model.getPageHeight());
+		jsonObject.put("pageNumPerSheet", model.getPageNumPerSheet());
+		if (model.getPageVarName() != null) {
+			jsonObject.put("pageVarName", model.getPageVarName());
+		}
+		if (model.getHistoryFlag() != null) {
+			jsonObject.put("historyFlag", model.getHistoryFlag());
+		}
+		if (model.getMulitiFlag() != null) {
+			jsonObject.put("mulitiFlag", model.getMulitiFlag());
+		}
+		if (model.getShedulerFlag() != null) {
+			jsonObject.put("shedulerFlag", model.getShedulerFlag());
+		}
 		jsonObject.put("interval", model.getInterval());
 		if (model.getCreateBy() != null) {
 			jsonObject.put("createBy", model.getCreateBy());

@@ -57,7 +57,7 @@ public class PageFooterBorderHandler implements WorkbookHandler {
 					if (cell.getCellComment() != null) {
 						if (StringUtils.contains(cell.getCellComment().getString().getString(), "pageFooterBorder")) {
 							CellStyle style = cell.getCellStyle();
-							style.setBorderBottom(style.getBorderTop());
+							style.setBorderBottom(style.getBorderBottom());
 							cell.setCellStyle(style);
 						}
 					}

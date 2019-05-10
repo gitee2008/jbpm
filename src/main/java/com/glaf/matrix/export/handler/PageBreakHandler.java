@@ -40,6 +40,9 @@ public class PageBreakHandler implements WorkbookHandler {
 			sheet.setAutobreaks(false);
 			int rows = sheet.getLastRowNum();
 			for (int rowIndex = 0; rowIndex <= rows; rowIndex++) {
+				if (rowIndex % 100 == 0) {
+					//logger.debug("准备处理第" + rowIndex + "行...");
+				}
 				row = sheet.getRow(rowIndex);
 				if (row == null) {
 					continue;

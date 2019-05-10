@@ -31,6 +31,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 import java.util.Set;
 import java.util.StringTokenizer;
 
@@ -49,17 +52,25 @@ import org.slf4j.LoggerFactory;
 import com.glaf.core.config.SystemProperties;
 import com.glaf.core.context.ContextFactory;
 import com.glaf.core.security.LoginContext;
+import com.glaf.core.util.DateUtils;
 import com.glaf.core.util.FileUtils;
+import com.glaf.core.util.Paging;
 import com.glaf.core.util.ParamUtils;
 import com.glaf.core.util.StringTools;
+import com.glaf.core.util.ZipUtils;
+
 import com.glaf.jxls.ext.JxlsBuilder;
 import com.glaf.jxls.ext.JxlsImage;
 import com.glaf.jxls.ext.JxlsUtil;
 import com.glaf.matrix.export.bean.ExportAppBean;
+import com.glaf.matrix.export.bean.ExportExcelTask;
 import com.glaf.matrix.export.domain.ExportApp;
+import com.glaf.matrix.export.domain.ExportFileHistory;
 import com.glaf.matrix.export.domain.ExportItem;
 import com.glaf.matrix.export.domain.ExportTemplateVar;
+import com.glaf.matrix.export.factory.ExportChartFactory;
 import com.glaf.matrix.export.service.ExportAppService;
+import com.glaf.matrix.export.service.ExportFileHistoryService;
 import com.glaf.matrix.util.ImageUtils;
 import com.glaf.matrix.util.SysParams;
 import com.glaf.template.Template;
@@ -70,10 +81,13 @@ public class JxlsExportHandler implements ExportHandler {
 
 	protected final Logger logger = LoggerFactory.getLogger(getClass());
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public byte[] export(LoginContext loginContext, String expId, Map<String, Object> params) {
 		ITemplateService templateService = ContextFactory.getBean("templateService");
 		ExportAppService exportAppService = ContextFactory.getBean("com.glaf.matrix.export.service.exportAppService");
+		ExportFileHistoryService exportFileHistoryService = ContextFactory
+				.getBean("com.glaf.matrix.export.service.exportFileHistoryService");
 		String useExt = ParamUtils.getString(params, "useExt");
 		Workbook wb = null;
 
@@ -112,18 +126,36 @@ public class JxlsExportHandler implements ExportHandler {
 				return null;
 			}
 
-			int pageNo = 0;
+			// int pageNo = 0;
 			SysParams.putInternalParams(params);
 			params.put("_ignoreImageMiss", Boolean.valueOf(true));// 图片不存在跳过
+			params.put("_exp_", exportApp);
+
+			/**
+			 * 数据预处理器，预先处理数据
+			 */
+			PreprocessorFactory.doBefore(expId, params);
+
+			/**
+			 * 处理截图
+			 */
+			ExportChartFactory.snapshot(exportApp, params);
+			if (ParamUtils.getString(params, "_useExt_") != null) {
+				useExt = "Y";
+			}
+
 			Collection<Map<String, Object>> pageList = new ArrayList<Map<String, Object>>();
 			List<Map<String, Object>> dataList = new ArrayList<Map<String, Object>>();
 			ExportAppBean bean = new ExportAppBean();
 			exportApp = bean.execute(exportApp.getId(), params);
 			for (ExportItem item : exportApp.getItems()) {
-				pageNo = 0;
+				// pageNo = 0;
 				dataList.clear();
 				if (item.getDataList() != null && !item.getDataList().isEmpty()) {
 					dataList.addAll(item.getDataList());
+					if (StringUtils.equals(item.getResultFlag(), "O")) {
+						params.put(item.getName() + "_one", item.getDataList().iterator().next());
+					}
 				}
 				if (item.getJsonData() != null) {
 					params.put(item.getName(), item.getJsonData());
@@ -387,9 +419,9 @@ public class JxlsExportHandler implements ExportHandler {
 					}
 					pageList.add(rowMap);
 					if (i > 0 && i % pageSize == 0) {
-						pageNo++;
-						params.put(item.getName() + "_rows" + pageNo, pageList);
-						params.put("rows_" + item.getName() + "_" + pageNo, pageList);
+						// pageNo++;
+						// params.put(item.getName() + "_rows" + pageNo, pageList);
+						// params.put("rows_" + item.getName() + "_" + pageNo, pageList);
 						pageList.clear();
 					}
 				}
@@ -468,33 +500,133 @@ public class JxlsExportHandler implements ExportHandler {
 				useExt = "Y";
 			}
 
-			logger.debug("rpt params:" + params);
+			// logger.debug("rpt params:" + params);
 
-			bais = new ByteArrayInputStream(tpl.getData());
-			bis = new BufferedInputStream(bais);
-			baos = new ByteArrayOutputStream();
-			bos = new BufferedOutputStream(baos);
+			if (StringUtils.equals(exportApp.getHistoryFlag(), "Y")
+					&& StringUtils.isNotEmpty(exportApp.getPageVarName()) && exportApp.getPageNumPerSheet() > 0
+					&& exportApp.getPageNumPerSheet() <= 800) {
+				List<Paging> pagingList = (List<Paging>) params.get(exportApp.getPageVarName() + "_paging");
+				if (pagingList != null && pagingList.size() > 0) {
+					int pSize = pagingList.size();
+					int sortNo = 0;
+					String jobNo = ParamUtils.getString(params, "jobNo");
+					String fileExt = "xls";
+					if (StringUtils.endsWithIgnoreCase(tpl.getDataFile(), ".xlsx")) {
+						fileExt = "xlsx";
+					}
+					if (StringUtils.isEmpty(jobNo)) {
+						jobNo = DateUtils.getNowYearMonthDayHHmmss() + "";
+					}
 
-			Context context2 = PoiTransformer.createInitialContext();
+					ForkJoinPool pool = ForkJoinPool.commonPool();
+					logger.info("准备执行并行生成Excel...");
+					List<ExportFileHistory> hisList = new ArrayList<ExportFileHistory>();
+					List<Paging> newPagingList = new ArrayList<Paging>();
+					List<List<Paging>> allPList = new ArrayList<List<Paging>>();
+					try {
+						for (int i = 0; i < pSize; i++) {
+							newPagingList.add(pagingList.get(i));
+							if (i > 0 && i % exportApp.getPageNumPerSheet() == 0) {
+								List<Paging> newPagingList2 = new ArrayList<Paging>();
+								int size = newPagingList.size();
+								for (int k = 0; k < size; k++) {
+									newPagingList2.add(newPagingList.get(k));
+								}
+								allPList.add(newPagingList2);
+								newPagingList.clear();
+							}
+						}
 
-			Set<Entry<String, Object>> entrySet = params.entrySet();
-			for (Entry<String, Object> entry : entrySet) {
-				String key = entry.getKey();
-				Object value = entry.getValue();
-				context2.putVar(key, value);
-			}
+						int size = allPList.size();
+						for (int i = 0; i < size; i++) {
+							sortNo++;
+							List<Paging> newPagingList2 = allPList.get(i);
+							ExportExcelTask task = new ExportExcelTask(loginContext, exportApp, newPagingList2, params,
+									tpl, fileExt, jobNo, sortNo);
+							Future<ExportFileHistory> result = pool.submit(task);
+							if (result != null && result.get() != null) {
+								ExportFileHistory his = result.get();
+								hisList.add(his);
+							}
+							newPagingList2.clear();
+						}
 
-			if (StringUtils.equals(useExt, "Y")) {
-				JxlsBuilder jxlsBuilder = JxlsBuilder.getBuilder(bis).out(bos).putAll(params);
-				jxlsBuilder.putVar("_ignoreImageMiss", Boolean.valueOf(true));
-				jxlsBuilder.build();
+						if (newPagingList.size() > 0) {
+							sortNo++;
+							ExportExcelTask task = new ExportExcelTask(loginContext, exportApp, newPagingList, params,
+									tpl, fileExt, jobNo, sortNo);
+							Future<ExportFileHistory> result = pool.submit(task);
+							if (result != null && result.get() != null) {
+								ExportFileHistory his = result.get();
+								hisList.add(his);
+							}
+							newPagingList.clear();
+						}
+						// 线程阻塞，等待所有任务完成
+						try {
+							pool.awaitTermination(500, TimeUnit.MILLISECONDS);
+						} catch (InterruptedException ex) {
+						}
+					} catch (Exception ex) {
+						ex.printStackTrace();
+						logger.error("export task error", ex);
+					} finally {
+						pool.shutdown();
+						logger.info("并行生成Excel已经结束。");
+					}
+
+					Map<String, byte[]> zipMap = new HashMap<String, byte[]>();
+					for (ExportFileHistory his : hisList) {
+						zipMap.put(his.getFilename(), his.getData());
+					}
+
+					byte[] data = ZipUtils.toZipBytes(zipMap);
+
+					ExportFileHistory his = new ExportFileHistory();
+					his.setExpId(expId);
+					his.setDeploymentId(exportApp.getDeploymentId());
+					his.setGenYmd(DateUtils.getNowYearMonthDay());
+					his.setJobNo(jobNo);
+					his.setSortNo(0);
+					his.setFilename(exportApp.getExportFileExpr() + jobNo + ".zip");
+					his.setData(data);
+					his.setLastModified(System.currentTimeMillis());
+					his.setCreateBy(loginContext.getActorId());
+					his.setCreateTime(new java.util.Date(his.getLastModified()));
+					hisList.add(his);
+
+					exportFileHistoryService.bulkInsert(hisList);
+
+					params.put("_zip_", true);
+
+					return data;
+				}
+				return null;
 			} else {
-				try {
-					JxlsHelper.getInstance().processTemplate(bis, bos, context2);
-				} catch (Exception ex) {
+				if (StringUtils.equals(useExt, "Y")) {
 					JxlsBuilder jxlsBuilder = JxlsBuilder.getBuilder(bis).out(bos).putAll(params);
 					jxlsBuilder.putVar("_ignoreImageMiss", Boolean.valueOf(true));
 					jxlsBuilder.build();
+				} else {
+					bais = new ByteArrayInputStream(tpl.getData());
+					bis = new BufferedInputStream(bais);
+					baos = new ByteArrayOutputStream();
+					bos = new BufferedOutputStream(baos);
+					try {
+						Context context2 = PoiTransformer.createInitialContext();
+
+						Set<Entry<String, Object>> entrySet = params.entrySet();
+						for (Entry<String, Object> entry : entrySet) {
+							String key = entry.getKey();
+							Object value = entry.getValue();
+							context2.putVar(key, value);
+						}
+						JxlsHelper.getInstance().processTemplate(bis, bos, context2);
+					} catch (Exception ex) {
+						JxlsBuilder jxlsBuilder = JxlsBuilder.getBuilder(bis).out(bos).putAll(params);
+						jxlsBuilder.putVar("_ignoreImageMiss", Boolean.valueOf(true));
+						jxlsBuilder.build();
+					}
 				}
 			}
 

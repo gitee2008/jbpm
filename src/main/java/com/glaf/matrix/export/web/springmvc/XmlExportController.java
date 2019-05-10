@@ -73,7 +73,7 @@ import com.glaf.core.util.ResponseUtils;
 import com.glaf.core.util.StaxonUtils;
 import com.glaf.core.util.StringTools;
 import com.glaf.core.util.Tools;
-
+ 
 import com.glaf.matrix.export.domain.XmlExport;
 import com.glaf.matrix.export.handler.DataHandler;
 import com.glaf.matrix.export.handler.ExportDataHandler;
@@ -157,6 +157,7 @@ public class XmlExportController {
 			if (parent != null) {
 				request.setAttribute("parent", parent);
 			}
+
 		}
 
 		if (nodeParentId > 0) {
