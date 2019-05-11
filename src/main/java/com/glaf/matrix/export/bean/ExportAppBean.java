@@ -323,8 +323,15 @@ public class ExportAppBean {
 					} else {
 						logger.debug(item.getTitle() + " rows size:" + totalSize);
 					}
+					item.setDataList(dataListMap.values());
+				} else {
+					if (StringUtils.equals(item.getGenEmptyFlag(), "Y")) {
+						Map<String, Object> rowData = new HashMap<String, Object>();
+						List<Map<String, Object>> dataList = new ArrayList<Map<String, Object>>();
+						dataList.add(rowData);
+						item.setDataList(dataList);
+					}
 				}
-				item.setDataList(dataListMap.values());
 			}
 		} catch (Exception ex) {
 			ex.printStackTrace();
