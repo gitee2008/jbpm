@@ -129,8 +129,9 @@
 	<tr>
 		<td width="20%" align="left">SQL语句</td>
 		<td align="left">
-           <textarea id="sql" name="sql" rows="6" cols="46" class="x-textarea" style="width:625px;height:320px;" >${loopSqlToTable.sql}</textarea>
-		   <div style="margin-top:5px;">
+           <textarea id="sql" name="sql" rows="6" cols="46" class="x-textarea" 
+		       style="font:13px Consolas,Courier New,Arial; width:625px; height:320px;" >${loopSqlToTable.sql}</textarea>
+		    <div style="margin-top:5px;">
 		     （提示：可以使用union语句组合结果。）
 			<br>
 			<span>

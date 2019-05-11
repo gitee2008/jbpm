@@ -84,7 +84,8 @@
 	<tr>
 		<td width="90" align="left">SQL循环条件语句</td>
 		<td align="left">
-		    <textarea id="recursionSql" name="recursionSql" rows="4" cols="46" class="x-textarea" style="width:525px;height:90px;" >${combinationItem.recursionSql}</textarea>
+		    <textarea id="recursionSql" name="recursionSql" rows="4" cols="46" class="x-textarea"
+			    style="font:13px Consolas,Courier New,Arial; width:525px; height:90px;" >${combinationItem.recursionSql}</textarea>
 		   <div style="margin-top:5px;">
 		     （提示：SQL循环条件的结果当作下面取数语句的输入条件。）
 			<br>
@@ -112,7 +113,8 @@
 	<tr>
 		<td width="90" align="left">SQL取数语句</td>
 		<td align="left">
-		    <textarea id="sql" name="sql" rows="6" cols="46" class="x-textarea" style="width:525px;height:320px;" >${combinationItem.sql}</textarea>
+		    <textarea id="sql" name="sql" rows="6" cols="46" class="x-textarea"
+			    style="font:13px Consolas,Courier New,Arial; width:525px; height:320px;" >${combinationItem.sql}</textarea>
 		   <div style="margin-top:5px;">
 		     （提示：可以使用union语句组合结果。）
 			<br>

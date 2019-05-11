@@ -102,14 +102,14 @@
 		<td width="15%" align="left">SQL语句</td>
 		<td align="left">
 		    <textarea id="sql" name="sql" rows="6" cols="48" class="x-text"
-				      style="width:580px;height:180px;" >${sqlDefinition.sql}</textarea>
+				      style="font:13px Consolas,Courier New,Arial; width:580px; height:180px;" >${sqlDefinition.sql}</textarea>
 		</td>
 	</tr>
 	<tr>
 		<td width="15%" align="left">汇总SQL语句</td>
 		<td align="left">
 		    <textarea id="countSql" name="countSql" rows="6" cols="48" class="x-text"
-				      style="width:580px;height:180px;" >${sqlDefinition.countSql}</textarea>
+				      style="font:13px Consolas,Courier New,Arial; width:580px; height:180px;" >${sqlDefinition.countSql}</textarea>
 		</td>
 	</tr>
 	<tr>

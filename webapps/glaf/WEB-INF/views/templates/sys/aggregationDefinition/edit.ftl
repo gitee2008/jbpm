@@ -118,7 +118,7 @@
 		<td width="20%" align="left">统计SQL</td>
 		<td align="left">
 		    <textarea id="sql" name="sql" rows="6" cols="50" class="x-textarea" 
-			    style="width:450px;height:120px;">${aggregationDefinition.sql}</textarea>
+			    style="font:13px Consolas,Courier New,Arial; width:450px; height:120px;">${aggregationDefinition.sql}</textarea>
 		</td>
 	</tr>
 	<tr>
