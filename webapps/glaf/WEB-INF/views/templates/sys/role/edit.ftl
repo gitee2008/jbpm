@@ -37,7 +37,7 @@
 </script>
 </head>  
 <body>
-<div style="width:580px; padding:10px 20px" >
+<div style="width:620px; padding:10px 20px" >
     <form id="editForm" name="editForm" method="post">
 	     <input type="hidden" id="id" name="id" value="${id}">
          <table class="easyui-form" width="95%" align="center" border="0" cellspacing="0" cellpadding="5">
