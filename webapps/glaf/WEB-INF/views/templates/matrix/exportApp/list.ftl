@@ -22,12 +22,12 @@
 				idField: 'id',
 				columns:[[
 				        {title:'序号', field:'startIndex', width:50, sortable:false},
-					    {title:'编号', field:'id', width:195, sortable:false},
-						{title:'标题', field:'title', width:220, sortable:true},
+					    {title:'编号', field:'id', width:198, sortable:false},
+						{title:'标题', field:'title', width:200, sortable:true},
 						{title:'创建人', field:'createBy', width:80, sortable:true},
 						{title:'创建时间', field:'createTime', width:80, sortable:true},
 					    {title:'是否有效', field:'active', width:80, formatter:formatterActive},
-						{title:'功能键', field:'functionKey', width:260, formatter:formatterKeys}
+						{title:'功能键', field:'functionKey', width:280, formatter:formatterKeys}
 				]],
 				rownumbers: false,
 				pagination: true,

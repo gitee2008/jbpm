@@ -85,23 +85,6 @@
 			 });
 	}
 
-    function openDataset(){
-        var selected = jQuery("#datasetId").val();
-        var link = '${request.contextPath}/dataset/showTreeRadio?elementId=datasetId&elementName=datasetName&nodeCode=report_category&selected='+selected;
-		var x=100;
-		var y=50;
-		if(is_ie) {
-			x=document.body.scrollLeft+event.clientX-event.offsetX-200;
-			y=document.body.scrollTop+event.clientY-event.offsetY-200;
-		}
-		openWindow(link,self,x, y, 595, 480);
-	}
-
-	function viewDataset(){
-        var selected = jQuery("#datasetId").val();
-        var link = '${request.contextPath}/dataset/sqlbuilder?id='+selected;
-		window.open(link);
-	}
 
 </script>
 </head>
@@ -155,26 +138,6 @@
                 document.getElementById("xmlExpId").value="${exportItem.xmlExpId}";
             </script>
 			&nbsp;（提示：XML导出结果将转成json格式对象。）
-		</td>
-	  </tr>
-
-	<tr>
-		<td width="15%" align="left">数据集</td>
-		<td align="left">
-		    <input type="hidden" id="datasetId" name="datasetId" value="${exportItem.datasetId}">
-            <input id="datasetName" name="datasetName" type="text" 
-			       class="easyui-validatebox x-text" style="width:525px;" 
-				   value="${datasetName}" onclick="javascript:openDataset();"/>
-			&nbsp;
-			<a href="#" onclick="javascript:openDataset();">
-			<img src="${request.contextPath}/static/images/search_results.gif" border="0"
-				 title="导出数据由数据集组成，请先建好数据集数据再选择。">
-			</a>
-			<a href="#" onclick="javascript:viewDataset();">
-			&nbsp;
-		    <img src="${request.contextPath}/static/images/view.gif" border="0"
-				 title="查看数据集信息。">
-			</a>
 		</td>
 	</tr>
 
