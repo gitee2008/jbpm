@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.glaf.chart.mapper.ChartDataMapper">
+
+	<resultMap id="chartDataResultMap" type="com.glaf.chart.domain.ChartData">
+		<id property="id" column="ID_" jdbcType="VARCHAR" />
+		<result property="serviceKey" column="SERVICEKEY_" jdbcType="VARCHAR" />
+		<result property="type" column="TYPE_" jdbcType="VARCHAR" />
+		<result property="category" column="CATEGORY_" jdbcType="VARCHAR" />
+		<result property="series" column="SERIES_" jdbcType="VARCHAR" />
+		<result property="value" column="VALUE_" jdbcType="DOUBLE" />
+	</resultMap>
+
+
+	<insert id="insertChartData" parameterType="com.glaf.chart.domain.ChartData">
+		insert into SYS_CHART_DATA
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			ID_
+			<if test="serviceKey != null">
+				,SERVICEKEY_
+			</if>
+			<if test="type != null">
+				,TYPE_
+			</if>
+			<if test="category != null">
+				,CATEGORY_
+			</if>
+			<if test="series != null">
+				,SERIES_
+			</if>
+			<if test="value != null">
+				,VALUE_
+			</if>
+		</trim>
+
+		<trim prefix=" values (" suffix=")" suffixOverrides=",">
+			#{id, jdbcType=VARCHAR}
+
+			<if test="serviceKey != null">
+				,#{serviceKey, jdbcType=VARCHAR}
+			</if>
+			<if test="type != null">
+				,#{type, jdbcType=VARCHAR}
+			</if>
+			<if test="category != null">
+				,#{category, jdbcType=VARCHAR}
+			</if>
+			<if test="series != null">
+				,#{series, jdbcType=VARCHAR}
+			</if>
+			<if test="value != null">
+				,#{value, jdbcType=DOUBLE}
+			</if>
+		</trim>
+	</insert>
+
+
+	<delete id="deleteChartDataById" parameterType="String">
+		delete from
+		SYS_CHART_DATA
+		where ID_ = #{id}
+	</delete>
+
+
+	<delete id="deleteChartDataByServiceKey" parameterType="string">
+		delete
+		from SYS_CHART_DATA
+		where SERVICEKEY_ = #{serviceKey}
+	</delete>
+
+
+	<select id="getChartDataById" parameterType="String" resultMap="chartDataResultMap">
+		select * from SYS_CHART_DATA where ID_ = #{id}
+	</select>
+
+
+	<select id="getChartDataList" parameterType="com.glaf.chart.query.ChartDataQuery"
+		resultMap="chartDataResultMap">
+		select distinct E.*
+		<include refid="selectChartDataSql" />
+		<choose>
+			<when test="orderBy != null">
+				order by ${orderBy}
+			</when>
+			<otherwise>
+				order by E.ID_ desc
+			</otherwise>
+		</choose>
+	</select>
+
+
+	<select id="getChartDataCount" parameterType="com.glaf.chart.query.ChartDataQuery"
+		resultType="int">
+		select count(*)
+		<include refid="selectChartDataSql" />
+	</select>
+
+
+	<sql id="selectChartDataSql">
+
+		from SYS_CHART_DATA E
+
+		<where>
+			1 = 1
+
+			<if test="serviceKey != null and serviceKey != '' ">
+				and E.SERVICEKEY_ = #{serviceKey}
+			</if>
+
+			<if test="serviceKeys != null and serviceKeys.size() &gt; 0">
+				and E.SERVICEKEY_ IN
+				<foreach item="x_serviceKey" index="index" collection="serviceKeys"
+					open="(" separator="," close=")">
+					#{x_serviceKey}
+				</foreach>
+			</if>
+
+			<if test="type != null and type != '' ">
+				and E.TYPE_ = #{type}
+			</if>
+
+			<if test="types != null and types.size() &gt; 0">
+				and E.TYPE_ IN
+				<foreach item="x_type" index="index" collection="types"
+					open="(" separator="," close=")">
+					#{x_type}
+				</foreach>
+			</if>
+
+		</where>
+	</sql>
+
+</mapper>

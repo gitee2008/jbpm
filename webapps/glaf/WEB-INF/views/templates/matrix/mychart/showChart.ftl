@@ -1,0 +1,1 @@
+<img src="${request.contextPath}/website/public/chart/download?chartId=${chart.id}&json_params_hex=${json_params_hex}&jwt=${jwt}" border="0">

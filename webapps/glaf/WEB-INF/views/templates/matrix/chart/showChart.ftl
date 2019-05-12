@@ -1,0 +1,1 @@
+<img src="${request.contextPath}/matrix/chart/download?chartId=${chart.id}&x_complex_query=${x_complex_query}" border="0">
