@@ -615,7 +615,8 @@
               <td colspan="3" height="98">
 				<input type="hidden" id="queryIds" name="queryIds" value="${chart.queryIds}">
 				<textarea id="queryNames" name="queryNames" rows="12" cols="68" class="x-textarea"
-				          style="width:580px;height:80px;" onclick="javascript:openQx();"  
+				          style="font: 13px Consolas,Courier New,Arial; width:580px; height:80px;"
+						  onclick="javascript:openQx();"  
 				          readonly="true" >${queryNames}</textarea>&nbsp;
 				  <a href="#" onclick="javascript:openQx();">
 				     <img src="${request.contextPath}/static/images/search_results.gif" border="0"
@@ -627,7 +628,8 @@
         <tr>
         	 <td  height="98">查询语句</td>
         	 <td colspan="3"  height="98">
-        	 <textarea id="querySQL" name="querySQL" rows="12" cols="68"  class="x-textarea" style="width:580px;height:250px;">${chart.querySQL}</textarea>
+        	 <textarea id="querySQL" name="querySQL" rows="12" cols="68"  class="x-textarea" 
+			      style="font: 13px Consolas,Courier New,Arial; width:580px; height:250px;">${chart.querySQL}</textarea>
         	 <br><br>
              <br>饼图及环形图要有别名为category或c（分类）及doublevalue或v（数值）字段
         	 <br>其他图要有别名为series或s（纵坐标），category或c（横坐标）及doublevalue或v（数值）字段

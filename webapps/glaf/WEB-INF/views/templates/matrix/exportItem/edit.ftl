@@ -144,7 +144,8 @@
 	<tr>
 		<td width="90" align="left">SQL循环条件语句</td>
 		<td align="left">
-		    <textarea id="recursionSql" name="recursionSql" rows="4" cols="46" class="x-textarea" style="width:525px;height:90px;" >${exportItem.recursionSql}</textarea>
+		    <textarea id="recursionSql" name="recursionSql" rows="4" cols="46" class="x-textarea"
+			     style="font: 13px Consolas,Courier New,Arial; width:525px;height:90px;">${exportItem.recursionSql}</textarea>
 		   <div style="margin-top:5px;">
 		     （提示：SQL循环条件的结果当作下面取数语句的输入条件。）
 	       </div>
