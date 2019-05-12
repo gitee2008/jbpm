@@ -1019,6 +1019,11 @@
 			<version>1.0.19</version>
 		</dependency>
 		<dependency>
+		    <groupId>org.jfree</groupId>
+			<artifactId>jcommon</artifactId>
+			<version>1.0.24</version>
+		</dependency>
+		<dependency>
 			<groupId>com.belerweb</groupId>
             <artifactId>pinyin4j</artifactId>
             <version>2.5.1</version>
