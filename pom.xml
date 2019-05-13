@@ -190,6 +190,11 @@
 			<artifactId>spring-batch-test</artifactId>
 			<version>${spring.batch.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.eclipse.persistence</groupId>
+		    <artifactId>eclipselink</artifactId>
+		    <version>2.7.4</version>
+		</dependency>
 		<!-- 条码工具 -->
 		<dependency>
 			<groupId>net.sf.barcode4j</groupId>
@@ -697,7 +702,7 @@
 		<dependency>
 			<groupId>org.mongodb</groupId>
 			<artifactId>mongo-java-driver</artifactId>
-			<version>3.10.1</version>
+			<version>3.10.2</version>
 		</dependency>
 		<!-- html解析器 -->
 		<dependency>
@@ -827,7 +832,7 @@
 		<dependency>
 			<groupId>org.jsoup</groupId>
 			<artifactId>jsoup</artifactId>
-			<version>1.11.3</version>
+			<version>1.12.1</version>
 		</dependency>
 		<!-- jsp标签库 -->
 		<dependency>

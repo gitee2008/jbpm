@@ -1017,7 +1017,7 @@ public class SystemTableController {
 
 	@ResponseBody
 	@RequestMapping("/updateHibernateDDL")
-	public byte[] updateHibernateDDL(HttpServletRequest request) throws IOException {
+	public byte[] updateHibernateDDL(HttpServletRequest request) {
 		String systemName = request.getParameter("systemName");
 		try {
 			if (StringUtils.isNotEmpty(systemName)) {
@@ -1028,7 +1028,7 @@ public class SystemTableController {
 				bean.updateDDL();
 			}
 			return ResponseUtils.responseJsonResult(true);
-		} catch (Exception ex) {
+		} catch (java.lang.Throwable ex) {
 			logger.error(ex);
 		}
 
