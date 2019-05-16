@@ -185,6 +185,12 @@ public class ExportItem implements Serializable, JSONable {
 	protected String rootPath;
 
 	/**
+	 * 预处理程序
+	 */
+	@Column(name = "PREPROCESSORS_", length = 2000)
+	protected String preprocessors;
+
+	/**
 	 * 变量模板
 	 */
 	@Lob
@@ -438,6 +444,10 @@ public class ExportItem implements Serializable, JSONable {
 		return pageSize;
 	}
 
+	public String getPreprocessors() {
+		return preprocessors;
+	}
+
 	public String getPrimaryKey() {
 		if (primaryKey != null) {
 			primaryKey = primaryKey.trim().toLowerCase();
@@ -622,6 +632,10 @@ public class ExportItem implements Serializable, JSONable {
 
 	public void setPageSize(int pageSize) {
 		this.pageSize = pageSize;
+	}
+
+	public void setPreprocessors(String preprocessors) {
+		this.preprocessors = preprocessors;
 	}
 
 	public void setPrimaryKey(String primaryKey) {

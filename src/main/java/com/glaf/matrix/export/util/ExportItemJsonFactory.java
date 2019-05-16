@@ -106,6 +106,9 @@ public class ExportItemJsonFactory {
 		if (jsonObject.containsKey("rootPath")) {
 			model.setRootPath(jsonObject.getString("rootPath"));
 		}
+		if (jsonObject.containsKey("preprocessors")) {
+			model.setPreprocessors(jsonObject.getString("preprocessors"));
+		}
 		if (jsonObject.containsKey("varTemplate")) {
 			model.setVarTemplate(jsonObject.getString("varTemplate"));
 		}
@@ -236,6 +239,9 @@ public class ExportItemJsonFactory {
 		if (model.getDataHandlerChains() != null) {
 			jsonObject.put("dataHandlerChains", model.getDataHandlerChains());
 		}
+		if (model.getPreprocessors() != null) {
+			jsonObject.put("preprocessors", model.getPreprocessors());
+		} 
 		if (model.getSubTotalFlag() != null) {
 			jsonObject.put("subTotalFlag", model.getSubTotalFlag());
 		}
@@ -349,6 +355,9 @@ public class ExportItemJsonFactory {
 		if (model.getDataHandlerChains() != null) {
 			jsonObject.put("dataHandlerChains", model.getDataHandlerChains());
 		}
+		if (model.getPreprocessors() != null) {
+			jsonObject.put("preprocessors", model.getPreprocessors());
+		} 
 		if (model.getSubTotalFlag() != null) {
 			jsonObject.put("subTotalFlag", model.getSubTotalFlag());
 		}

@@ -1,7 +1,9 @@
 package com.glaf.matrix.export.web.springmvc;
 
 import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
@@ -33,6 +35,8 @@ import org.apache.http.entity.ContentType;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -64,6 +68,7 @@ import com.glaf.core.util.ResponseUtils;
 import com.glaf.core.util.StringTools;
 import com.glaf.core.util.Tools;
 import com.glaf.core.util.ZipUtils;
+import com.glaf.jxls.ext.JxlsBuilder;
 import com.glaf.matrix.export.bean.ExportTask;
 import com.glaf.matrix.export.domain.ExportApp;
 import com.glaf.matrix.export.handler.ExportHandler;
@@ -97,6 +102,36 @@ public class ExportAppController {
 
 	public ExportAppController() {
 
+	}
+
+	static {
+		ByteArrayInputStream bais = null;
+		BufferedInputStream bis = null;
+		ByteArrayOutputStream baos = null;
+		BufferedOutputStream bos = null;
+		try {
+			Resource resource = new ClassPathResource("/com/glaf/matrix/export/templates/grid_template.xls");
+			if (resource.exists() && resource.getInputStream() != null) {
+				bais = new ByteArrayInputStream(FileUtils.getBytes(resource.getInputStream()));
+				bis = new BufferedInputStream(bais);
+				baos = new ByteArrayOutputStream();
+				bos = new BufferedOutputStream(baos);
+
+				Map<String, Object> parameter = new HashMap<String, Object>();
+				JxlsBuilder jxlsBuilder = JxlsBuilder.getBuilder(bis).out(bos).putAll(parameter);
+				jxlsBuilder.putVar("_ignoreImageMiss", Boolean.valueOf(true));
+				jxlsBuilder.build();
+
+				logger.error("报表处理器加载成功！");
+			}
+		} catch (Exception ex) {
+			logger.error("报表处理器加载失败！", ex);
+		} finally {
+			IOUtils.closeQuietly(bis);
+			IOUtils.closeQuietly(bais);
+			IOUtils.closeQuietly(bos);
+			IOUtils.closeQuietly(baos);
+		}
 	}
 
 	@ResponseBody

@@ -37,19 +37,19 @@
 		</javac>
 		<copy todir="bin">
 		<fileset dir="src/main/java" 
-		includes="com/glaf/**/*.conf,com/glaf/**/*.sql,com/glaf/**/*.properties,com/glaf/**/*.xml" />
+		includes="com/glaf/**/*.conf,com/glaf/**/*.sql,com/glaf/**/*.properties,com/glaf/**/*.xml,com/glaf/**/*.xls" />
 		</copy>
 	</target>
 
 	<!-- 编译任务 -->
 	<target name="jar" depends="build" description="Create java jar file">
 		<jar jarfile="glaf-framework-src.zip">
-			<fileset dir="." includes="*.bat,*.xml, src/**/*.*,mapping/**/*.xml,jar-conf/**/*.*, db/**/*.*" excludes="**/*.cvs,**/*.bak,**/*.tmp,**/*.scc,**/*.svn" />
+			<fileset dir="." includes="*.bat,*.xml, src/**/*.*, mapping/**/*.xml, jar-conf/**/*.*, db/**/*.*" excludes="**/*.cvs,**/*.bak,**/*.tmp,**/*.scc,**/*.svn" />
 		</jar>
 
 		<jar jarfile="glaf-framework.jar">
 		    <fileset dir="bin" 
-			         includes="com/glaf/**/*.class,com/glaf/**/*.xml,com/glaf/**/*.properties" 
+			         includes="com/glaf/**/*.class,com/glaf/**/*.xml,com/glaf/**/*.xls,com/glaf/**/*.properties" 
 					 excludes="**/test/**,global.properties"/>
 		    <fileset dir="jar-conf" includes="**/*.xml,**/*.properties"/>
         </jar>

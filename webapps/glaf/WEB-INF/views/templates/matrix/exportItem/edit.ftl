@@ -499,10 +499,21 @@
 		</td>
 	</tr>
 	<tr>
+		<td width="90" align="left">预处理程序</td>
+		<td align="left">
+		    <textarea id="preprocessors" name="preprocessors" rows="6" cols="46" class="x-textarea" 
+			          style="font: 13px Consolas,Courier New,Arial; width:525px; height:320px;" >${exportItem.preprocessors}</textarea>
+			<div style="margin-top:5px;">
+		     （提示：实现了com.glaf.matrix.export.preprocessor.IDataPreprocessor接口程序的类，多个类之间用半角的逗号,隔开。）
+			 <br>（提示：生成结果以变量名_var的方式放到变量表中。）
+			</div>
+        </td>
+	</tr>
+	<tr>
 		<td width="90" align="left">变量模板</td>
 		<td align="left">
 		    <textarea id="varTemplate" name="varTemplate" rows="6" cols="46" class="x-textarea" 
-			          style="font: 13px Consolas,Courier New,Arial; width:525px;height:320px;" >${exportItem.varTemplate}</textarea>
+			          style="font: 13px Consolas,Courier New,Arial; width:525px; height:320px;" >${exportItem.varTemplate}</textarea>
 			<div style="margin-top:5px;">
 		     （提示：使用Freemarker模板引擎，使用需遵循Freemarker的语法）
 			 <br>（提示：生成结果以变量名_var的方式放到变量表中。）

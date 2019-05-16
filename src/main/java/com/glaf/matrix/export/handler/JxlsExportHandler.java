@@ -69,6 +69,7 @@ import com.glaf.matrix.export.domain.ExportFileHistory;
 import com.glaf.matrix.export.domain.ExportItem;
 import com.glaf.matrix.export.domain.ExportTemplateVar;
 import com.glaf.matrix.export.factory.ExportChartFactory;
+import com.glaf.matrix.export.preprocessor.DataPreprocessorFactory;
 import com.glaf.matrix.export.service.ExportAppService;
 import com.glaf.matrix.export.service.ExportFileHistoryService;
 import com.glaf.matrix.util.ImageUtils;
@@ -150,6 +151,12 @@ public class JxlsExportHandler implements ExportHandler {
 			exportApp = bean.execute(exportApp.getId(), params);
 			for (ExportItem item : exportApp.getItems()) {
 				// pageNo = 0;
+
+				/**
+				 * 数据预处理程序
+				 */
+				DataPreprocessorFactory.prepare(item, params);
+
 				dataList.clear();
 				if (item.getDataList() != null && !item.getDataList().isEmpty()) {
 					dataList.addAll(item.getDataList());

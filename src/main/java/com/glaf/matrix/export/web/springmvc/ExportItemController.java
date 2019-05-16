@@ -32,7 +32,6 @@ import com.glaf.core.util.ResponseUtils;
 import com.glaf.core.util.StringTools;
 import com.glaf.core.util.Tools;
 
- 
 import com.glaf.matrix.export.domain.ExportItem;
 import com.glaf.matrix.export.domain.XmlExport;
 import com.glaf.matrix.export.handler.DataXFactory;
@@ -51,8 +50,6 @@ import com.glaf.matrix.export.service.XmlExportService;
 @RequestMapping("/matrix/exportItem")
 public class ExportItemController {
 	protected static final Log logger = LogFactory.getLog(ExportItemController.class);
-
- 
 
 	protected ExportItemService exportItemService;
 
@@ -314,6 +311,7 @@ public class ExportItemController {
 			exportItem.setGenEmptyFlag(request.getParameter("genEmptyFlag"));
 			exportItem.setResultFlag(request.getParameter("resultFlag"));
 			exportItem.setDataHandlerChains(request.getParameter("dataHandlerChains"));
+			exportItem.setPreprocessors(request.getParameter("preprocessors"));
 			exportItem.setSubTotalFlag(request.getParameter("subTotalFlag"));
 			exportItem.setSubTotalColumn(request.getParameter("subTotalColumn"));
 			exportItem.setVarTemplate(request.getParameter("varTemplate"));

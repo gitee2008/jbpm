@@ -66,6 +66,8 @@
 			jdbcType="VARCHAR" />
 		<result property="dataHandlerChains"
 			column="DATAHANDLERCHAINS_" jdbcType="VARCHAR" />
+		<result property="preprocessors" column="PREPROCESSORS_"
+			jdbcType="VARCHAR" />
 		<result property="subTotalFlag" column="SUBTOTALFLAG_"
 			jdbcType="VARCHAR" />
 		<result property="subTotalColumn" column="SUBTOTALCOLUMN_"
@@ -180,6 +182,9 @@
 			</if>
 			<if test="dataHandlerChains != null">
 				,DATAHANDLERCHAINS_
+			</if>
+			<if test="preprocessors != null">
+				,PREPROCESSORS_
 			</if>
 			<if test="subTotalFlag != null">
 				,SUBTOTALFLAG_
@@ -302,6 +307,9 @@
 			</if>
 			<if test="dataHandlerChains != null">
 				,#{dataHandlerChains, jdbcType=VARCHAR}
+			</if>
+			<if test="preprocessors != null">
+				,#{preprocessors, jdbcType=VARCHAR}
 			</if>
 			<if test="subTotalFlag != null">
 				,#{subTotalFlag, jdbcType=VARCHAR}
@@ -426,6 +434,9 @@
 			<if test="dataHandlerChains != null">
 				DATAHANDLERCHAINS_ = #{dataHandlerChains,
 				jdbcType=VARCHAR},
+			</if>
+			<if test="preprocessors != null">
+				PREPROCESSORS_ = #{preprocessors, jdbcType=VARCHAR},
 			</if>
 			<if test="subTotalFlag != null">
 				SUBTOTALFLAG_ = #{subTotalFlag, jdbcType=VARCHAR},
