@@ -61,8 +61,8 @@ public class ${entityName}ServiceImpl implements ${entityName}Service {
 		int batch_size = 50;
                 List<${entityName}> rows = new ArrayList<${entityName}>(batch_size);
 
-		for (${entityName} bean : list) {
-			rows.add(bean);
+		for (${entityName} model : list) {
+			rows.add(model);
 			if (rows.size() > 0 && rows.size() % batch_size == 0) {
 				if (StringUtils.equals(DBUtils.ORACLE, DBConnectionFactory.getDatabaseType())) {
 					${modelName}Mapper.bulkInsert${entityName}_oracle(rows);
