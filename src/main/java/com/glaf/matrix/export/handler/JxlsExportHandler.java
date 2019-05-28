@@ -611,6 +611,10 @@ public class JxlsExportHandler implements ExportHandler {
 				return null;
 			} else {
 				if (StringUtils.equals(useExt, "Y")) {
+					bais = new ByteArrayInputStream(tpl.getData());
+					bis = new BufferedInputStream(bais);
+					baos = new ByteArrayOutputStream();
+					bos = new BufferedOutputStream(baos);
 					JxlsBuilder jxlsBuilder = JxlsBuilder.getBuilder(bis).out(bos).putAll(params);
 					jxlsBuilder.putVar("_ignoreImageMiss", Boolean.valueOf(true));
 					jxlsBuilder.build();
