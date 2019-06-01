@@ -18,7 +18,7 @@
 
 package com.glaf.matrix.export.handler;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -26,24 +26,25 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.glaf.core.util.ExcelUtils;
 import com.glaf.matrix.export.domain.ExportApp;
 
-public class RemoveCommentHandler implements WorkbookHandler {
+public class TextToDecimalHandler implements WorkbookHandler {
 	protected final Logger logger = LoggerFactory.getLogger(getClass());
 
 	@Override
 	public void processWorkbook(Workbook wb, ExportApp exportApp) {
-		logger.debug("----------------------RemoveCommentHandler-------------------");
+		logger.debug("----------------------TextToDecimalHandler-------------------");
 		int sheetCnt = wb.getNumberOfSheets();
+		Row row = null;
+		Cell cell = null;
 		for (int i = 0; i < sheetCnt; i++) {
 			Sheet sheet = wb.getSheetAt(i);
+			sheet.setAutobreaks(false);
 			int rows = sheet.getLastRowNum();
-			logger.debug("行记录数:" + (rows + 1));
-			Row row = null;
-			Cell cell = null;
 			for (int rowIndex = 0; rowIndex <= rows; rowIndex++) {
 				row = sheet.getRow(rowIndex);
-				//logger.debug("rowIndex:" + rowIndex);
+				// logger.debug("rowIndex:" + rowIndex);
 				if (row == null) {
 					continue;
 				}
@@ -54,20 +55,21 @@ public class RemoveCommentHandler implements WorkbookHandler {
 						continue;
 					}
 					if (cell.getCellComment() != null) {
-						if (StringUtils.contains(cell.getCellComment().getString().getString(), "mergeCell")) {
-							cell.removeCellComment();
-						} else if (StringUtils.contains(cell.getCellComment().getString().getString(),
-								"mergeCellHorz")) {
-							cell.removeCellComment();
-						} else if (StringUtils.contains(cell.getCellComment().getString().getString(),
-								"pageFooterBorder")) {
-							cell.removeCellComment();
-						} else if (StringUtils.contains(cell.getCellComment().getString().getString(), "xe:decimal")) {
-							cell.removeCellComment();
-						} else if (StringUtils.contains(cell.getCellComment().getString().getString(), "xe:rh{")) {
-							cell.removeCellComment();
-						} else if (StringUtils.contains(cell.getCellComment().getString().getString(), "xe:ph{")) {
-							cell.removeCellComment();
+						String str = cell.getCellComment().getString().getString();
+						// logger.debug("读取到注释:" + str);
+						if (str != null) {
+							if (StringUtils.contains(str.trim(), "xe:decimal")) {
+								try {
+									String cellVal = ExcelUtils.getCellValue(cell);
+									if (StringUtils.isNotEmpty(cellVal)) {
+										double doubleVal = Double.parseDouble(cellVal);
+										// cell.setCellType(CellType.NUMERIC);
+										cell.setCellValue(doubleVal);
+									}
+								} catch (java.lang.Throwable ex) {
+									// ignore exception
+								}
+							}
 						}
 					}
 				}

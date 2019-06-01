@@ -48,6 +48,7 @@ public class WorkbookFactory {
 		handlerMap.put("pageBreak", new PageBreakHandler());
 		handlerMap.put("rowHeightAdjust", new RowHeightAdjustHandler());
 		handlerMap.put("hiddenRow", new HiddenRowHandler());
+		handlerMap.put("toDecimal", new TextToDecimalHandler());
 		handlerMap.put("pageFooterBorder", new PageFooterBorderHandler());
 		handlerMap.put("xRemoveComment", new RemoveCommentHandler());
 
@@ -56,11 +57,13 @@ public class WorkbookFactory {
 		nameMap.put("cellMerge", "合并单元格处理器");
 		nameMap.put("rowHeightAdjust", "行高调整处理器");
 		nameMap.put("hiddenRow", "隐藏行处理器");
+		nameMap.put("toDecimal", "文本转数值处理器");
 		nameMap.put("pageFooterBorder", "设置页脚边框");
 		nameMap.put("xRemoveComment", "去除标注");
 
 		handerList.add("rowHeightAdjust");// 最先执行
 		handerList.add("hiddenRow");
+		handerList.add("toDecimal");
 		handerList.add("autoPageBreak");
 		handerList.add("pageBreak");
 		handerList.add("pageFooterBorder");
