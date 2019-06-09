@@ -274,7 +274,7 @@
 		<dependency>
 			<groupId>cglib</groupId>
 			<artifactId>cglib</artifactId>
-			<version>3.2.8</version>
+			<version>3.2.12</version>
 		</dependency>
 		<dependency>
 			<groupId>org.javassist</groupId>
@@ -914,7 +914,7 @@
 		<dependency>
 			<groupId>com.rabbitmq</groupId>
 			<artifactId>amqp-client</artifactId>
-			<version>5.7.0</version>
+			<version>5.7.1</version>
 		</dependency>
 		<!-- 数据库注解工具 -->
 		<dependency>
@@ -1089,9 +1089,9 @@
 			<version>1.72</version>
 		</dependency>
 		<dependency>
-			<groupId>org.xerial</groupId>
+			<groupId>io.github.willena</groupId>
 		    <artifactId>sqlite-jdbc</artifactId>
-		    <version>3.27.2.1</version>
+		    <version>3.28.0</version>
 		</dependency>
 		<!-- glaf 工具包 -->
 	</dependencies>
