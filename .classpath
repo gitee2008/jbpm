@@ -61,8 +61,6 @@
 	<classpathentry kind="lib" path="webapps/glaf/WEB-INF/lib/httpasyncclient.jar"/>
 	<classpathentry kind="lib" path="webapps/glaf/WEB-INF/lib/httpclient-cache.jar"/>
 	<classpathentry kind="lib" path="webapps/glaf/WEB-INF/lib/httpclient.jar"/>
-	<classpathentry kind="lib" path="webapps/glaf/WEB-INF/lib/httpcore-ab.jar"/>
-	<classpathentry kind="lib" path="webapps/glaf/WEB-INF/lib/httpcore-nio.jar"/>
 	<classpathentry kind="lib" path="webapps/glaf/WEB-INF/lib/httpcore.jar"/>
 	<classpathentry kind="lib" path="webapps/glaf/WEB-INF/lib/httpmime.jar"/>
 	<classpathentry kind="lib" path="webapps/glaf/WEB-INF/lib/j2cache-core.jar"/>
