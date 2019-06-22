@@ -19,6 +19,7 @@
 package com.glaf.matrix.export.service;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.transaction.annotation.Transactional;
 
@@ -87,6 +88,6 @@ public interface ExportAppService {
 	 * @param createBy
 	 */
 	@Transactional
-	String saveAs(String expId, String createBy);
+	String saveAs(String expId, String createBy, Map<String, Object> params);
 
 }

@@ -20,6 +20,7 @@ package com.glaf.matrix.export.service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.session.RowBounds;
@@ -32,6 +33,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.glaf.core.dao.EntityDAO;
 import com.glaf.core.id.IdGenerator;
+import com.glaf.core.util.Tools;
 import com.glaf.core.util.UUID32;
 import com.glaf.matrix.export.domain.ExportApp;
 import com.glaf.matrix.export.domain.ExportItem;
@@ -137,10 +139,10 @@ public class ExportAppServiceImpl implements ExportAppService {
 	@Transactional
 	public void save(ExportApp exportApp) {
 		if (exportApp.getId() == null) {
-			exportApp.setId(UUID32.getUUID());
+			exportApp.setId(UUID32.generateShortUuid());
 			exportApp.setCreateTime(new Date());
 			if (StringUtils.isEmpty(exportApp.getDeploymentId())) {
-				exportApp.setDeploymentId(UUID32.getUUID());
+				exportApp.setDeploymentId(UUID32.generateShortUuid());
 			}
 			if (exportApp.getPageNumPerSheet() > 800) {
 				exportApp.setPageNumPerSheet(800);
@@ -155,17 +157,18 @@ public class ExportAppServiceImpl implements ExportAppService {
 	}
 
 	@Transactional
-	public String saveAs(String expId, String createBy) {
+	public String saveAs(String expId, String createBy, Map<String, Object> params) {
 		ExportApp model = this.getExportApp(expId);
 		if (model != null) {
-			model.setId(UUID32.getUUID());
+			Tools.populate(model, params);
+			model.setId(UUID32.generateShortUuid());
 			model.setCreateTime(new Date());
 			model.setCreateBy(createBy);
 			exportAppMapper.insertExportApp(model);
 
 			if (model.getItems() != null && !model.getItems().isEmpty()) {
 				for (ExportItem item : model.getItems()) {
-					item.setId(UUID32.getUUID());
+					item.setId(UUID32.generateShortUuid());
 					item.setCreateTime(new Date());
 					item.setCreateBy(createBy);
 					item.setExpId(model.getId());
@@ -175,7 +178,7 @@ public class ExportAppServiceImpl implements ExportAppService {
 
 			if (model.getVariables() != null && !model.getVariables().isEmpty()) {
 				for (ExportTemplateVar var : model.getVariables()) {
-					var.setId(UUID32.getUUID());
+					var.setId(UUID32.generateShortUuid());
 					var.setCreateTime(new Date());
 					var.setCreateBy(createBy);
 					var.setExpId(model.getId());
@@ -201,21 +204,6 @@ public class ExportAppServiceImpl implements ExportAppService {
 		this.entityDAO = entityDAO;
 	}
 
-	@javax.annotation.Resource
-	public void setIdGenerator(IdGenerator idGenerator) {
-		this.idGenerator = idGenerator;
-	}
-
-	@javax.annotation.Resource
-	public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
-		this.jdbcTemplate = jdbcTemplate;
-	}
-
-	@javax.annotation.Resource
-	public void setSqlSessionTemplate(SqlSessionTemplate sqlSessionTemplate) {
-		this.sqlSessionTemplate = sqlSessionTemplate;
-	}
-
 	@javax.annotation.Resource(name = "com.glaf.matrix.export.mapper.ExportAppMapper")
 	public void setExportAppMapper(ExportAppMapper exportAppMapper) {
 		this.exportAppMapper = exportAppMapper;
@@ -231,8 +219,23 @@ public class ExportAppServiceImpl implements ExportAppService {
 		this.exportTemplateVarMapper = exportTemplateVarMapper;
 	}
 
+	@javax.annotation.Resource
+	public void setIdGenerator(IdGenerator idGenerator) {
+		this.idGenerator = idGenerator;
+	}
+
+	@javax.annotation.Resource
+	public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
+		this.jdbcTemplate = jdbcTemplate;
+	}
+
 	@javax.annotation.Resource(name = "com.glaf.matrix.parameter.service.parameterConversionService")
 	public void setParameterConversionService(ParameterConversionService parameterConversionService) {
 		this.parameterConversionService = parameterConversionService;
+	}
+
+	@javax.annotation.Resource
+	public void setSqlSessionTemplate(SqlSessionTemplate sqlSessionTemplate) {
+		this.sqlSessionTemplate = sqlSessionTemplate;
 	}
 }

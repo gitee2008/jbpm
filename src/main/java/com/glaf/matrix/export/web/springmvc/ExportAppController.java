@@ -719,7 +719,8 @@ public class ExportAppController {
 		try {
 			String expId = RequestUtils.getString(request, "expId");
 			if (expId != null) {
-				String nid = exportAppService.saveAs(expId, actorId);
+				Map<String, Object> params = RequestUtils.getParameterMap(request);
+				String nid = exportAppService.saveAs(expId, actorId, params);
 				if (nid != null) {
 					return ResponseUtils.responseJsonResult(true);
 				}
