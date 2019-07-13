@@ -67,7 +67,6 @@
 	<classpathentry kind="lib" path="webapps/glaf/WEB-INF/lib/jackson-annotations.jar"/>
 	<classpathentry kind="lib" path="webapps/glaf/WEB-INF/lib/jackson-core.jar"/>
 	<classpathentry kind="lib" path="webapps/glaf/WEB-INF/lib/jackson-databind.jar"/>
-	<classpathentry kind="lib" path="webapps/glaf/WEB-INF/lib/jackson-dataformat-xml.jar"/>
 	<classpathentry kind="lib" path="webapps/glaf/WEB-INF/lib/jackson-datatype.jar"/>
 	<classpathentry kind="lib" path="webapps/glaf/WEB-INF/lib/jackson-jaxrs-base.jar"/>
 	<classpathentry kind="lib" path="webapps/glaf/WEB-INF/lib/jackson-jaxrs-json-provider.jar"/>
@@ -182,5 +181,6 @@
 	<classpathentry kind="lib" path="webapps/glaf/WEB-INF/lib/jjwt-jackson.jar"/>
 	<classpathentry kind="lib" path="webapps/glaf/WEB-INF/lib/jcommon.jar"/>
 	<classpathentry kind="lib" path="webapps/glaf/WEB-INF/lib/jfreechart.jar"/>
+	<classpathentry kind="lib" path="webapps/glaf/WEB-INF/lib/jackson-dataformat-xml.jar"/>
 	<classpathentry kind="output" path="webapps/glaf/WEB-INF/classes"/>
 </classpath>
