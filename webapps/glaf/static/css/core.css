@@ -1,7 +1,7 @@
 body, table, td, th {
 	font-size: 14px;
 	font-weight: normal;
-	font-family: "Î¢ÈíÑÅºÚ";
+	font-family: "ËÎÌå";
 	color: #656565
 }
 
@@ -98,7 +98,7 @@ a:hover {
 
 .x_content_title {
 	background-color: inherit;
-	font-family: "Î¢ÈíÑÅºÚ";
+	font-family: "ËÎÌå";
 	color: #227bcc;
 	font-size: 15px;
 	font-weight: bold;
@@ -107,7 +107,7 @@ a:hover {
 
 .x_name {
 	background-color: inherit;
-	font-family: "Î¢ÈíÑÅºÚ";
+	font-family: "ËÎÌå";
 	color: #484848;
 	font-size: 15px;
 	font-weight: bold;
@@ -116,7 +116,7 @@ a:hover {
 
 .x_blue_name {
 	background-color: inherit;
-	font-family: "Î¢ÈíÑÅºÚ";
+	font-family: "ËÎÌå";
 	color: #3366cc;
 	font-size: 15px;
 	font-weight: bold;
@@ -125,7 +125,7 @@ a:hover {
 
 .x_green_name {
 	background-color: inherit;
-	font-family: "Î¢ÈíÑÅºÚ";
+	font-family: "ËÎÌå";
 	color: rgb(90, 170, 75);
 	font-size: 15px;
 	font-weight: bold;
@@ -143,7 +143,7 @@ a:hover {
 
 .x_text_value {
 	background-color: inherit;
-	font-family: "Î¢ÈíÑÅºÚ";
+	font-family: "ËÎÌå";
 	color: #0066ff;
 	font-size: 15px;
 	font-weight: bold;
@@ -152,7 +152,7 @@ a:hover {
 
 .x_num_value {
 	background-color: inherit;
-	font-family: "Î¢ÈíÑÅºÚ";
+	font-family: "ËÎÌå";
 	color: #ff3333;
 	font-size: 15px;
 	font-weight: bold;
@@ -176,7 +176,7 @@ a:hover {
 }
 
 .x-fieldset {
-	font-family: "Î¢ÈíÑÅºÚ";
+	font-family: "ËÎÌå";
 }
 
 .x-fieldset legend {
@@ -210,7 +210,7 @@ img {
 	border-radius: 3px;
 	border: 1px solid rgb(61, 129, 12);
 	text-align: center;
-	font-family: "Î¢ÈíÑÅºÚ";
+	font-family: "ËÎÌå";
 	color: rgb(255, 255, 255);
 	overflow: visible;
 	display: inline-block;
@@ -268,7 +268,7 @@ img {
 	border-radius: 3px;
 	border: 1px solid rgb(170, 170, 170);
 	text-align: center;
-	font-family: "Î¢ÈíÑÅºÚ";
+	font-family: "ËÎÌå";
 	color: #ffffff;
 	overflow: visible;
 	display: inline-block;
@@ -284,7 +284,7 @@ img {
 	border: 1px solid rgb(170, 170, 170);
 	text-align: center;
 	color: #ffffff;
-	font-family: "Î¢ÈíÑÅºÚ";
+	font-family: "ËÎÌå";
 	overflow: visible;
 	display: inline-block;
 	cursor: pointer;
