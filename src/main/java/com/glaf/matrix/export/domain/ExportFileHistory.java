@@ -37,7 +37,7 @@ import com.glaf.matrix.export.util.*;
 
 @Entity
 @Table(name = "SYS_EXPORT_FILE_HISTORY")
-public class ExportFileHistory implements Serializable, JSONable {
+public class ExportFileHistory implements java.lang.Comparable<ExportFileHistory>, Serializable, JSONable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
@@ -76,6 +76,9 @@ public class ExportFileHistory implements Serializable, JSONable {
 
 	@javax.persistence.Transient
 	protected byte[] data;
+
+	@javax.persistence.Transient
+	protected byte[] pdfData;
 
 	/**
 	 * 批次编号
@@ -119,6 +122,25 @@ public class ExportFileHistory implements Serializable, JSONable {
 
 	public ExportFileHistory() {
 
+	}
+
+	public int compareTo(ExportFileHistory o) {
+		if (o == null) {
+			return -1;
+		}
+
+		ExportFileHistory field = o;
+
+		int l = this.sortNo - field.getSortNo();
+
+		int ret = 0;
+
+		if (l > 0) {
+			ret = 1;
+		} else if (l < 0) {
+			ret = -1;
+		}
+		return ret;
 	}
 
 	@Override
@@ -189,6 +211,10 @@ public class ExportFileHistory implements Serializable, JSONable {
 		return this.path;
 	}
 
+	public byte[] getPdfData() {
+		return pdfData;
+	}
+
 	public int getSortNo() {
 		return this.sortNo;
 	}
@@ -255,6 +281,10 @@ public class ExportFileHistory implements Serializable, JSONable {
 
 	public void setPath(String path) {
 		this.path = path;
+	}
+
+	public void setPdfData(byte[] pdfData) {
+		this.pdfData = pdfData;
 	}
 
 	public void setSortNo(int sortNo) {

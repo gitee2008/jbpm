@@ -43,7 +43,7 @@ public class RemoveCommentHandler implements WorkbookHandler {
 			Cell cell = null;
 			for (int rowIndex = 0; rowIndex <= rows; rowIndex++) {
 				row = sheet.getRow(rowIndex);
-				//logger.debug("rowIndex:" + rowIndex);
+				// logger.debug("rowIndex:" + rowIndex);
 				if (row == null) {
 					continue;
 				}
@@ -62,11 +62,11 @@ public class RemoveCommentHandler implements WorkbookHandler {
 						} else if (StringUtils.contains(cell.getCellComment().getString().getString(),
 								"pageFooterBorder")) {
 							cell.removeCellComment();
-						} else if (StringUtils.contains(cell.getCellComment().getString().getString(), "xe:decimal")) {
-							cell.removeCellComment();
 						} else if (StringUtils.contains(cell.getCellComment().getString().getString(), "xe:rh{")) {
 							cell.removeCellComment();
 						} else if (StringUtils.contains(cell.getCellComment().getString().getString(), "xe:ph{")) {
+							cell.removeCellComment();
+						} else if (StringUtils.contains(cell.getCellComment().getString().getString(), "xe:decimal")) {
 							cell.removeCellComment();
 						}
 					}

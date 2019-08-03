@@ -16,8 +16,10 @@
  * limitations under the License.
  */
 
-package com.glaf.matrix.export.handler;
+package com.glaf.matrix.export.preprocessor;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -68,6 +70,22 @@ public class PagingDataPreprocessor implements DataXPreprocessor {
 						subDoubleVal = new Double(0.0);
 					}
 					subDoubleVal = subDoubleVal + doubleVal;
+					aggrMap.put(key, subDoubleVal);
+				} else if (value instanceof BigInteger) {
+					BigInteger val = (BigInteger) value;
+					Long subVal = (Long) aggrMap.get(key);
+					if (subVal == null) {
+						subVal = new Long(0);
+					}
+					subVal = subVal + val.longValue();
+					aggrMap.put(key, subVal);
+				} else if (value instanceof BigDecimal) {
+					BigDecimal val = (BigDecimal) value;
+					Double subDoubleVal = (Double) aggrMap.get(key);
+					if (subDoubleVal == null) {
+						subDoubleVal = new Double(0.0);
+					}
+					subDoubleVal = subDoubleVal + val.doubleValue();
 					aggrMap.put(key, subDoubleVal);
 				}
 			}
@@ -158,7 +176,7 @@ public class PagingDataPreprocessor implements DataXPreprocessor {
 					Paging paging = new Paging();
 					paging.setContextMap(parameter);
 					paging.setParamMap(parameter);
-					paging.setDataList(this.copy(onePageList, item.getPageSize() - 2));// 不足一页，空行补齐
+					paging.setDataList(this.copy(onePageList, item.getPageSize()));// 不足一页，空行补齐
 					paging.setPageSize(pageSizeX);
 					paging.setCurrentPage(++pageNoX);
 					logger.debug("dataList.size():" + paging.getDataList().size());
@@ -185,7 +203,7 @@ public class PagingDataPreprocessor implements DataXPreprocessor {
 							paging.setCurrentPage(++pageNoX);
 							logger.debug("dataList.size():" + paging.getDataList().size());
 							pagingList.add(paging);
-							//onePageList.clear();
+							// onePageList.clear();
 						}
 					}
 				}

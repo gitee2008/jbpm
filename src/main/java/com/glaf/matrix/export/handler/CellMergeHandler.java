@@ -130,7 +130,7 @@ public class CellMergeHandler implements WorkbookHandler {
 										cell.removeCellComment();
 									}
 								} catch (Exception ex) {
-									// e.printStackTrace();
+									// //e.printStackTrace();
 									logger.error("merged region error", ex);
 								}
 							}
@@ -225,7 +225,7 @@ public class CellMergeHandler implements WorkbookHandler {
 										cell.removeCellComment();
 									}
 								} catch (Exception ex) {
-									// ex.printStackTrace();
+									////ex.printStackTrace();
 									logger.error("merged region error", ex);
 								}
 							}

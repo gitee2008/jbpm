@@ -469,21 +469,18 @@
 		<!-- 结束apache 工具包 -->
 		<dependency>
 			<groupId>org.bouncycastle</groupId>
-			<artifactId>bcprov-jdk15on</artifactId>
-			<version>1.62</version>
-			<type>jar</type>
+		    <artifactId>bcprov-jdk15on</artifactId>
+		    <version>1.62</version>
 		</dependency>
 		<dependency>
 			<groupId>org.bouncycastle</groupId>
 			<artifactId>bcpkix-jdk15on</artifactId>
 			<version>1.62</version>
-			<type>jar</type>
 		</dependency>
 		<dependency>
 			<groupId>org.bouncycastle</groupId>
 			<artifactId>bcmail-jdk15on</artifactId>
 			<version>1.62</version>
-			<type>jar</type>
 		</dependency>
 		<dependency>
 			<groupId>com.ecwid.consul</groupId>
@@ -627,7 +624,7 @@
 		<dependency>
 			<groupId>com.fasterxml.uuid</groupId>
 			<artifactId>java-uuid-generator</artifactId>
-			<version>3.1.5</version>
+			<version>3.2.0</version>
 		</dependency>
 		<!-- 结束JSON 工具 -->
 		<!-- 模板工具 -->
@@ -925,7 +922,7 @@
 		<dependency>
 			<groupId>io.netty</groupId>
             <artifactId>netty-all</artifactId>
-            <version>4.1.36.Final</version>
+            <version>4.1.38.Final</version>
 		</dependency>
 		<!-- 任务调度框架 -->
 		<dependency>
@@ -1055,6 +1052,12 @@
 		    <groupId>org.jfree</groupId>
 			<artifactId>jcommon</artifactId>
 			<version>1.0.24</version>
+		</dependency>
+		<dependency>
+			<groupId>com.itextpdf</groupId>
+			<artifactId>itext7-core</artifactId>
+			<version>7.1.7</version>
+			<type>pom</type>
 		</dependency>
 		<dependency>
 			<groupId>com.belerweb</groupId>

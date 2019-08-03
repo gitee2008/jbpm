@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package com.glaf.matrix.export.handler;
+package com.glaf.matrix.export.preprocessor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,10 +44,12 @@ public class DataXFactory {
 	static {
 		preprocessorMap.put("aggregate", new AggregateDataPreprocessor());
 		preprocessorMap.put("paging", new PagingDataPreprocessor());
+		preprocessorMap.put("row", new RowModelDataPreprocessor());
 		preprocessorMap.put("image", new ImageDataPreprocessor());
 		nameMap.put("aggregate", "数据分组分页汇总预处理器");
 		nameMap.put("paging", "数据分页预处理器");
 		nameMap.put("image", "图像数据预处理器");
+		nameMap.put("row", "行列数据预处理器");
 	}
 
 	public static ConcurrentMap<String, String> getNameMap() {

@@ -253,7 +253,7 @@ public class XmlExportItemController {
 
 			return ResponseUtils.responseJsonResult(true);
 		} catch (Exception ex) {
-			ex.printStackTrace();
+			////ex.printStackTrace();
 			logger.error(ex);
 		}
 		return ResponseUtils.responseJsonResult(false);

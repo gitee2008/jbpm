@@ -217,7 +217,7 @@ public class ExportChartTask extends RecursiveTask<byte[]> {
 				logger.debug("请求未获取到字节流.");
 			}
 		} catch (Exception ex) {
-			// ex.printStackTrace();
+			////ex.printStackTrace();
 			logger.error("http request error:{}", ex);
 		} finally {
 			IOUtils.closeQuietly(inputStream);

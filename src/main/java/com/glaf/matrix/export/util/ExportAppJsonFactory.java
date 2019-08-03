@@ -69,6 +69,12 @@ public class ExportAppJsonFactory {
 		if (jsonObject.containsKey("exportFileExpr")) {
 			model.setExportFileExpr(jsonObject.getString("exportFileExpr"));
 		}
+		if (jsonObject.containsKey("exportPDFTool")) {
+			model.setExportPDFTool(jsonObject.getString("exportPDFTool"));
+		}
+		if (jsonObject.containsKey("mergePDFFlag")) {
+			model.setMergePDFFlag(jsonObject.getString("mergePDFFlag"));
+		}
 		if (jsonObject.containsKey("externalColumnsFlag")) {
 			model.setExternalColumnsFlag(jsonObject.getString("externalColumnsFlag"));
 		}
@@ -89,6 +95,27 @@ public class ExportAppJsonFactory {
 		}
 		if (jsonObject.containsKey("mulitiFlag")) {
 			model.setMulitiFlag(jsonObject.getString("mulitiFlag"));
+		}
+		if (jsonObject.containsKey("enableSQLFlag")) {
+			model.setEnableSQLFlag(jsonObject.getString("enableSQLFlag"));
+		}
+		if (jsonObject.containsKey("saveDataFlag")) {
+			model.setSaveDataFlag(jsonObject.getString("saveDataFlag"));
+		}
+		if (jsonObject.containsKey("generateFlag")) {
+			model.setGenerateFlag(jsonObject.getString("generateFlag"));
+		}
+		if (jsonObject.containsKey("genTime")) {
+			model.setGenTime(jsonObject.getInteger("genTime"));
+		}
+		if (jsonObject.containsKey("parameterDatasetId")) {
+			model.setParameterDatasetId(jsonObject.getString("parameterDatasetId"));
+		}
+		if (jsonObject.containsKey("outParameterColumns")) {
+			model.setOutParameterColumns(jsonObject.getString("outParameterColumns"));
+		}
+		if (jsonObject.containsKey("parallelFlag")) {
+			model.setParallelFlag(jsonObject.getString("parallelFlag"));
 		}
 		if (jsonObject.containsKey("shedulerFlag")) {
 			model.setShedulerFlag(jsonObject.getString("shedulerFlag"));
@@ -152,6 +179,12 @@ public class ExportAppJsonFactory {
 		if (model.getExportFileExpr() != null) {
 			jsonObject.put("exportFileExpr", model.getExportFileExpr());
 		}
+		if (model.getExportPDFTool() != null) {
+			jsonObject.put("exportPDFTool", model.getExportPDFTool());
+		}
+		if (model.getMergePDFFlag() != null) {
+			jsonObject.put("mergePDFFlag", model.getMergePDFFlag());
+		}
 		if (model.getExternalColumnsFlag() != null) {
 			jsonObject.put("externalColumnsFlag", model.getExternalColumnsFlag());
 		}
@@ -169,10 +202,31 @@ public class ExportAppJsonFactory {
 		if (model.getMulitiFlag() != null) {
 			jsonObject.put("mulitiFlag", model.getMulitiFlag());
 		}
+		if (model.getEnableSQLFlag() != null) {
+			jsonObject.put("enableSQLFlag", model.getEnableSQLFlag());
+		}
+		if (model.getSaveDataFlag() != null) {
+			jsonObject.put("saveDataFlag", model.getSaveDataFlag());
+		}
+		if (model.getParameterDatasetId() != null) {
+			jsonObject.put("parameterDatasetId", model.getParameterDatasetId());
+		}
+		if (model.getOutParameterColumns() != null) {
+			jsonObject.put("outParameterColumns", model.getOutParameterColumns());
+		}
+		if (model.getParallelFlag() != null) {
+			jsonObject.put("parallelFlag", model.getParallelFlag());
+		}
 		if (model.getShedulerFlag() != null) {
 			jsonObject.put("shedulerFlag", model.getShedulerFlag());
 		}
 		jsonObject.put("interval", model.getInterval());
+		
+		if (model.getGenerateFlag() != null) {
+			jsonObject.put("generateFlag", model.getGenerateFlag());
+		} 
+		jsonObject.put("genTime", model.getGenTime());
+
 		if (model.getCreateBy() != null) {
 			jsonObject.put("createBy", model.getCreateBy());
 		}
@@ -228,6 +282,12 @@ public class ExportAppJsonFactory {
 		if (model.getExportFileExpr() != null) {
 			jsonObject.put("exportFileExpr", model.getExportFileExpr());
 		}
+		if (model.getExportPDFTool() != null) {
+			jsonObject.put("exportPDFTool", model.getExportPDFTool());
+		}
+		if (model.getMergePDFFlag() != null) {
+			jsonObject.put("mergePDFFlag", model.getMergePDFFlag());
+		}
 		if (model.getExternalColumnsFlag() != null) {
 			jsonObject.put("externalColumnsFlag", model.getExternalColumnsFlag());
 		}
@@ -245,10 +305,29 @@ public class ExportAppJsonFactory {
 		if (model.getMulitiFlag() != null) {
 			jsonObject.put("mulitiFlag", model.getMulitiFlag());
 		}
+		if (model.getEnableSQLFlag() != null) {
+			jsonObject.put("enableSQLFlag", model.getEnableSQLFlag());
+		}
+		if (model.getSaveDataFlag() != null) {
+			jsonObject.put("saveDataFlag", model.getSaveDataFlag());
+		}
+		if (model.getParameterDatasetId() != null) {
+			jsonObject.put("parameterDatasetId", model.getParameterDatasetId());
+		}
+		if (model.getOutParameterColumns() != null) {
+			jsonObject.put("outParameterColumns", model.getOutParameterColumns());
+		}
+		if (model.getParallelFlag() != null) {
+			jsonObject.put("parallelFlag", model.getParallelFlag());
+		}
 		if (model.getShedulerFlag() != null) {
 			jsonObject.put("shedulerFlag", model.getShedulerFlag());
 		}
 		jsonObject.put("interval", model.getInterval());
+		if (model.getGenerateFlag() != null) {
+			jsonObject.put("generateFlag", model.getGenerateFlag());
+		} 
+		jsonObject.put("genTime", model.getGenTime());
 		if (model.getCreateBy() != null) {
 			jsonObject.put("createBy", model.getCreateBy());
 		}

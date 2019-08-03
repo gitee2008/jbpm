@@ -16,35 +16,50 @@
  * limitations under the License.
  */
 
-package com.glaf.matrix.export.mapper;
+package com.glaf.matrix.export.domain;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.stereotype.Component;
-import com.glaf.matrix.export.domain.*;
-import com.glaf.matrix.export.query.*;
-
 /**
+ * 每页的行记录集
  * 
- * Mapper接口
- *
  */
+@SuppressWarnings("rawtypes")
+public class PageModel {
 
-@Component("com.glaf.matrix.export.mapper.DataExportMapper")
-public interface DataExportMapper {
+	protected int rowSize;
 
-	void deleteDataExports(DataExportQuery query);
+	protected List rows = new ArrayList();
 
-	void deleteDataExportById(String id);
+	protected List<RowModel> rowModels = new ArrayList<RowModel>();
 
-	DataExport getDataExportById(String id);
+	public PageModel() {
 
-	int getDataExportCount(DataExportQuery query);
+	}
 
-	List<DataExport> getDataExports(DataExportQuery query);
+	public List<RowModel> getRowModels() {
+		return rowModels;
+	}
 
-	void insertDataExport(DataExport model);
+	public List getRows() {
+		return rows;
+	}
 
-	void updateDataExport(DataExport model);
+	public int getRowSize() {
+		return rowSize;
+	}
+
+	public void setRowModels(List<RowModel> rowModels) {
+		this.rowModels = rowModels;
+	}
+
+	public void setRows(List rows) {
+		this.rows = rows;
+	}
+
+	public void setRowSize(int rowSize) {
+		this.rowSize = rowSize;
+	}
 
 }

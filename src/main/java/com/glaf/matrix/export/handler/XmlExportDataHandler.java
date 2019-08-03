@@ -118,7 +118,7 @@ public class XmlExportDataHandler implements XmlDataHandler {
 		List<XmlExport> children = XmlExportFactory.getChildrenWithItems(xmlExport.getNodeId());
 		if (children != null && !children.isEmpty()) {
 			xmlExport.setElement(root);
-			logger.debug("---------------------------gen child xml----------------------------");
+			logger.debug("---------------------------gen xml child ----------------------------");
 			for (XmlExport child : children) {
 				child.setParent(xmlExport);
 				this.addChild(child, srcDatabase);

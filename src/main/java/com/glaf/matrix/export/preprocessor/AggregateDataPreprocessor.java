@@ -16,8 +16,10 @@
  * limitations under the License.
  */
 
-package com.glaf.matrix.export.handler;
+package com.glaf.matrix.export.preprocessor;
 
+import java.math.BigInteger;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -70,6 +72,22 @@ public class AggregateDataPreprocessor implements DataXPreprocessor {
 					}
 					subDoubleVal = subDoubleVal + doubleVal;
 					aggrMap.put(key, subDoubleVal);
+				} else if (value instanceof BigInteger) {
+					BigInteger val = (BigInteger) value;
+					Long subVal = (Long) aggrMap.get(key);
+					if (subVal == null) {
+						subVal = new Long(0);
+					}
+					subVal = subVal + val.longValue();
+					aggrMap.put(key, subVal);
+				} else if (value instanceof BigDecimal) {
+					BigDecimal val = (BigDecimal) value;
+					Double subDoubleVal = (Double) aggrMap.get(key);
+					if (subDoubleVal == null) {
+						subDoubleVal = new Double(0.0);
+					}
+					subDoubleVal = subDoubleVal + val.doubleValue();
+					aggrMap.put(key, subDoubleVal);
 				}
 			}
 		}
@@ -95,7 +113,7 @@ public class AggregateDataPreprocessor implements DataXPreprocessor {
 	@Override
 	public void preprocess(Map<String, Object> parameter, ExportApp exportApp) {
 		for (ExportItem item : exportApp.getItems()) {
-			logger.debug("item->" + item.toJsonObject().toJSONString());
+			logger.debug("item->" + item.getTitle() + "[" + item.getName() + "]");
 			if (item.getPageSize() > 0) {
 				int index = 0;
 				int pageNoX = 0;
@@ -107,7 +125,7 @@ public class AggregateDataPreprocessor implements DataXPreprocessor {
 				Map<String, List<Map<String, Object>>> groupListMap = new LinkedHashMap<String, List<Map<String, Object>>>();
 
 				/**
-				 * 预处理汇总数据,根据指定的字段做聚合及分组
+				 * 预处理汇总数据，根据指定的字段做聚合及分组，先根据分组条件分组
 				 */
 				if (StringUtils.isNotEmpty(item.getSubTotalColumn())) {
 					for (Map<String, Object> dataMap : item.getDataList()) {
@@ -118,8 +136,8 @@ public class AggregateDataPreprocessor implements DataXPreprocessor {
 							if (aggrMap == null) {
 								aggrMap = new HashMap<String, Object>();
 							}
-							this.aggregate(aggrMap, dataMap);// 分组汇总
-							this.aggregate(totalMap, dataMap);// 合计汇总
+							this.aggregate(aggrMap, dataMap);// 分组汇总，累加数值字段
+							this.aggregate(totalMap, dataMap);// 合计汇总，累加数值字段
 							aggregateMap.put(splitColumn, aggrMap);
 
 							List<Map<String, Object>> subList = groupListMap.get(splitColumn);
@@ -134,18 +152,22 @@ public class AggregateDataPreprocessor implements DataXPreprocessor {
 
 					logger.debug("groups:" + groupListMap.keySet());
 
-					int recordTT = 0;
+					int recordCurrent = 0;
 					int recordTotal = 0;
 					List<Map<String, Object>> valueList = null;
+					/**
+					 * 根据分组数据进行分页组装，将分组后的数据再分页，到分组的最后一条记录写下分组合计
+					 */
 					Set<Entry<String, List<Map<String, Object>>>> entrySet = groupListMap.entrySet();
 					for (Entry<String, List<Map<String, Object>>> entry : entrySet) {
 						index = 0;
-						recordTT = 0;
+						recordCurrent = 0;
+						onePageList.clear();
 						valueList = entry.getValue();
 						recordTotal = valueList.size();
 						Map<String, Object> subTotalMap = new HashMap<String, Object>();
 						for (Map<String, Object> dataMap : valueList) {
-							recordTT++;
+							recordCurrent++;
 							String str = null;
 							if (StringUtils.isNotEmpty(item.getLineBreakColumn())) {
 								str = ParamUtils.getString(dataMap, item.getLineBreakColumn());
@@ -168,10 +190,10 @@ public class AggregateDataPreprocessor implements DataXPreprocessor {
 										for (Map<String, Object> rowMap : onePageList) {
 											this.aggregate(subTotalMap, rowMap);// 小计汇总
 										}
-									}
 
-									if (recordTT == recordTotal) {// 是否是最后一条记录，如果是加上合计汇总
-										paging.setSubTotalMap(subTotalMap);
+										if (recordCurrent == recordTotal) {// 是否是分组的最后一条记录，如果是加上分组汇总
+											paging.setSubTotalMap(subTotalMap);
+										}
 									}
 
 									pagingList.add(paging);
@@ -196,11 +218,12 @@ public class AggregateDataPreprocessor implements DataXPreprocessor {
 										for (Map<String, Object> rowMap : onePageList) {
 											this.aggregate(subTotalMap, rowMap);// 小计汇总
 										}
+
+										if (recordCurrent == recordTotal) {// 是否是分组的最后一条记录，如果是加上分组汇总
+											paging.setSubTotalMap(subTotalMap);
+										}
 									}
 
-									if (recordTT == recordTotal) {// 是否是最后一条记录，如果是加上合计汇总
-										paging.setSubTotalMap(subTotalMap);
-									}
 									pagingList.add(paging);
 									onePageList.clear();
 									pageSizeX = 0;
@@ -208,13 +231,13 @@ public class AggregateDataPreprocessor implements DataXPreprocessor {
 									// logger.debug("dataList.size():" + paging.getDataList().size());
 								}
 							}
-
 						}
+
 						if (onePageList.size() > 0) {
 							Paging paging = new Paging();
 							paging.setContextMap(parameter);
 							paging.setParamMap(parameter);
-							paging.setDataList(this.copy(onePageList, item.getPageSize() - 2));// 不足一页，空行补齐
+							paging.setDataList(this.copy(onePageList, item.getPageSize()));// 不足一页，空行补齐
 							paging.setPageSize(pageSizeX);
 							paging.setCurrentPage(++pageNoX);
 
@@ -224,6 +247,7 @@ public class AggregateDataPreprocessor implements DataXPreprocessor {
 								}
 								paging.setSubTotalMap(subTotalMap);
 							}
+
 							pagingList.add(paging);
 							onePageList.clear();
 							// logger.debug("dataList.size():" + paging.getDataList().size());
@@ -301,7 +325,7 @@ public class AggregateDataPreprocessor implements DataXPreprocessor {
 						Paging paging = new Paging();
 						paging.setContextMap(parameter);
 						paging.setParamMap(parameter);
-						paging.setDataList(this.copy(onePageList, item.getPageSize() - 2));// 不足一页，空行补齐
+						paging.setDataList(this.copy(onePageList, item.getPageSize()));// 不足一页，空行补齐
 						paging.setPageSize(pageSizeX);
 						paging.setCurrentPage(++pageNoX);
 						// logger.debug("dataList.size():" + paging.getDataList().size());

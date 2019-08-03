@@ -35,6 +35,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import com.glaf.core.util.LowerLinkedMap;
 import com.glaf.core.context.ContextFactory;
 import com.glaf.core.domain.Database;
 import com.glaf.core.el.ExpressionTools;
@@ -44,7 +45,6 @@ import com.glaf.core.service.IDatabaseService;
 import com.glaf.core.util.DBUtils;
 import com.glaf.core.util.DateUtils;
 import com.glaf.core.util.JdbcUtils;
-import com.glaf.core.util.LowerLinkedMap;
 import com.glaf.core.util.QueryUtils;
 
 import com.glaf.matrix.export.domain.XmlExport;
@@ -94,7 +94,7 @@ public class XmlExportDataBean {
 				JdbcUtils.close(srcPsmt);
 			}
 		} catch (Exception ex) {
-			ex.printStackTrace();
+			//// ex.printStackTrace();
 			logger.error("execute sql query error", ex);
 			throw new RuntimeException(ex);
 		} finally {
@@ -160,7 +160,7 @@ public class XmlExportDataBean {
 				JdbcUtils.close(srcPsmt);
 			}
 		} catch (Exception ex) {
-			// ex.printStackTrace();
+			//// ex.printStackTrace();
 			logger.error("execute sql query error", ex);
 			throw new RuntimeException(ex);
 		} finally {

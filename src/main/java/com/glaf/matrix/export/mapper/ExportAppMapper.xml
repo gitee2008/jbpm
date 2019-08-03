@@ -22,6 +22,10 @@
 			jdbcType="VARCHAR" />
 		<result property="exportFileExpr" column="EXPORTFILEEXPR_"
 			jdbcType="VARCHAR" />
+		<result property="exportPDFTool" column="EXPORTPDFTOOL_"
+			jdbcType="VARCHAR" />
+		<result property="mergePDFFlag" column="MERGEPDFFLAG_"
+			jdbcType="VARCHAR" />
 		<result property="externalColumnsFlag"
 			column="EXTERNALCOLUMNSFLAG_" jdbcType="VARCHAR" />
 		<result property="excelProcessChains"
@@ -35,6 +39,19 @@
 		<result property="historyFlag" column="HISTORYFLAG_"
 			jdbcType="VARCHAR" />
 		<result property="mulitiFlag" column="MULITIFLAG_"
+			jdbcType="VARCHAR" />
+		<result property="enableSQLFlag" column="ENABLESQLFLAG_"
+			jdbcType="VARCHAR" />
+		<result property="saveDataFlag" column="SAVEDATAFLAG_"
+			jdbcType="VARCHAR" />
+		<result property="generateFlag" column="GENERATEFLAG_"
+			jdbcType="VARCHAR" />
+		<result property="genTime" column="GENTIME_" jdbcType="INTEGER" />
+		<result property="parameterDatasetId"
+			column="PARAMETERDATASETID_" jdbcType="VARCHAR" />
+		<result property="outParameterColumns"
+			column="OUTPARAMETERCOLUMNS_" jdbcType="VARCHAR" />
+		<result property="parallelFlag" column="PARALLELFLAG_"
 			jdbcType="VARCHAR" />
 		<result property="shedulerFlag" column="SHEDULERFLAG_"
 			jdbcType="VARCHAR" />
@@ -85,6 +102,12 @@
 			<if test="exportFileExpr != null">
 				,EXPORTFILEEXPR_
 			</if>
+			<if test="exportPDFTool != null">
+				,EXPORTPDFTOOL_
+			</if>
+			<if test="mergePDFFlag != null">
+				,MERGEPDFFLAG_
+			</if>
 			<if test="externalColumnsFlag != null">
 				,EXTERNALCOLUMNSFLAG_
 			</if>
@@ -105,6 +128,27 @@
 			</if>
 			<if test="mulitiFlag != null">
 				,MULITIFLAG_
+			</if>
+			<if test="enableSQLFlag != null">
+				,ENABLESQLFLAG_
+			</if>
+			<if test="saveDataFlag != null">
+				,SAVEDATAFLAG_
+			</if>
+			<if test="generateFlag != null">
+				,GENERATEFLAG_
+			</if>
+			<if test="genTime != null">
+				,GENTIME_
+			</if>
+			<if test="parameterDatasetId != null">
+				,PARAMETERDATASETID_
+			</if>
+			<if test="outParameterColumns != null">
+				,OUTPARAMETERCOLUMNS_
+			</if>
+			<if test="parallelFlag != null">
+				,PARALLELFLAG_
 			</if>
 			<if test="shedulerFlag != null">
 				,SHEDULERFLAG_
@@ -162,6 +206,12 @@
 			<if test="exportFileExpr != null">
 				,#{exportFileExpr, jdbcType=VARCHAR}
 			</if>
+			<if test="exportPDFTool != null">
+				,#{exportPDFTool, jdbcType=VARCHAR}
+			</if>
+			<if test="mergePDFFlag != null">
+				,#{mergePDFFlag, jdbcType=VARCHAR}
+			</if>
 			<if test="externalColumnsFlag != null">
 				,#{externalColumnsFlag, jdbcType=VARCHAR}
 			</if>
@@ -182,6 +232,27 @@
 			</if>
 			<if test="mulitiFlag != null">
 				,#{mulitiFlag, jdbcType=VARCHAR}
+			</if>
+			<if test="enableSQLFlag != null">
+				,#{enableSQLFlag, jdbcType=VARCHAR}
+			</if>
+			<if test="saveDataFlag != null">
+				,#{saveDataFlag, jdbcType=VARCHAR}
+			</if>
+			<if test="generateFlag != null">
+				,#{generateFlag, jdbcType=VARCHAR}
+			</if>
+			<if test="genTime != null">
+				,#{genTime, jdbcType=INTEGER}
+			</if>
+			<if test="parameterDatasetId != null">
+				,#{parameterDatasetId, jdbcType=VARCHAR}
+			</if>
+			<if test="outParameterColumns != null">
+				,#{outParameterColumns, jdbcType=VARCHAR}
+			</if>
+			<if test="parallelFlag != null">
+				,#{parallelFlag, jdbcType=VARCHAR}
 			</if>
 			<if test="shedulerFlag != null">
 				,#{shedulerFlag, jdbcType=VARCHAR}
@@ -252,6 +323,12 @@
 				EXCELPROCESSCHAINS_ = #{excelProcessChains,
 				jdbcType=VARCHAR},
 			</if>
+			<if test="exportPDFTool != null">
+				EXPORTPDFTOOL_ = #{exportPDFTool, jdbcType=VARCHAR},
+			</if>
+			<if test="mergePDFFlag != null">
+				MERGEPDFFLAG_ = #{mergePDFFlag, jdbcType=VARCHAR},
+			</if>
 			<if test="pageHeight != null">
 				PAGEHEIGHT_ = #{pageHeight, jdbcType=INTEGER},
 			</if>
@@ -266,6 +343,29 @@
 			</if>
 			<if test="mulitiFlag != null">
 				MULITIFLAG_ = #{mulitiFlag, jdbcType=VARCHAR},
+			</if>
+			<if test="enableSQLFlag != null">
+				ENABLESQLFLAG_ = #{enableSQLFlag, jdbcType=VARCHAR},
+			</if>
+			<if test="saveDataFlag != null">
+				SAVEDATAFLAG_ = #{saveDataFlag, jdbcType=VARCHAR},
+			</if>
+			<if test="generateFlag != null">
+				GENERATEFLAG_ = #{generateFlag, jdbcType=VARCHAR},
+			</if>
+			<if test="genTime != null">
+				GENTIME_ = #{genTime, jdbcType=INTEGER},
+			</if>
+			<if test="parameterDatasetId != null">
+				PARAMETERDATASETID_ = #{parameterDatasetId,
+				jdbcType=VARCHAR},
+			</if>
+			<if test="outParameterColumns != null">
+				OUTPARAMETERCOLUMNS_ = #{outParameterColumns,
+				jdbcType=VARCHAR},
+			</if>
+			<if test="parallelFlag != null">
+				PARALLELFLAG_ = #{parallelFlag, jdbcType=VARCHAR},
 			</if>
 			<if test="shedulerFlag != null">
 				SHEDULERFLAG_ = #{shedulerFlag, jdbcType=VARCHAR},
@@ -312,7 +412,7 @@
 				order by ${orderBy}
 			</when>
 			<otherwise>
-				order by E.ACTIVE_ desc, E.SORTNO_ asc
+				order by E.ACTIVE_ desc, E.SORTNO_ asc, E.CREATETIME_ desc
 			</otherwise>
 		</choose>
 	</select>

@@ -89,7 +89,7 @@ public class ExportApp implements Serializable, JSONable {
 	/**
 	 * 模板编号
 	 */
-	@Column(name = "TEMPLATEID_", length = 50)
+	@Column(name = "TEMPLATEID_", length = 250)
 	protected String templateId;
 
 	/**
@@ -107,8 +107,20 @@ public class ExportApp implements Serializable, JSONable {
 	/**
 	 * Excel后置处理器
 	 */
-	@Column(name = "EXCELPROCESSCHAINS_", length = 500)
+	@Column(name = "EXCELPROCESSCHAINS_", length = 800)
 	protected String excelProcessChains;
+
+	/**
+	 * 导出PDF工具
+	 */
+	@Column(name = "EXPORTPDFTOOL_", length = 50)
+	protected String exportPDFTool;
+
+	/**
+	 * 合并PDF标识
+	 */
+	@Column(name = "MERGEPDFFLAG_", length = 20)
+	protected String mergePDFFlag;
 
 	/**
 	 * 页高
@@ -131,19 +143,61 @@ public class ExportApp implements Serializable, JSONable {
 	/**
 	 * 是否生成历史文件
 	 */
-	@Column(name = "HISTORYFLAG_", length = 1)
+	@Column(name = "HISTORYFLAG_", length = 20)
 	protected String historyFlag;
 
 	/**
 	 * 是否生成多个文件
 	 */
-	@Column(name = "MULITIFLAG_", length = 1)
+	@Column(name = "MULITIFLAG_", length = 20)
 	protected String mulitiFlag;
+
+	/**
+	 * 开启模板中SQL查询功能
+	 */
+	@Column(name = "ENABLESQLFLAG_", length = 20)
+	protected String enableSQLFlag;
+
+	/**
+	 * 保存数据标识
+	 */
+	@Column(name = "SAVEDATAFLAG_", length = 20)
+	protected String saveDataFlag;
+
+	/**
+	 * 生成标识
+	 */
+	@Column(name = "GENERATEFLAG_", length = 20)
+	protected String generateFlag;
+
+	/**
+	 * 生成时间
+	 */
+	@Column(name = "GENTIME_")
+	protected int genTime;
+
+	/**
+	 * 参数数据集
+	 */
+	@Column(name = "PARAMETERDATASETID_", length = 50)
+	protected String parameterDatasetId;
+
+	/**
+	 * 输出参数列字段集
+	 */
+	@Column(name = "OUTPARAMETERCOLUMNS_", length = 2000)
+	protected String outParameterColumns;
+
+	/**
+	 * 并行标记
+	 */
+	@Column(name = "PARALLELFLAG_", length = 20)
+	protected String parallelFlag;
 
 	/**
 	 * 是否定时调度
 	 */
-	@Column(name = "SHEDULERFLAG_", length = 1)
+	@Column(name = "SHEDULERFLAG_", length = 20)
 	protected String shedulerFlag;
 
 	/**
@@ -261,6 +315,10 @@ public class ExportApp implements Serializable, JSONable {
 		return this.deploymentId;
 	}
 
+	public String getEnableSQLFlag() {
+		return enableSQLFlag;
+	}
+
 	public String getExcelProcessChains() {
 		return excelProcessChains;
 	}
@@ -269,8 +327,20 @@ public class ExportApp implements Serializable, JSONable {
 		return exportFileExpr;
 	}
 
+	public String getExportPDFTool() {
+		return exportPDFTool;
+	}
+
 	public String getExternalColumnsFlag() {
 		return externalColumnsFlag;
+	}
+
+	public String getGenerateFlag() {
+		return generateFlag;
+	}
+
+	public int getGenTime() {
+		return genTime;
 	}
 
 	public String getHistoryFlag() {
@@ -289,12 +359,20 @@ public class ExportApp implements Serializable, JSONable {
 		return items;
 	}
 
+	public String getMergePDFFlag() {
+		return mergePDFFlag;
+	}
+
 	public String getMulitiFlag() {
 		return mulitiFlag;
 	}
 
 	public long getNodeId() {
 		return this.nodeId;
+	}
+
+	public String getOutParameterColumns() {
+		return outParameterColumns;
 	}
 
 	public int getPageHeight() {
@@ -307,6 +385,18 @@ public class ExportApp implements Serializable, JSONable {
 
 	public String getPageVarName() {
 		return pageVarName;
+	}
+
+	public String getParallelFlag() {
+		return parallelFlag;
+	}
+
+	public String getParameterDatasetId() {
+		return parameterDatasetId;
+	}
+
+	public String getSaveDataFlag() {
+		return saveDataFlag;
 	}
 
 	public String getShedulerFlag() {
@@ -392,6 +482,10 @@ public class ExportApp implements Serializable, JSONable {
 		this.deploymentId = deploymentId;
 	}
 
+	public void setEnableSQLFlag(String enableSQLFlag) {
+		this.enableSQLFlag = enableSQLFlag;
+	}
+
 	public void setExcelProcessChains(String excelProcessChains) {
 		this.excelProcessChains = excelProcessChains;
 	}
@@ -400,8 +494,20 @@ public class ExportApp implements Serializable, JSONable {
 		this.exportFileExpr = exportFileExpr;
 	}
 
+	public void setExportPDFTool(String exportPDFTool) {
+		this.exportPDFTool = exportPDFTool;
+	}
+
 	public void setExternalColumnsFlag(String externalColumnsFlag) {
 		this.externalColumnsFlag = externalColumnsFlag;
+	}
+
+	public void setGenerateFlag(String generateFlag) {
+		this.generateFlag = generateFlag;
+	}
+
+	public void setGenTime(int genTime) {
+		this.genTime = genTime;
 	}
 
 	public void setHistoryFlag(String historyFlag) {
@@ -420,12 +526,20 @@ public class ExportApp implements Serializable, JSONable {
 		this.items = items;
 	}
 
+	public void setMergePDFFlag(String mergePDFFlag) {
+		this.mergePDFFlag = mergePDFFlag;
+	}
+
 	public void setMulitiFlag(String mulitiFlag) {
 		this.mulitiFlag = mulitiFlag;
 	}
 
 	public void setNodeId(long nodeId) {
 		this.nodeId = nodeId;
+	}
+
+	public void setOutParameterColumns(String outParameterColumns) {
+		this.outParameterColumns = outParameterColumns;
 	}
 
 	public void setPageHeight(int pageHeight) {
@@ -438,6 +552,18 @@ public class ExportApp implements Serializable, JSONable {
 
 	public void setPageVarName(String pageVarName) {
 		this.pageVarName = pageVarName;
+	}
+
+	public void setParallelFlag(String parallelFlag) {
+		this.parallelFlag = parallelFlag;
+	}
+
+	public void setParameterDatasetId(String parameterDatasetId) {
+		this.parameterDatasetId = parameterDatasetId;
+	}
+
+	public void setSaveDataFlag(String saveDataFlag) {
+		this.saveDataFlag = saveDataFlag;
 	}
 
 	public void setShedulerFlag(String shedulerFlag) {

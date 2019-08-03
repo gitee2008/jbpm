@@ -34,7 +34,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
 import com.glaf.core.config.ViewProperties;
 import com.glaf.core.util.RequestUtils;
 import com.glaf.core.util.ResponseUtils;
@@ -72,7 +71,6 @@ public class ExportPreprocessorController {
 		String code = request.getParameter("code");
 		String expId = request.getParameter("expId");
 		String currentStep = request.getParameter("currentStep");
-		List<ExportPreprocessor> rows = null;
 		if (StringUtils.isNotEmpty(expId) && StringUtils.isNotEmpty(currentStep) && StringUtils.isNotEmpty(code)) {
 			array = DataItemFactory.getJSONArray(code);
 			request.setAttribute("array", array);
@@ -85,64 +83,13 @@ public class ExportPreprocessorController {
 				query.expId(expId);
 				query.currentStep(currentStep);
 				query.currentType(currentType);
-				rows = exportPreprocessorService.list(query);
+				List<ExportPreprocessor> rows = exportPreprocessorService.list(query);
 				request.setAttribute("rows", rows);
 			}
 		}
 
 		List<DataItemDefinition> definitions = dataItemDefinitionService.getDataItemDefinitions("synthetic");
 		request.setAttribute("definitions", definitions);
-
-		StringBuffer bufferx = new StringBuffer();
-		StringBuffer bufferx2 = new StringBuffer();
-		StringBuffer buffery = new StringBuffer();
-		StringBuffer buffery2 = new StringBuffer();
-
-		if (array != null && array.size() > 0) {
-			boolean includePrev = false;
-			boolean inculdeNext = false;
-			String key = null;
-			for (int i = 0; i < array.size(); i++) {
-				JSONObject json = (JSONObject) array.getJSONObject(i);
-				key = json.getString("key");
-				includePrev = false;
-				inculdeNext = false;
-				if (rows != null && rows.size() > 0) {
-					for (int j = 0; j < rows.size(); j++) {
-						ExportPreprocessor model = (ExportPreprocessor) rows.get(j);
-						if (StringUtils.equals(key, model.getPreviousStep())
-								&& StringUtils.equals(currentType, model.getPreviousType())) {
-							bufferx2.append("\n<option value=\"").append(json.getString("key")).append("\">")
-									.append(json.getString("value")).append(" [").append(json.getString("key"))
-									.append("]</option>");
-							includePrev = true;
-						}
-						if (StringUtils.equals(key, model.getNextStep())
-								&& StringUtils.equals(currentType, model.getNextType())) {
-							buffery2.append("\n<option value=\"").append(json.getString("key")).append("\">")
-									.append(json.getString("value")).append(" [").append(json.getString("key"))
-									.append("]</option>");
-							inculdeNext = true;
-						}
-					}
-				}
-				if (!includePrev) {
-					bufferx.append("\n<option value=\"").append(json.getString("key")).append("\">")
-							.append(json.getString("value")).append(" [").append(json.getString("key"))
-							.append("]</option>");
-				}
-				if (!inculdeNext) {
-					buffery.append("\n<option value=\"").append(json.getString("key")).append("\">")
-							.append(json.getString("value")).append(" [").append(json.getString("key"))
-							.append("]</option>");
-				}
-			}
-		}
-
-		request.setAttribute("bufferx", bufferx.toString());
-		request.setAttribute("bufferx2", bufferx2.toString());
-		request.setAttribute("buffery", buffery.toString());
-		request.setAttribute("buffery2", buffery2.toString());
 
 		String view = request.getParameter("view");
 		if (StringUtils.isNotEmpty(view)) {

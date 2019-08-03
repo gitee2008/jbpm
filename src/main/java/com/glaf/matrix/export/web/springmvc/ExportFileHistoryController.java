@@ -19,6 +19,7 @@
 package com.glaf.matrix.export.web.springmvc;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -27,6 +28,7 @@ import java.util.StringTokenizer;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+ 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -40,12 +42,14 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
 import com.glaf.core.security.LoginContext;
+import com.glaf.core.util.IOUtils;
 import com.glaf.core.util.Paging;
 import com.glaf.core.util.ParamUtils;
 import com.glaf.core.util.RequestUtils;
 import com.glaf.core.util.ResponseUtils;
 import com.glaf.core.util.StringTools;
 import com.glaf.core.util.Tools;
+import com.glaf.matrix.data.factory.DataFileFactory;
 import com.glaf.matrix.export.domain.ExportApp;
 import com.glaf.matrix.export.domain.ExportFileHistory;
 import com.glaf.matrix.export.query.ExportFileHistoryQuery;
@@ -112,8 +116,9 @@ public class ExportFileHistoryController {
 		String id = request.getParameter("id");
 		if (StringUtils.isNotEmpty(id)) {
 			logger.debug("id:" + id);
+			InputStream inputStream = null;
 			ExportFileHistory exportFileHistory = exportFileHistoryService.getExportFileHistory(id);
-			if (exportFileHistory != null && exportFileHistory.getData() != null) {
+			if (exportFileHistory != null) {
 				try {
 					ExportApp exportApp = exportAppService.getExportApp(exportFileHistory.getExpId());
 
@@ -134,10 +139,14 @@ public class ExportFileHistoryController {
 					}
 
 					if (hasPerm) {
-						ResponseUtils.download(request, response, exportFileHistory.getData(),
-								exportFileHistory.getFilename());
+						inputStream = DataFileFactory.getInstance().getInputStreamById(null, exportFileHistory.getId());
+						if (inputStream != null) {
+							ResponseUtils.download(request, response, inputStream, exportFileHistory.getFilename());
+						}
 					}
 				} catch (Exception ex) {
+				} finally {
+					IOUtils.closeQuietly(inputStream);
 				}
 			}
 		}

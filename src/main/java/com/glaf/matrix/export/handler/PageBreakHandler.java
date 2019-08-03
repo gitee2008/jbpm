@@ -38,27 +38,40 @@ public class PageBreakHandler implements WorkbookHandler {
 		for (int i = 0; i < sheetCnt; i++) {
 			Sheet sheet = wb.getSheetAt(i);
 			sheet.setAutobreaks(false);
+			float totalHeight = 0.0f;
 			int rows = sheet.getLastRowNum();
 			for (int rowIndex = 0; rowIndex <= rows; rowIndex++) {
 				if (rowIndex % 100 == 0) {
-					//logger.debug("准备处理第" + rowIndex + "行...");
+					// logger.debug("准备处理第" + rowIndex + "行...");
 				}
 				row = sheet.getRow(rowIndex);
 				if (row == null) {
 					continue;
 				}
+
+				totalHeight += row.getHeightInPoints();
+
 				cell = row.getCell(0);
 				if (cell == null) {
 					continue;
 				}
+
+				// logger.debug((rowIndex + 1) + "累计页高:" + totalHeight);
 				if (cell.getCellComment() != null) {
 					String str = cell.getCellComment().getString().getString();
 					// logger.debug("读取到注释:" + str);
 					if (str != null) {
 						if (StringUtils.contains(str.trim(), "xe:pageBreak")) {
-							sheet.setRowBreak(rowIndex); // 设置分页符
+							// logger.debug(">>累计页高:" + totalHeight);
 							// logger.debug(rowIndex + "行插入分页符.");
-							cell.removeCellComment();
+							if (exportApp.getPageHeight() > 0 && (exportApp.getPageHeight() - totalHeight) > 0) {
+								// row.setHeightInPoints((exportApp.getPageHeight() - totalHeight));
+								// logger.debug(rowIndex + "设置新行高" + (exportApp.getPageHeight() - totalHeight) +
+								// "并插入分页符!");
+							}
+							sheet.setRowBreak(rowIndex); // 设置分页符
+							totalHeight = 0.0f;
+							// cell.removeCellComment();
 						}
 					}
 				} else {
@@ -67,8 +80,15 @@ public class PageBreakHandler implements WorkbookHandler {
 						if (StringUtils.contains(str.trim(), "xe:pageBreak")) {
 							// logger.debug("读取到分页标识:" + str);
 							cell.setCellValue("");
-							sheet.setRowBreak(rowIndex); // 设置分页符
+							// logger.debug(">>累计页高:" + totalHeight);
 							// logger.debug(rowIndex + "行插入分页符!");
+							if (exportApp.getPageHeight() > 0 && (exportApp.getPageHeight() - totalHeight) > 0) {
+								// row.setHeightInPoints((exportApp.getPageHeight() - totalHeight));
+								// logger.debug(rowIndex + "设置新行高" + (exportApp.getPageHeight() - totalHeight) +
+								// "并插入分页符!");
+							}
+							sheet.setRowBreak(rowIndex); // 设置分页符
+							totalHeight = 0.0f;
 						}
 					}
 				}

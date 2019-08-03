@@ -16,35 +16,20 @@
  * limitations under the License.
  */
 
-package com.glaf.matrix.export.mapper;
+package com.glaf.matrix.export.handler;
 
-import java.util.List;
+import com.glaf.core.tree.component.TreeComponent;
+import com.glaf.matrix.export.domain.XmlExport;
 
-import org.springframework.stereotype.Component;
-import com.glaf.matrix.export.domain.*;
-import com.glaf.matrix.export.query.*;
+public interface TreeDataHandler {
 
-/**
- * 
- * Mapper接口
- *
- */
-
-@Component("com.glaf.matrix.export.mapper.DataExportItemMapper")
-public interface DataExportItemMapper {
-
-	void deleteDataExportItemById(String id);
-
-	void deleteDataExportItems(DataExportItemQuery query);
-
-	DataExportItem getDataExportItemById(String id);
-
-	int getDataExportItemCount(DataExportItemQuery query);
-
-	List<DataExportItem> getDataExportItems(DataExportItemQuery query);
-
-	void insertDataExportItem(DataExportItem model);
-
-	void updateDataExportItem(DataExportItem model);
+	/**
+	 * 增加树节点
+	 * 
+	 * @param xmlExport
+	 * @param node
+	 * @param databaseId
+	 */
+	void addChild(XmlExport xmlExport, TreeComponent node, long databaseId);
 
 }

@@ -561,10 +561,8 @@ public class DBUtils {
 	/**
 	 * 创建数据库表，如果已经存在，则不重建
 	 * 
-	 * @param connection
-	 *            JDBC连接
-	 * @param tableDefinition
-	 *            表定义
+	 * @param connection      JDBC连接
+	 * @param tableDefinition 表定义
 	 */
 	public static String createTable(Connection connection, TableDefinition tableDefinition) {
 		Statement statement = null;
@@ -646,10 +644,8 @@ public class DBUtils {
 	/**
 	 * 创建数据库表，如果已经存在，则删除重建
 	 * 
-	 * @param connection
-	 *            JDBC连接
-	 * @param tableDefinition
-	 *            表定义
+	 * @param connection      JDBC连接
+	 * @param tableDefinition 表定义
 	 */
 	public static void dropAndCreateTable(Connection connection, TableDefinition tableDefinition) {
 		String tableName = tableDefinition.getTableName();
@@ -664,10 +660,8 @@ public class DBUtils {
 	/**
 	 * 如果已经存在，则删除
 	 * 
-	 * @param connection
-	 *            JDBC连接
-	 * @param tableDefinition
-	 *            表定义
+	 * @param connection      JDBC连接
+	 * @param tableDefinition 表定义
 	 */
 	public static void dropTable(Connection connection, String tableName) {
 		Statement statement = null;
@@ -696,10 +690,8 @@ public class DBUtils {
 	/**
 	 * 如果已经存在，则删除
 	 * 
-	 * @param connection
-	 *            JDBC连接
-	 * @param tableDefinition
-	 *            表定义
+	 * @param connection      JDBC连接
+	 * @param tableDefinition 表定义
 	 */
 	public static void dropTable(String systemName, String tableName) {
 		Connection connection = null;
@@ -2279,6 +2271,30 @@ public class DBUtils {
 		if (sql.indexOf(" drop ") != -1) {
 			isLegal = false;
 		}
+		if (sql.indexOf(" reload ") != -1) {
+			isLegal = false;
+		}
+		if (sql.indexOf(" shutdown ") != -1) {
+			isLegal = false;
+		}
+		if (sql.indexOf(" grant ") != -1) {
+			isLegal = false;
+		}
+		if (sql.indexOf(" truncate ") != -1) {
+			isLegal = false;
+		}
+		if (sql.indexOf(" sys_key ") != -1) {
+			isLegal = false;
+		}
+		if (sql.indexOf(" sys_server ") != -1) {
+			isLegal = false;
+		}
+		if (sql.indexOf(" sys_property ") != -1) {
+			isLegal = false;
+		}
+		if (sql.indexOf(" login_module ") != -1) {
+			isLegal = false;
+		}
 
 		return isLegal;
 	}
@@ -2452,6 +2468,12 @@ public class DBUtils {
 		// .getBytes());
 
 		FileUtils.save("data/glaf.sql", DBUtils.getCreateTableDDL("glaf").getBytes());
+	}
+
+	public static String parseSQL(String sql) {
+		sql = sql.replaceAll(".*([';]+|(--)+).*", " ");
+		sql = StringTools.replace(sql, "$$QUOTE$$", "'");
+		return sql;
 	}
 
 	public static String removeOrders(String sql) {

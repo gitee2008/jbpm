@@ -143,6 +143,12 @@ public class ExportItemJsonFactory {
 		if (jsonObject.containsKey("subTotalColumn")) {
 			model.setSubTotalColumn(jsonObject.getString("subTotalColumn"));
 		}
+		if (jsonObject.containsKey("rowSize")) {
+			model.setRowSize(jsonObject.getInteger("rowSize"));
+		}
+		if (jsonObject.containsKey("colSize")) {
+			model.setColSize(jsonObject.getInteger("colSize"));
+		}
 		if (jsonObject.containsKey("pageSize")) {
 			model.setPageSize(jsonObject.getInteger("pageSize"));
 		}
@@ -227,6 +233,9 @@ public class ExportItemJsonFactory {
 		if (model.getRootPath() != null) {
 			jsonObject.put("rootPath", model.getRootPath());
 		}
+		if (model.getPreprocessors() != null) {
+			jsonObject.put("preprocessors", model.getPreprocessors());
+		}
 		if (model.getContextVarFlag() != null) {
 			jsonObject.put("contextVarFlag", model.getContextVarFlag());
 		}
@@ -239,9 +248,6 @@ public class ExportItemJsonFactory {
 		if (model.getDataHandlerChains() != null) {
 			jsonObject.put("dataHandlerChains", model.getDataHandlerChains());
 		}
-		if (model.getPreprocessors() != null) {
-			jsonObject.put("preprocessors", model.getPreprocessors());
-		} 
 		if (model.getSubTotalFlag() != null) {
 			jsonObject.put("subTotalFlag", model.getSubTotalFlag());
 		}
@@ -259,6 +265,8 @@ public class ExportItemJsonFactory {
 		}
 		jsonObject.put("lineHeight", model.getLineHeight());
 		jsonObject.put("charNumPerRow", model.getCharNumPerRow());
+		jsonObject.put("rowSize", model.getRowSize());
+		jsonObject.put("colSize", model.getColSize());
 		jsonObject.put("pageSize", model.getPageSize());
 		if (model.getCreateBy() != null) {
 			jsonObject.put("createBy", model.getCreateBy());
@@ -341,8 +349,13 @@ public class ExportItemJsonFactory {
 		}
 		jsonObject.put("lineHeight", model.getLineHeight());
 		jsonObject.put("charNumPerRow", model.getCharNumPerRow());
+		jsonObject.put("rowSize", model.getRowSize());
+		jsonObject.put("colSize", model.getColSize());
 		jsonObject.put("pageSize", model.getPageSize());
 
+		if (model.getPreprocessors() != null) {
+			jsonObject.put("preprocessors", model.getPreprocessors());
+		}
 		if (model.getContextVarFlag() != null) {
 			jsonObject.put("contextVarFlag", model.getContextVarFlag());
 		}
@@ -355,9 +368,6 @@ public class ExportItemJsonFactory {
 		if (model.getDataHandlerChains() != null) {
 			jsonObject.put("dataHandlerChains", model.getDataHandlerChains());
 		}
-		if (model.getPreprocessors() != null) {
-			jsonObject.put("preprocessors", model.getPreprocessors());
-		} 
 		if (model.getSubTotalFlag() != null) {
 			jsonObject.put("subTotalFlag", model.getSubTotalFlag());
 		}

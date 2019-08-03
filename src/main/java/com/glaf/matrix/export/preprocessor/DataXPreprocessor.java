@@ -16,21 +16,20 @@
  * limitations under the License.
  */
 
-package com.glaf.matrix.export.handler;
+package com.glaf.matrix.export.preprocessor;
 
 import java.util.Map;
 
-import com.glaf.core.security.LoginContext;
+import com.glaf.matrix.export.domain.ExportApp;
 
-public interface ExportHandler {
+public interface DataXPreprocessor {
 
 	/**
-	 * 导出数据
+	 * 数据预处理
 	 * 
-	 * @param loginContext
-	 * @param expId
-	 * @param params
-	 * @return
+	 * @param parameter
+	 * @param exportApp
 	 */
-	byte[] export(LoginContext loginContext, String expId, Map<String, Object> params);
+	void preprocess(Map<String, Object> parameter, ExportApp exportApp);
+
 }

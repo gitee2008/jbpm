@@ -28,6 +28,7 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 import org.dom4j.Element;
 
 import com.glaf.core.base.*;
+import com.glaf.core.tree.component.TreeComponent;
 import com.glaf.core.util.DateUtils;
 import com.glaf.matrix.export.util.*;
 
@@ -188,10 +189,13 @@ public class XmlExport implements Serializable, JSONable {
 	protected String blank;
 
 	@javax.persistence.Transient
-	protected XmlExport parent = null;
+	protected Element element = null;
 
 	@javax.persistence.Transient
-	protected Element element = null;
+	protected TreeComponent node = null;
+
+	@javax.persistence.Transient
+	protected XmlExport parent = null;
 
 	@javax.persistence.Transient
 	protected List<XmlExport> children = new ArrayList<XmlExport>();
@@ -355,6 +359,10 @@ public class XmlExport implements Serializable, JSONable {
 		return name;
 	}
 
+	public TreeComponent getNode() {
+		return node;
+	}
+
 	public long getNodeId() {
 		return this.nodeId;
 	}
@@ -496,6 +504,10 @@ public class XmlExport implements Serializable, JSONable {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public void setNode(TreeComponent node) {
+		this.node = node;
 	}
 
 	public void setNodeId(long nodeId) {

@@ -32,9 +32,10 @@ import com.glaf.core.util.ResponseUtils;
 import com.glaf.core.util.StringTools;
 import com.glaf.core.util.Tools;
 
+ 
 import com.glaf.matrix.export.domain.ExportItem;
 import com.glaf.matrix.export.domain.XmlExport;
-import com.glaf.matrix.export.handler.DataXFactory;
+import com.glaf.matrix.export.preprocessor.DataXFactory;
 import com.glaf.matrix.export.query.ExportItemQuery;
 import com.glaf.matrix.export.query.XmlExportQuery;
 import com.glaf.matrix.export.service.ExportItemService;
@@ -124,7 +125,6 @@ public class ExportItemController {
 					selecteds01.add(name);
 				}
 			}
-
 		}
 
 		StringBuffer bufferx = new StringBuffer();
@@ -306,6 +306,8 @@ public class ExportItemController {
 			exportItem.setLineBreakColumn(request.getParameter("lineBreakColumn"));
 			exportItem.setLineHeight(RequestUtils.getInt(request, "lineHeight"));
 			exportItem.setCharNumPerRow(RequestUtils.getInt(request, "charNumPerRow"));
+			exportItem.setRowSize(RequestUtils.getInt(request, "rowSize"));
+			exportItem.setColSize(RequestUtils.getInt(request, "colSize"));
 			exportItem.setPageSize(RequestUtils.getInt(request, "pageSize"));
 			exportItem.setContextVarFlag(request.getParameter("contextVarFlag"));
 			exportItem.setGenEmptyFlag(request.getParameter("genEmptyFlag"));
@@ -323,7 +325,7 @@ public class ExportItemController {
 
 			return ResponseUtils.responseJsonResult(true);
 		} catch (Exception ex) {
-			ex.printStackTrace();
+			////ex.printStackTrace();
 			logger.error(ex);
 		}
 		return ResponseUtils.responseJsonResult(false);

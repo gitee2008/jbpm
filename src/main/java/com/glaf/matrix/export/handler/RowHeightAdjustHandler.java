@@ -47,7 +47,7 @@ public class RowHeightAdjustHandler implements WorkbookHandler {
 			rowCnt = sheet.getLastRowNum();
 			for (int rowIndex = 0; rowIndex <= rowCnt; rowIndex++) {
 				if (rowIndex % 100 == 0) {
-					//logger.debug("准备处理第" + rowIndex + "行...");
+					// logger.debug("准备处理第" + rowIndex + "行...");
 				}
 				row = sheet.getRow(rowIndex);
 				if (row == null) {

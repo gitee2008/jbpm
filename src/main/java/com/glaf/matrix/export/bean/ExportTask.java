@@ -18,8 +18,6 @@
 
 package com.glaf.matrix.export.bean;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -30,30 +28,18 @@ import java.util.concurrent.RecursiveTask;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.http.HttpEntity;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.ContentType;
-import org.apache.http.entity.mime.MultipartEntityBuilder;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
 
 import com.glaf.core.base.DataFile;
-import com.glaf.core.config.SystemConfig;
 import com.glaf.core.context.ContextFactory;
 import com.glaf.core.el.ExpressionTools;
 import com.glaf.core.security.LoginContext;
 import com.glaf.core.util.DateUtils;
-import com.glaf.core.util.FileUtils;
-import com.glaf.core.util.IOUtils;
 import com.glaf.core.util.StringTools;
-
 import com.glaf.matrix.data.domain.DataFileEntity;
 import com.glaf.matrix.export.domain.ExportApp;
-import com.glaf.matrix.export.handler.ExportHandler;
-import com.glaf.matrix.export.handler.JxlsExportHandler;
 import com.glaf.matrix.export.service.ExportAppService;
 import com.glaf.matrix.parameter.handler.ParameterFactory;
+
 import com.glaf.template.Template;
 import com.glaf.template.service.ITemplateService;
 
@@ -109,9 +95,9 @@ public class ExportTask extends RecursiveTask<DataFile> {
 				parameter.putAll(params);
 
 				ParameterFactory.getInstance().processAll(exportApp.getId(), parameter);
-				ExportHandler handler = new JxlsExportHandler();
-				byte[] data = handler.export(loginContext, exportApp.getId(), parameter);
-				if (data != null) {
+				JxlsReportExportBean exportBean = new JxlsReportExportBean();
+				DataFile myDataFile = exportBean.export(exportApp, loginContext,  parameter);
+				if (myDataFile != null) {
 					String filename = exportApp.getExportFileExpr();
 					parameter.put("yyyyMMdd", DateUtils.getDateTime("yyyyMMdd", new Date()));
 					parameter.put("yyyyMMddHHmm", DateUtils.getDateTime("yyyyMMddHHmm", new Date()));
@@ -122,37 +108,31 @@ public class ExportTask extends RecursiveTask<DataFile> {
 						filename = exportApp.getTitle();
 					}
 
+					String fileExt = "xls";
+					if (StringUtils.endsWithIgnoreCase(tpl.getDataFile(), ".xlsx")) {
+						fileExt = "xlsx";
+					}
+
 					DataFile dataFile = new DataFileEntity();
 
 					if (StringUtils.equals(toPDF, "Y")) {
-						String url = SystemConfig.getString("pdf_convert_url");
-						if (StringUtils.isNotEmpty(url)) {
-							if (StringUtils.endsWithIgnoreCase(tpl.getDataFile(), ".xlsx")) {
-								byte[] output = this.execute(url, filename + ".xlsx", data);
-								if (output != null) {
-									dataFile.setFilename(filename + ".pdf");
-									dataFile.setData(output);
-
-								}
-							} else {
-								byte[] output = this.execute(url, filename + ".xls", data);
-								if (output != null) {
-									dataFile.setFilename(filename + ".pdf");
-									dataFile.setData(output);
-								}
-							}
+						PDFConverterBean bean = new PDFConverterBean();
+						byte[] output = bean.convert(exportApp, myDataFile.getData(), fileExt);
+						if (output != null) {
+							dataFile.setFilename(filename + ".pdf");
+							dataFile.setData(output);
 						}
 					} else {
 						if (parameter.get("_zip_") != null) {
 							dataFile.setFilename(filename + ".zip");
-							dataFile.setData(data);
+							dataFile.setData(myDataFile.getData());
 						} else {
 							if (StringUtils.endsWithIgnoreCase(tpl.getDataFile(), ".xlsx")) {
 								dataFile.setFilename(filename + ".xlsx");
-								dataFile.setData(data);
+								dataFile.setData(myDataFile.getData());
 							} else {
 								dataFile.setFilename(filename + ".xls");
-								dataFile.setData(data);
+								dataFile.setData(myDataFile.getData());
 							}
 						}
 					}
@@ -161,37 +141,6 @@ public class ExportTask extends RecursiveTask<DataFile> {
 			}
 		}
 
-		return null;
-	}
-
-	public byte[] execute(String url, String filename, byte[] data) {
-		CloseableHttpClient httpClient = HttpClients.createDefault();
-		InputStream inputStream = null;
-		try {
-			HttpPost httpPost = new HttpPost(url);
-			MultipartEntityBuilder builder = MultipartEntityBuilder.create();
-			builder.addBinaryBody("file", data, ContentType.MULTIPART_FORM_DATA, filename);// 文件流
-
-			HttpEntity entity = builder.build();
-			httpPost.setEntity(entity);
-			CloseableHttpResponse response = httpClient.execute(httpPost);// 执行提交
-			HttpEntity responseEntity = response.getEntity();
-			if (responseEntity != null) {
-				inputStream = responseEntity.getContent();
-				return FileUtils.getBytes(inputStream);
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			IOUtils.closeQuietly(inputStream);
-			try {
-				httpClient.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
 		return null;
 	}
 

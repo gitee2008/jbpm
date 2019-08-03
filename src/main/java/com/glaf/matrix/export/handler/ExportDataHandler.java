@@ -27,16 +27,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Random;
 import java.util.Set;
-import java.util.Map.Entry;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
- 
 import com.glaf.core.context.ContextFactory;
 import com.glaf.core.domain.Database;
 import com.glaf.core.entity.SqlExecutor;
@@ -316,7 +315,7 @@ public class ExportDataHandler implements DataHandler {
 				}
 			}
 		} catch (Exception ex) {
-			ex.printStackTrace();
+			////ex.printStackTrace();
 			logger.error("execute sql query error", ex);
 			throw new RuntimeException(ex);
 		} finally {

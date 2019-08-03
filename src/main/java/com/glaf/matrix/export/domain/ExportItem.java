@@ -257,6 +257,18 @@ public class ExportItem implements Serializable, JSONable {
 	@Column(name = "CHARNUMPERROW_")
 	protected int charNumPerRow;
 
+	/**
+	 * 每页行数
+	 */
+	@Column(name = "ROWSIZE_")
+	protected int rowSize;
+
+	/**
+	 * 每行列数
+	 */
+	@Column(name = "COLSIZE_")
+	protected int colSize;
+
 	@Column(name = "PAGESIZE_")
 	protected int pageSize;
 
@@ -314,6 +326,10 @@ public class ExportItem implements Serializable, JSONable {
 
 	public int getCharNumPerRow() {
 		return charNumPerRow;
+	}
+
+	public int getColSize() {
+		return colSize;
 	}
 
 	public String getContextVarFlag() {
@@ -474,6 +490,10 @@ public class ExportItem implements Serializable, JSONable {
 		return rootPath;
 	}
 
+	public int getRowSize() {
+		return rowSize;
+	}
+
 	public int getSortNo() {
 		return sortNo;
 	}
@@ -520,6 +540,10 @@ public class ExportItem implements Serializable, JSONable {
 
 	public void setCharNumPerRow(int charNumPerRow) {
 		this.charNumPerRow = charNumPerRow;
+	}
+
+	public void setColSize(int colSize) {
+		this.colSize = colSize;
 	}
 
 	public void setContextVarFlag(String contextVarFlag) {
@@ -656,6 +680,10 @@ public class ExportItem implements Serializable, JSONable {
 
 	public void setRootPath(String rootPath) {
 		this.rootPath = rootPath;
+	}
+
+	public void setRowSize(int rowSize) {
+		this.rowSize = rowSize;
 	}
 
 	public void setSortNo(int sortNo) {

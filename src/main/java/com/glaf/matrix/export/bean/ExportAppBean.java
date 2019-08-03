@@ -20,7 +20,6 @@ package com.glaf.matrix.export.bean;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -36,7 +35,6 @@ import org.slf4j.LoggerFactory;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-
 import com.glaf.core.config.Environment;
 import com.glaf.core.context.ContextFactory;
 import com.glaf.core.domain.Database;
@@ -334,7 +332,7 @@ public class ExportAppBean {
 				}
 			}
 		} catch (Exception ex) {
-			ex.printStackTrace();
+			//// ex.printStackTrace();
 			logger.error("execute sql error", ex);
 			throw new RuntimeException(ex);
 		} finally {

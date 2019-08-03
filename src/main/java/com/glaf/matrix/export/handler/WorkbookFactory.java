@@ -45,12 +45,13 @@ public class WorkbookFactory {
 	static {
 		handlerMap.put("cellMerge", new CellMergeHandler());
 		handlerMap.put("autoPageBreak", new AutoPageBreakHandler());
-		handlerMap.put("pageBreak", new PageBreakHandler());
 		handlerMap.put("rowHeightAdjust", new RowHeightAdjustHandler());
+		handlerMap.put("pageBreak", new PageBreakHandler());
 		handlerMap.put("hiddenRow", new HiddenRowHandler());
 		handlerMap.put("toDecimal", new TextToDecimalHandler());
 		handlerMap.put("pageFooterBorder", new PageFooterBorderHandler());
 		handlerMap.put("xRemoveComment", new RemoveCommentHandler());
+		handlerMap.put("formulaEvaluator", new FormulaEvaluatorHandler());
 
 		nameMap.put("pageBreak", "分页处理器");
 		nameMap.put("autoPageBreak", "设置页分隔符");
@@ -60,10 +61,12 @@ public class WorkbookFactory {
 		nameMap.put("toDecimal", "文本转数值处理器");
 		nameMap.put("pageFooterBorder", "设置页脚边框");
 		nameMap.put("xRemoveComment", "去除标注");
+		nameMap.put("formulaEvaluator", "公式处理器");
 
 		handerList.add("rowHeightAdjust");// 最先执行
 		handerList.add("hiddenRow");
 		handerList.add("toDecimal");
+		handerList.add("formulaEvaluator");
 		handerList.add("autoPageBreak");
 		handerList.add("pageBreak");
 		handerList.add("pageFooterBorder");
@@ -76,6 +79,7 @@ public class WorkbookFactory {
 	}
 
 	public static void process(Workbook wb, ExportApp exportApp) {
+		logger.debug("------------------处理器开始-----------------------");
 		String handlerChains = exportApp.getExcelProcessChains();
 		List<String> handlers = new ArrayList<String>();
 		if (StringUtils.isNotEmpty(handlerChains)) {
@@ -87,7 +91,7 @@ public class WorkbookFactory {
 		for (String hander : handerList) {
 			if (handlers.contains(hander)) {
 				if (handlerMap.get(hander) != null) {
-					logger.debug(nameMap.get(hander) +"开始处理...");
+					logger.debug(nameMap.get(hander) + "开始处理...");
 					long start = System.currentTimeMillis();
 					WorkbookHandler preprocessor = handlerMap.get(hander);
 					preprocessor.processWorkbook(wb, exportApp);
@@ -96,6 +100,7 @@ public class WorkbookFactory {
 				}
 			}
 		}
+		logger.debug("--------------------处理器完成----------------------");
 	}
 
 	private WorkbookFactory() {

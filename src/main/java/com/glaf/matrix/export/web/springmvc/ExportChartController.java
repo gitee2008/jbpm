@@ -257,7 +257,7 @@ public class ExportChartController {
 
 			return ResponseUtils.responseJsonResult(true);
 		} catch (Exception ex) {
-			ex.printStackTrace();
+			////ex.printStackTrace();
 			logger.error(ex);
 		}
 		return ResponseUtils.responseJsonResult(false);
@@ -284,7 +284,7 @@ public class ExportChartController {
 			exportChart.setCreateBy(actorId);
 			this.exportChartService.save(exportChart);
 		} catch (Exception ex) {
-			ex.printStackTrace();
+			////ex.printStackTrace();
 			logger.error(ex);
 		}
 		return exportChart;

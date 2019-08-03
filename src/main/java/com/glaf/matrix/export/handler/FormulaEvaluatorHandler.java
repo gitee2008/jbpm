@@ -18,18 +18,25 @@
 
 package com.glaf.matrix.export.handler;
 
-import java.util.Map;
+import org.apache.poi.ss.usermodel.FormulaEvaluator;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.glaf.matrix.export.domain.ExportApp;
 
-public interface DataXPreprocessor {
+public class FormulaEvaluatorHandler implements WorkbookHandler {
+	protected final Logger logger = LoggerFactory.getLogger(getClass());
 
-	/**
-	 * 数据预处理
-	 * 
-	 * @param parameter
-	 * @param exportApp
-	 */
-	void preprocess(Map<String, Object> parameter, ExportApp exportApp);
+	@Override
+	public void processWorkbook(Workbook workbook, ExportApp exportApp) {
+		FormulaEvaluator evaluator = null;
+		try {
+			evaluator = workbook.getCreationHelper().createFormulaEvaluator();
+			evaluator.evaluateAll();
+		} catch (Exception ex) {
+			logger.error("formula evaluator error", ex);
+		}
+	}
 
 }

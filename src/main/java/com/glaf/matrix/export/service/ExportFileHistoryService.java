@@ -27,9 +27,6 @@ import com.glaf.matrix.export.query.*;
 @Transactional(readOnly = true)
 public interface ExportFileHistoryService {
 
-	@Transactional
-	void bulkInsert(List<ExportFileHistory> list);
-
 	/**
 	 * 根据主键删除记录
 	 * 
@@ -81,5 +78,8 @@ public interface ExportFileHistoryService {
 	 */
 	@Transactional
 	void save(ExportFileHistory exportFileHistory);
+
+	@Transactional
+	void saveAll(List<ExportFileHistory> list);
 
 }

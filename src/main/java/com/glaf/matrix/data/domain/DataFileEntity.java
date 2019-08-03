@@ -21,6 +21,7 @@ package com.glaf.matrix.data.domain;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Map;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -123,6 +124,9 @@ public class DataFileEntity implements DataFile, Serializable, JSONable {
 	protected String tableSuffix;
 
 	@javax.persistence.Transient
+	protected transient Map<String, Object> parameter;
+
+	@javax.persistence.Transient
 	protected transient InputStream inputStream = null;
 
 	public DataFileEntity() {
@@ -212,6 +216,10 @@ public class DataFileEntity implements DataFile, Serializable, JSONable {
 
 	public String getObjectValue() {
 		return objectValue;
+	}
+
+	public Map<String, Object> getParameter() {
+		return parameter;
 	}
 
 	public String getPath() {
@@ -323,6 +331,10 @@ public class DataFileEntity implements DataFile, Serializable, JSONable {
 
 	public void setObjectValue(String objectValue) {
 		this.objectValue = objectValue;
+	}
+
+	public void setParameter(Map<String, Object> parameter) {
+		this.parameter = parameter;
 	}
 
 	public void setPath(String path) {

@@ -139,10 +139,10 @@ public class ExportAppServiceImpl implements ExportAppService {
 	@Transactional
 	public void save(ExportApp exportApp) {
 		if (exportApp.getId() == null) {
-			exportApp.setId(UUID32.generateShortUuid());
+			exportApp.setId(UUID32.getUUID());
 			exportApp.setCreateTime(new Date());
 			if (StringUtils.isEmpty(exportApp.getDeploymentId())) {
-				exportApp.setDeploymentId(UUID32.generateShortUuid());
+				exportApp.setDeploymentId(UUID32.getUUID());
 			}
 			if (exportApp.getPageNumPerSheet() > 800) {
 				exportApp.setPageNumPerSheet(800);
@@ -161,14 +161,14 @@ public class ExportAppServiceImpl implements ExportAppService {
 		ExportApp model = this.getExportApp(expId);
 		if (model != null) {
 			Tools.populate(model, params);
-			model.setId(UUID32.generateShortUuid());
+			model.setId(UUID32.getUUID());
 			model.setCreateTime(new Date());
 			model.setCreateBy(createBy);
 			exportAppMapper.insertExportApp(model);
 
 			if (model.getItems() != null && !model.getItems().isEmpty()) {
 				for (ExportItem item : model.getItems()) {
-					item.setId(UUID32.generateShortUuid());
+					item.setId(UUID32.getUUID());
 					item.setCreateTime(new Date());
 					item.setCreateBy(createBy);
 					item.setExpId(model.getId());
@@ -178,7 +178,7 @@ public class ExportAppServiceImpl implements ExportAppService {
 
 			if (model.getVariables() != null && !model.getVariables().isEmpty()) {
 				for (ExportTemplateVar var : model.getVariables()) {
-					var.setId(UUID32.generateShortUuid());
+					var.setId(UUID32.getUUID());
 					var.setCreateTime(new Date());
 					var.setCreateBy(createBy);
 					var.setExpId(model.getId());
@@ -204,6 +204,21 @@ public class ExportAppServiceImpl implements ExportAppService {
 		this.entityDAO = entityDAO;
 	}
 
+	@javax.annotation.Resource
+	public void setIdGenerator(IdGenerator idGenerator) {
+		this.idGenerator = idGenerator;
+	}
+
+	@javax.annotation.Resource
+	public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
+		this.jdbcTemplate = jdbcTemplate;
+	}
+
+	@javax.annotation.Resource
+	public void setSqlSessionTemplate(SqlSessionTemplate sqlSessionTemplate) {
+		this.sqlSessionTemplate = sqlSessionTemplate;
+	}
+
 	@javax.annotation.Resource(name = "com.glaf.matrix.export.mapper.ExportAppMapper")
 	public void setExportAppMapper(ExportAppMapper exportAppMapper) {
 		this.exportAppMapper = exportAppMapper;
@@ -219,23 +234,8 @@ public class ExportAppServiceImpl implements ExportAppService {
 		this.exportTemplateVarMapper = exportTemplateVarMapper;
 	}
 
-	@javax.annotation.Resource
-	public void setIdGenerator(IdGenerator idGenerator) {
-		this.idGenerator = idGenerator;
-	}
-
-	@javax.annotation.Resource
-	public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
-		this.jdbcTemplate = jdbcTemplate;
-	}
-
 	@javax.annotation.Resource(name = "com.glaf.matrix.parameter.service.parameterConversionService")
 	public void setParameterConversionService(ParameterConversionService parameterConversionService) {
 		this.parameterConversionService = parameterConversionService;
-	}
-
-	@javax.annotation.Resource
-	public void setSqlSessionTemplate(SqlSessionTemplate sqlSessionTemplate) {
-		this.sqlSessionTemplate = sqlSessionTemplate;
 	}
 }

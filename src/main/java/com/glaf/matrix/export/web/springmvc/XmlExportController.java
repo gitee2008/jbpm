@@ -157,7 +157,6 @@ public class XmlExportController {
 			if (parent != null) {
 				request.setAttribute("parent", parent);
 			}
-
 		}
 
 		if (nodeParentId > 0) {
@@ -243,7 +242,7 @@ public class XmlExportController {
 			}
 
 		} catch (Exception ex) {
-			ex.printStackTrace();
+			//// ex.printStackTrace();
 			logger.error(ex);
 		}
 	}
@@ -291,7 +290,7 @@ public class XmlExportController {
 				}
 			}
 		} catch (Exception ex) {
-			ex.printStackTrace();
+			//// ex.printStackTrace();
 			logger.error(ex);
 		}
 	}
@@ -341,7 +340,7 @@ public class XmlExportController {
 				writer.flush();
 			}
 		} catch (Exception ex) {
-			ex.printStackTrace();
+			//// ex.printStackTrace();
 			logger.error(ex);
 		} finally {
 			IOUtils.closeQuietly(writer);
@@ -429,7 +428,7 @@ public class XmlExportController {
 				}
 			}
 		} catch (Exception ex) {
-			ex.printStackTrace();
+			//// ex.printStackTrace();
 			logger.error(ex);
 		}
 	}
@@ -476,7 +475,7 @@ public class XmlExportController {
 				}
 			}
 		} catch (Exception ex) {
-			ex.printStackTrace();
+			//// ex.printStackTrace();
 			logger.error(ex);
 		}
 	}
@@ -505,7 +504,7 @@ public class XmlExportController {
 			} else {
 				xmlExport = xmlExportService.getXmlExport(expId);
 			}
-			if (mFile != null) {
+			if (mFile != null && mFile.getSize() >0) {
 				JSONObject jsonObject = JSON.parseObject(new String(mFile.getBytes(), "UTF-8"));
 				if (xmlExport != null) {
 					xmlExportService.importAll(xmlExport.getId(), jsonObject);
@@ -516,7 +515,7 @@ public class XmlExportController {
 				writer.flush();
 			}
 		} catch (Exception ex) {
-			ex.printStackTrace();
+			//// ex.printStackTrace();
 			logger.error(ex);
 			if (writer != null) {
 				writer.println("<h3><span style='color:#ff0066;'>导入失败！</span><h3><br>");
@@ -564,7 +563,7 @@ public class XmlExportController {
 				writer.flush();
 			}
 		} catch (Exception ex) {
-			ex.printStackTrace();
+			//// ex.printStackTrace();
 			logger.error(ex);
 			if (writer != null) {
 				writer.println("<h3>导入失败！<h3><br>");
@@ -721,7 +720,7 @@ public class XmlExportController {
 
 			return ResponseUtils.responseJsonResult(true);
 		} catch (Exception ex) {
-			// ex.printStackTrace();
+			//// ex.printStackTrace();
 			logger.error(ex);
 		}
 		return ResponseUtils.responseJsonResult(false);
@@ -744,7 +743,7 @@ public class XmlExportController {
 				}
 			}
 		} catch (Exception ex) {
-			// ex.printStackTrace();
+			//// ex.printStackTrace();
 			logger.error(ex);
 		}
 		return ResponseUtils.responseJsonResult(false);

@@ -41,20 +41,20 @@ public class AutoPageBreakHandler implements WorkbookHandler {
 			for (int i = 0; i < sheetCnt; i++) {
 				Sheet sheet = wb.getSheetAt(i);
 				int rows = sheet.getLastRowNum();
-				//logger.debug("行记录数:" + (rows + 1));
+				logger.debug("行记录数:" + (rows + 1));
 				for (int rowIndex = 0; rowIndex <= rows; rowIndex++) {
 					row = sheet.getRow(rowIndex);
 					if (row == null) {
 						continue;
 					}
-					//logger.debug("rowIndex:" + rowIndex + " height:" + row.getHeightInPoints());
+					logger.debug("rowIndex:" + rowIndex + " height:" + row.getHeightInPoints());
 					totalHeight = totalHeight + row.getHeightInPoints();
 					float sumHeight = totalHeight + getRowHeight(sheet.getRow(rowIndex + 1));
-					//logger.debug(rowIndex + "->sumHeight:" + sumHeight);
+					logger.debug(rowIndex + "->sumHeight:" + sumHeight);
 					if (sumHeight > pageHeight) {
 						totalHeight = 0f;
 						sheet.setRowBreak(rowIndex); // 设置分页符
-						//logger.debug(">>>>在第" + rowIndex + "行设置分页符.");
+						logger.debug(">>>>在第" + rowIndex + "行设置分页符.");
 					}
 				}
 			}

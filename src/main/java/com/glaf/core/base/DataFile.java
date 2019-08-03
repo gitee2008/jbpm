@@ -20,6 +20,7 @@ package com.glaf.core.base;
 
 import java.io.InputStream;
 import java.util.Date;
+import java.util.Map;
 
 public interface DataFile extends JSONable {
 
@@ -127,6 +128,8 @@ public interface DataFile extends JSONable {
 	 */
 	String getObjectValue();
 
+	Map<String, Object> getParameter();
+
 	String getPath();
 
 	/**
@@ -227,6 +230,8 @@ public interface DataFile extends JSONable {
 	void setObjectId(String objectId);
 
 	void setObjectValue(String objectValue);
+
+	void setParameter(Map<String, Object> parameter);
 
 	void setPath(String path);
 

@@ -182,5 +182,15 @@
 	<classpathentry kind="lib" path="webapps/glaf/WEB-INF/lib/jcommon.jar"/>
 	<classpathentry kind="lib" path="webapps/glaf/WEB-INF/lib/jfreechart.jar"/>
 	<classpathentry kind="lib" path="webapps/glaf/WEB-INF/lib/jackson-dataformat-xml.jar"/>
+	<classpathentry kind="lib" path="webapps/glaf/WEB-INF/lib/font-asian.jar"/>
+	<classpathentry kind="lib" path="webapps/glaf/WEB-INF/lib/gson.jar"/>
+	<classpathentry kind="lib" path="webapps/glaf/WEB-INF/lib/itextpdf7-barcodes.jar"/>
+	<classpathentry kind="lib" path="webapps/glaf/WEB-INF/lib/itextpdf7-forms.jar"/>
+	<classpathentry kind="lib" path="webapps/glaf/WEB-INF/lib/itextpdf7-hyph.jar"/>
+	<classpathentry kind="lib" path="webapps/glaf/WEB-INF/lib/itextpdf7-io.jar"/>
+	<classpathentry kind="lib" path="webapps/glaf/WEB-INF/lib/itextpdf7-kernel.jar"/>
+	<classpathentry kind="lib" path="webapps/glaf/WEB-INF/lib/itextpdf7-layout.jar"/>
+	<classpathentry kind="lib" path="webapps/glaf/WEB-INF/lib/itextpdf7-pdfa.jar"/>
+	<classpathentry kind="lib" path="webapps/glaf/WEB-INF/lib/itextpdf7-sign.jar"/>
 	<classpathentry kind="output" path="webapps/glaf/WEB-INF/classes"/>
 </classpath>
