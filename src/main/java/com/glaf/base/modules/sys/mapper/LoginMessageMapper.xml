@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper
+	namespace="com.glaf.base.modules.sys.mapper.LoginMessageMapper">
+
+	<resultMap id="loginMessageResultMap"
+		type="com.glaf.base.modules.sys.model.LoginMessage">
+		<id property="token" column="TOKEN_" jdbcType="VARCHAR" />
+		<result property="tenantId" column="TENANT_ID_"
+			jdbcType="VARCHAR" />
+		<result property="serverId" column="SERVERID_"
+			jdbcType="BIGINT" />
+		<result property="clientIP" column="CLIENTIP_"
+			jdbcType="VARCHAR" />
+		<result property="userId" column="USERID_" jdbcType="VARCHAR" />
+		<result property="section" column="SECTION_" jdbcType="VARCHAR" />
+		<result property="content" column="CONTENT_" jdbcType="VARCHAR" />
+		<result property="uid" column="UID_" jdbcType="VARCHAR" />
+		<result property="flowid" column="FLOWID_" jdbcType="VARCHAR" />
+		<result property="cellTreedotIndex" column="CELLTREEDOTINDEX_"
+			jdbcType="VARCHAR" />
+		<result property="position" column="POSITION_"
+			jdbcType="VARCHAR" />
+		<result property="timeLive" column="TIMELIVE_"
+			jdbcType="INTEGER" />
+		<result property="day" column="DAY_" jdbcType="INTEGER" />
+		<result property="loginTime" column="LOGINTIME_"
+			jdbcType="BIGINT" />
+		<result property="createTime" column="CREATETIME_"
+			jdbcType="TIMESTAMP" />
+	</resultMap>
+
+
+	<insert id="insertLoginMessage"
+		parameterType="com.glaf.base.modules.sys.model.LoginMessage">
+
+		insert into SYS_LOGIN_INFO
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			TOKEN_
+			<if test="serverId != null">
+				,SERVERID_
+			</if>
+			<if test="userId != null">
+				,USERID_
+			</if>
+			<if test="clientIP != null">
+				,CLIENTIP_
+			</if>
+			<if test="section != null">
+				,SECTION_
+			</if>
+			<if test="content != null">
+				,CONTENT_
+			</if>
+			<if test="uid != null">
+				,UID_
+			</if>
+			<if test="flowid != null">
+				,FLOWID_
+			</if>
+			<if test="cellTreedotIndex != null">
+				,CELLTREEDOTINDEX_
+			</if>
+			<if test="position != null">
+				,POSITION_
+			</if>
+			<if test="timeLive != null">
+				,TIMELIVE_
+			</if>
+			<if test="loginTime != null">
+				,LOGINTIME_
+			</if>
+			<if test="day != null">
+				,DAY_
+			</if>
+			<if test="createTime != null">
+				,CREATETIME_
+			</if>
+			<if test="tenantId != null">
+				,TENANT_ID_
+			</if>
+		</trim>
+
+		<trim prefix=" values (" suffix=")" suffixOverrides=",">
+			#{token, jdbcType=VARCHAR}
+			<if test="serverId != null">
+				,#{serverId, jdbcType=BIGINT}
+			</if>
+			<if test="userId != null">
+				,#{userId, jdbcType=VARCHAR}
+			</if>
+			<if test="clientIP != null">
+				,#{clientIP, jdbcType=VARCHAR}
+			</if>
+			<if test="section != null">
+				,#{section, jdbcType=VARCHAR}
+			</if>
+			<if test="content != null">
+				,#{content, jdbcType=VARCHAR}
+			</if>
+			<if test="uid != null">
+				,#{uid, jdbcType=VARCHAR}
+			</if>
+			<if test="flowid != null">
+				,#{flowid, jdbcType=VARCHAR}
+			</if>
+			<if test="cellTreedotIndex != null">
+				,#{cellTreedotIndex, jdbcType=VARCHAR}
+			</if>
+			<if test="position != null">
+				,#{position, jdbcType=VARCHAR}
+			</if>
+			<if test="timeLive != null">
+				,#{timeLive, jdbcType=INTEGER}
+			</if>
+			<if test="loginTime != null">
+				,#{loginTime, jdbcType=BIGINT}
+			</if>
+			<if test="day != null">
+				,#{day, jdbcType=INTEGER}
+			</if>
+			<if test="createTime != null">
+				,#{createTime, jdbcType=TIMESTAMP}
+			</if>
+			<if test="tenantId != null">
+				,#{tenantId, jdbcType=VARCHAR}
+			</if>
+		</trim>
+
+	</insert>
+
+
+	<delete id="deleteLoginMessageByToken" parameterType="string">
+		delete
+		from
+		SYS_LOGIN_INFO
+		where TOKEN_ = #{token}
+	</delete>
+
+
+	<select id="getLoginMessageByToken" parameterType="string"
+		resultMap="loginMessageResultMap">
+		select * from SYS_LOGIN_INFO where TOKEN_ = #{token}
+	</select>
+
+
+	<select id="getLoginCountByUserId"
+		parameterType="com.glaf.base.modules.sys.query.LoginMessageQuery"
+		resultType="int">
+
+		select count(TOKEN_) from SYS_LOGIN_INFO where USERID_ =
+		#{userId} and DAY_ =
+		#{day}
+
+	</select>
+
+
+	<select id="getLoginMessages"
+		parameterType="com.glaf.base.modules.sys.query.LoginMessageQuery"
+		resultMap="loginMessageResultMap">
+		select E.*
+		<include refid="selectLoginMessagesSql" />
+		<choose>
+			<when test="orderBy != null">
+				order by ${orderBy}
+			</when>
+			<otherwise>
+				order by E.CREATETIME_ desc
+			</otherwise>
+		</choose>
+	</select>
+
+
+	<select id="getLoginMessageCount"
+		parameterType="com.glaf.base.modules.sys.query.LoginMessageQuery"
+		resultType="int">
+		select count(*)
+		<include refid="selectLoginMessagesSql" />
+	</select>
+
+
+	<sql id="selectLoginMessagesSql">
+
+		from SYS_LOGIN_INFO E
+
+		<where>
+			1 = 1
+
+			<if test="day != null and day != 0 ">
+				and E.DAY_ = #{day}
+			</if>
+
+			<if test="userId != null and userId != '' ">
+				and E.USERID_ = #{userId}
+			</if>
+			
+			<if test="tenantId != null and tenantId != '' ">
+				and E.TENANT_ID_ = #{tenantId}
+			</if>
+
+			<if test="clientIP != null and clientIP != '' ">
+				and E.CLIENTIP_ = #{clientIP}
+			</if>
+
+			<if test="clientIPLike != null and clientIPLike != '' ">
+				and E.CLIENTIP_ like #{clientIPLike}
+			</if>
+
+			<if test="loginTimeGreaterThanOrEqual != null">
+				and E.LOGINTIME_ &gt;= #{loginTimeGreaterThanOrEqual}
+			</if>
+
+			<if test="loginTimeLessThanOrEqual != null">
+				and E.LOGINTIME_ &lt;= #{loginTimeLessThanOrEqual}
+			</if>
+
+			<if test="createTimeGreaterThanOrEqual != null">
+				and E.CREATETIME_ &gt;= #{createTimeGreaterThanOrEqual}
+			</if>
+
+			<if test="createTimeLessThanOrEqual != null">
+				and E.CREATETIME_ &lt;= #{createTimeLessThanOrEqual}
+			</if>
+
+			<if test="dataRequest != null and dataRequest.filter != null ">
+				<include
+					refid="com.glaf.global.GlobalMapper.dataRequestFilterCondition" />
+			</if>
+
+		</where>
+	</sql>
+
+</mapper>

@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper
+	namespace="com.glaf.base.modules.sys.mapper.LoginTokenMapper">
+
+	<resultMap id="loginTokenResultMap"
+		type="com.glaf.base.modules.sys.model.LoginToken">
+		<id property="id" column="ID_" jdbcType="VARCHAR" />
+		<result property="serverId" column="SERVERID_"
+			jdbcType="BIGINT" />
+		<result property="userId" column="USERID_" jdbcType="VARCHAR" />
+		<result property="tenantId" column="TENANT_ID_"
+			jdbcType="VARCHAR" />
+		<result property="clientIP" column="CLIENTIP_"
+			jdbcType="VARCHAR" />
+		<result property="signature" column="SIGNATURE_"
+			jdbcType="VARCHAR" />
+		<result property="token" column="TOKEN_" jdbcType="VARCHAR" />
+		<result property="nonce" column="NONCE_" jdbcType="VARCHAR" />
+		<result property="sysCode" column="SYSCODE_" jdbcType="VARCHAR" />
+		<result property="loginModuleId" column="LOGINMODULEID_"
+			jdbcType="VARCHAR" />
+		<result property="timeLive" column="TIMELIVE_"
+			jdbcType="INTEGER" />
+		<result property="timeMillis" column="TIMEMILLIS_"
+			jdbcType="BIGINT" />
+		<result property="createTime" column="CREATETIME_"
+			jdbcType="TIMESTAMP" />
+	</resultMap>
+
+
+	<insert id="insertLoginToken"
+		parameterType="com.glaf.base.modules.sys.model.LoginToken">
+		insert into SYS_LOGIN_TOKEN
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			ID_
+			<if test="serverId != null">
+				,SERVERID_
+			</if>
+			<if test="userId != null">
+				,USERID_
+			</if>
+			<if test="clientIP != null">
+				,CLIENTIP_
+			</if>
+			<if test="signature != null">
+				,SIGNATURE_
+			</if>
+			<if test="token != null">
+				,TOKEN_
+			</if>
+			<if test="nonce != null">
+				,NONCE_
+			</if>
+			<if test="sysCode != null">
+				,SYSCODE_
+			</if>
+			<if test="loginModuleId != null">
+				,LOGINMODULEID_
+			</if>
+			<if test="timeLive != null">
+				,TIMELIVE_
+			</if>
+			<if test="timeMillis != null">
+				,TIMEMILLIS_
+			</if>
+			<if test="createTime != null">
+				,CREATETIME_
+			</if>
+			<if test="tenantId != null">
+				,TENANT_ID_
+			</if>
+		</trim>
+
+		<trim prefix=" values (" suffix=")" suffixOverrides=",">
+			#{id, jdbcType=VARCHAR}
+			<if test="serverId != null">
+				,#{serverId, jdbcType=BIGINT}
+			</if>
+			<if test="userId != null">
+				,#{userId, jdbcType=VARCHAR}
+			</if>
+			<if test="clientIP != null">
+				,#{clientIP, jdbcType=VARCHAR}
+			</if>
+			<if test="signature != null">
+				,#{signature, jdbcType=VARCHAR}
+			</if>
+			<if test="token != null">
+				,#{token, jdbcType=VARCHAR}
+			</if>
+			<if test="nonce != null">
+				,#{nonce, jdbcType=VARCHAR}
+			</if>
+			<if test="sysCode != null">
+				,#{sysCode, jdbcType=VARCHAR}
+			</if>
+			<if test="loginModuleId != null">
+				,#{loginModuleId, jdbcType=VARCHAR}
+			</if>
+			<if test="timeLive != null">
+				,#{timeLive, jdbcType=INTEGER}
+			</if>
+			<if test="timeMillis != null">
+				,#{timeMillis, jdbcType=BIGINT}
+			</if>
+			<if test="createTime != null">
+				,#{createTime, jdbcType=TIMESTAMP}
+			</if>
+			<if test="tenantId != null">
+				,#{tenantId, jdbcType=VARCHAR}
+			</if>
+		</trim>
+	</insert>
+
+
+	<update id="updateLoginToken"
+		parameterType="com.glaf.base.modules.sys.model.LoginToken">
+
+		update LOGIN_TOKEN
+		set
+		<trim prefix="" suffix="" suffixOverrides=",">
+			<if test="clientIP != null">
+				CLIENTIP_ = #{clientIP, jdbcType=VARCHAR},
+			</if>
+		</trim>
+		where
+		ID_ = #{id, jdbcType=VARCHAR}
+
+	</update>
+
+
+	<delete id="deleteLoginTokenById" parameterType="string">
+		delete from
+		SYS_LOGIN_TOKEN
+		where ID_ = #{id}
+	</delete>
+
+
+	<delete id="deleteLoginTokenByUserId" parameterType="string">
+		delete from
+		SYS_LOGIN_TOKEN
+		where USERID_ = #{userId}
+	</delete>
+
+
+	<delete id="deleteLoginTokens"
+		parameterType="com.glaf.base.modules.sys.query.LoginTokenQuery">
+		delete from SYS_LOGIN_TOKEN
+		where (
+		ID_ IN
+		<foreach item="x_id" index="index" collection="ids" open="("
+			separator="," close=")">
+			#{x_id}
+		</foreach>
+		)
+	</delete>
+
+
+	<select id="getLoginTokenById" parameterType="string"
+		resultMap="loginTokenResultMap">
+		select * from SYS_LOGIN_TOKEN where ID_ = #{id}
+	</select>
+
+
+	<select id="getLoginTokenBySignature" parameterType="string"
+		resultMap="loginTokenResultMap">
+		select * from SYS_LOGIN_TOKEN where SIGNATURE_ =
+		#{signature}
+	</select>
+
+
+	<select id="getLoginTokenByToken" parameterType="string"
+		resultMap="loginTokenResultMap">
+		select * from SYS_LOGIN_TOKEN where TOKEN_ = #{token}
+	</select>
+
+
+	<select id="getLoginTokens"
+		parameterType="com.glaf.base.modules.sys.query.LoginTokenQuery"
+		resultMap="loginTokenResultMap">
+		select distinct E.*
+		<include refid="selectLoginTokensSql" />
+		<choose>
+			<when test="orderBy != null">
+				order by ${orderBy}
+			</when>
+			<otherwise>
+				order by E.CREATETIME_ desc
+			</otherwise>
+		</choose>
+	</select>
+
+
+	<select id="getLoginTokenCount"
+		parameterType="com.glaf.base.modules.sys.query.LoginTokenQuery"
+		resultType="int">
+		select count(*)
+		<include refid="selectLoginTokensSql" />
+	</select>
+
+
+	<sql id="selectLoginTokensSql">
+
+		from SYS_LOGIN_TOKEN E
+
+		<where>
+			1 = 1
+
+			<if test="userId != null and userId != '' ">
+				and E.USERID_ = #{userId}
+			</if>
+
+			<if test="tenantId != null and tenantId != '' ">
+				and E.TENANT_ID_ = #{tenantId}
+			</if>
+
+			<if test="clientIP != null and clientIP != '' ">
+				and E.CLIENTIP_ = #{clientIP}
+			</if>
+
+			<if test="token != null and token != '' ">
+				and E.TOKEN_ = #{token}
+			</if>
+
+			<if test="sysCode != null and sysCode != '' ">
+				and E.SYSCODE_ = #{sysCode}
+			</if>
+
+			<if test="loginModuleId != null and loginModuleId != '' ">
+				and E.LOGINMODULEID_ = #{loginModuleId}
+			</if>
+
+			<if test="createTimeGreaterThanOrEqual != null">
+				and E.CREATETIME_ &gt;= #{createTimeGreaterThanOrEqual}
+			</if>
+
+			<if test="createTimeLessThanOrEqual != null">
+				and E.CREATETIME_ &lt;= #{createTimeLessThanOrEqual}
+			</if>
+
+			<if test="dataRequest != null and dataRequest.filter != null ">
+				<include
+					refid="com.glaf.global.GlobalMapper.dataRequestFilterCondition" />
+			</if>
+
+		</where>
+	</sql>
+
+</mapper>

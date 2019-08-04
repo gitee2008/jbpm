@@ -1,0 +1,395 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper
+	namespace="com.glaf.base.modules.sys.mapper.LoginModuleMapper">
+
+	<resultMap id="loginModuleResultMap"
+		type="com.glaf.base.modules.sys.model.LoginModule">
+		<id property="id" column="ID_" jdbcType="VARCHAR" />
+		<result property="tenantId" column="TENANT_ID_"
+			jdbcType="VARCHAR" />
+		<result property="title" column="TITLE_" jdbcType="VARCHAR" />
+		<result property="content" column="CONTENT_" jdbcType="VARCHAR" />
+		<result property="appId" column="APPID_" jdbcType="VARCHAR" />
+		<result property="appSecret" column="APPSECRET_"
+			jdbcType="VARCHAR" />
+		<result property="publicKey" column="PUBLICKEY_"
+			jdbcType="VARCHAR" />
+		<result property="peerPublicKey" column="PEERPUBLICKEY_"
+			jdbcType="VARCHAR" />
+		<result property="token" column="TOKEN_" jdbcType="VARCHAR" />
+		<result property="loginUrl" column="LOGINURL_"
+			jdbcType="VARCHAR" />
+		<result property="loginUserId" column="LOGINUSERID_"
+			jdbcType="VARCHAR" />
+		<result property="url" column="URL_" jdbcType="VARCHAR" />
+		<result property="serverId" column="SERVERID_"
+			jdbcType="BIGINT" />
+		<result property="systemCode" column="SYSTEMCODE_"
+			jdbcType="VARCHAR" />
+		<result property="timeLive" column="TIMELIVE_"
+			jdbcType="INTEGER" />
+		<result property="type" column="TYPE_" jdbcType="VARCHAR" />
+		<result property="locked" column="LOCKED_" jdbcType="INTEGER" />
+		<result property="createBy" column="CREATEBY_"
+			jdbcType="VARCHAR" />
+		<result property="createTime" column="CREATETIME_"
+			jdbcType="TIMESTAMP" />
+	</resultMap>
+
+
+	<insert id="insertLoginModule"
+		parameterType="com.glaf.base.modules.sys.model.LoginModule">
+		insert into LOGIN_MODULE
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			ID_
+			<if test="title != null">
+				,TITLE_
+			</if>
+			<if test="content != null">
+				,CONTENT_
+			</if>
+			<if test="appId != null">
+				,APPID_
+			</if>
+			<if test="appSecret != null">
+				,APPSECRET_
+			</if>
+			<if test="publicKey != null">
+				,PUBLICKEY_
+			</if>
+			<if test="privateKey != null">
+				,PRIVATEKEY_
+			</if>
+			<if test="peerPublicKey != null">
+				,PEERPUBLICKEY_
+			</if>
+			<if test="token != null">
+				,TOKEN_
+			</if>
+			<if test="loginUrl != null">
+				,LOGINURL_
+			</if>
+			<if test="loginUserId != null">
+				,LOGINUSERID_
+			</if>
+			<if test="url != null">
+				,URL_
+			</if>
+			<if test="systemCode != null">
+				,SYSTEMCODE_
+			</if>
+			<if test="serverId != null">
+				,SERVERID_
+			</if>
+			<if test="timeLive != null">
+				,TIMELIVE_
+			</if>
+			<if test="type != null">
+				,TYPE_
+			</if>
+			<if test="locked != null">
+				,LOCKED_
+			</if>
+			<if test="createBy != null">
+				,CREATEBY_
+			</if>
+			<if test="createTime != null">
+				,CREATETIME_
+			</if>
+			<if test="tenantId != null">
+				,TENANT_ID_
+			</if>
+		</trim>
+
+		<trim prefix=" values (" suffix=")" suffixOverrides=",">
+			#{id, jdbcType=VARCHAR}
+
+			<if test="title != null">
+				,#{title, jdbcType=VARCHAR}
+			</if>
+			<if test="content != null">
+				,#{content, jdbcType=VARCHAR}
+			</if>
+			<if test="appId != null">
+				,#{appId, jdbcType=VARCHAR}
+			</if>
+			<if test="appSecret != null">
+				,#{appSecret, jdbcType=VARCHAR}
+			</if>
+			<if test="publicKey != null">
+				,#{publicKey, jdbcType=VARCHAR}
+			</if>
+			<if test="privateKey != null">
+				,#{privateKey, jdbcType=VARCHAR}
+			</if>
+			<if test="peerPublicKey != null">
+				,#{peerPublicKey, jdbcType=VARCHAR}
+			</if>
+			<if test="token != null">
+				,#{token, jdbcType=VARCHAR}
+			</if>
+			<if test="loginUrl != null">
+				,#{loginUrl, jdbcType=VARCHAR}
+			</if>
+			<if test="loginUserId != null">
+				,#{loginUserId, jdbcType=VARCHAR}
+			</if>
+			<if test="url != null">
+				,#{url, jdbcType=VARCHAR}
+			</if>
+			<if test="systemCode != null">
+				,#{systemCode, jdbcType=VARCHAR}
+			</if>
+			<if test="serverId != null">
+				,#{serverId, jdbcType=BIGINT}
+			</if>
+			<if test="timeLive != null">
+				,#{timeLive, jdbcType=INTEGER}
+			</if>
+			<if test="type != null">
+				,#{type, jdbcType=VARCHAR}
+			</if>
+			<if test="locked != null">
+				,#{locked, jdbcType=INTEGER}
+			</if>
+			<if test="createBy != null">
+				,#{createBy, jdbcType=VARCHAR}
+			</if>
+			<if test="createTime != null">
+				,#{createTime, jdbcType=TIMESTAMP}
+			</if>
+			<if test="tenantId != null">
+				,#{tenantId, jdbcType=VARCHAR}
+			</if>
+		</trim>
+	</insert>
+
+
+	<update id="updateLoginModule"
+		parameterType="com.glaf.base.modules.sys.model.LoginModule">
+		update LOGIN_MODULE
+		set
+		<trim prefix="" suffix="" suffixOverrides=",">
+			<if test="title != null">
+				TITLE_ = #{title, jdbcType=VARCHAR},
+			</if>
+			<if test="content != null">
+				CONTENT_ = #{content, jdbcType=VARCHAR},
+			</if>
+			<if test="type == 'client' or type == 'client_rsa'">
+				<if test="appId != null">
+					APPID_ = #{appId, jdbcType=VARCHAR},
+				</if>
+				<if test="appSecret != null">
+					APPSECRET_ = #{appSecret, jdbcType=VARCHAR},
+				</if>
+				<if test="loginUserId != null">
+					LOGINUSERID_ = #{loginUserId, jdbcType=VARCHAR},
+				</if>
+			</if>
+			<if test="peerPublicKey != null">
+				PEERPUBLICKEY_ = #{peerPublicKey, jdbcType=VARCHAR},
+			</if>
+			<if test="loginUrl != null">
+				LOGINURL_ = #{loginUrl, jdbcType=VARCHAR},
+			</if>
+			<if test="url != null">
+				URL_ = #{url, jdbcType=VARCHAR},
+			</if>
+			<if test="serverId != null">
+				SERVERID_ = #{serverId, jdbcType=BIGINT},
+			</if>
+			<if test="systemCode != null">
+				SYSTEMCODE_ = #{systemCode, jdbcType=VARCHAR},
+			</if>
+			<if test="timeLive != null">
+				TIMELIVE_ = #{timeLive, jdbcType=INTEGER},
+			</if>
+			<if test="locked != null">
+				LOCKED_ = #{locked, jdbcType=INTEGER},
+			</if>
+		</trim>
+		where
+		ID_ = #{id, jdbcType=VARCHAR}
+
+	</update>
+
+
+	<update id="resetLoginAppSecret"
+		parameterType="com.glaf.base.modules.sys.model.LoginModule">
+
+		update
+		LOGIN_MODULE
+		set
+		APPID_ = #{appId,
+		jdbcType=VARCHAR},
+		APPSECRET_ =
+		#{appSecret,
+		jdbcType=VARCHAR}
+		where ID_ =
+		#{id, jdbcType=VARCHAR}
+
+	</update>
+
+
+	<update id="resetLoginPublicKey"
+		parameterType="com.glaf.base.modules.sys.model.LoginModule">
+
+		update
+		LOGIN_MODULE
+		set
+		PUBLICKEY_ = #{publicKey,
+		jdbcType=VARCHAR},
+		PRIVATEKEY_ = #{privateKey, jdbcType=VARCHAR}
+		where
+		ID_ = #{id,
+		jdbcType=VARCHAR}
+
+	</update>
+
+
+	<update id="resetLoginAppToken"
+		parameterType="com.glaf.base.modules.sys.model.LoginModule">
+
+		update
+		LOGIN_MODULE
+		set
+		TOKEN_ = #{token, jdbcType=VARCHAR}
+		jdbcType=VARCHAR}
+		where ID_ = #{id, jdbcType=VARCHAR}
+
+	</update>
+
+
+	<delete id="deleteLoginModuleById" parameterType="string">
+		delete from
+		LOGIN_MODULE
+		where ID_ = #{id}
+	</delete>
+
+
+	<select id="getLoginModuleById" parameterType="string"
+		resultMap="loginModuleResultMap">
+		select * from LOGIN_MODULE where ID_ = #{id}
+	</select>
+
+
+	<select id="getPrivateKey" parameterType="string"
+		resultType="string">
+		select PRIVATEKEY_ from LOGIN_MODULE where ID_ = #{id}
+	</select>
+
+
+	<select id="getLoginModuleByAppId" parameterType="string"
+		resultMap="loginModuleResultMap">
+		select * from LOGIN_MODULE where APPID_ = #{appId}
+	</select>
+
+
+	<select id="getLoginModuleBySysCode" parameterType="string"
+		resultMap="loginModuleResultMap">
+		select * from LOGIN_MODULE where SYSTEMCODE_ = #{sysCode}
+	</select>
+
+
+	<select id="getLoginModuleByToken" parameterType="string"
+		resultMap="loginModuleResultMap">
+		select * from LOGIN_MODULE where TOKEN_ = #{token}
+	</select>
+
+
+	<select id="getLoginModules"
+		parameterType="com.glaf.base.modules.sys.query.LoginModuleQuery"
+		resultMap="loginModuleResultMap">
+		select distinct E.*
+		<include refid="selectLoginModulesSql" />
+		<choose>
+			<when test="orderBy != null">
+				order by ${orderBy}
+			</when>
+			<otherwise>
+				order by E.CREATETIME_ desc
+			</otherwise>
+		</choose>
+	</select>
+
+
+	<select id="getLoginModuleCount"
+		parameterType="com.glaf.base.modules.sys.query.LoginModuleQuery"
+		resultType="int">
+		select count(*)
+		<include refid="selectLoginModulesSql" />
+	</select>
+
+
+	<sql id="selectLoginModulesSql">
+
+		from LOGIN_MODULE E
+
+		<where>
+			1 = 1
+
+			<if test="tenantId != null and tenantId != '' ">
+				and E.TENANT_ID_ = #{tenantId}
+			</if>
+
+			<if test="titleLike != null and titleLike != '' ">
+				and E.TITLE_ like #{titleLike}
+			</if>
+
+			<if test="contentLike != null and contentLike != '' ">
+				and E.CONTENT_ like #{contentLike}
+			</if>
+
+			<if test="appId != null and appId != '' ">
+				and E.APPID_ = #{appId}
+			</if>
+
+			<if test="systemCode != null and systemCode != '' ">
+				and E.SYSTEMCODE_ = #{systemCode}
+			</if>
+
+			<if test="urlLike != null and urlLike != '' ">
+				and E.URL_ like #{urlLike}
+			</if>
+
+			<if test="type != null and type != '' ">
+				and E.TYPE_ = #{type}
+			</if>
+
+			<if test="locked != null">
+				and E.LOCKED_ = #{locked}
+			</if>
+
+			<if test="createBy != null and createBy != '' ">
+				and E.CREATEBY_ = #{createBy}
+			</if>
+
+			<if test="createBys != null and createBys.size() &gt; 0">
+				and E.CREATEBY_ IN
+				<foreach item="x_createBy" index="index"
+					collection="createBys" open="(" separator="," close=")">
+					#{x_createBy}
+				</foreach>
+			</if>
+
+			<if test="createTimeGreaterThanOrEqual != null">
+				and E.CREATETIME_ &gt;= #{createTimeGreaterThanOrEqual}
+			</if>
+
+			<if test="createTimeLessThanOrEqual != null">
+				and E.CREATETIME_ &lt;= #{createTimeLessThanOrEqual}
+			</if>
+
+			<if test="dataRequest != null and dataRequest.filter != null ">
+				<include
+					refid="com.glaf.global.GlobalMapper.dataRequestFilterCondition" />
+			</if>
+
+		</where>
+	</sql>
+
+</mapper>
