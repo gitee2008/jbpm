@@ -207,9 +207,10 @@
 			       class="easyui-numberbox" style="width:65px; text-align: right" 
 				   increment="10" precision="0" maxLength="4"
 				   value="${exportApp.pageHeight}"/>
-			<span style="margin-top:5px;">
-			&nbsp;（提示：页面高度，取值400~1000，一般页高650。）
-			</span>
+			<div style="margin-top:5px;">
+			&nbsp;（提示：A4纸张页面高度，取值600~860，一般A4纸张方向横向页高612，纸张方向纵向页高868。）<br>  
+			&nbsp;（建议：将所有页边距设置为0，在Excel模板里控制样式。）
+			</div>
 		</td>
 	</tr>
 	<tr>
@@ -251,6 +252,21 @@
 		</td>
 	</tr>
 	<tr>
+		<td width="15%" align="left">是否在模板中使用SQL</td>
+		<td align="left">
+		    <select id="enableSQLFlag" name="enableSQLFlag">
+				<option value="Y">是</option>
+			    <option value="N">否</option>
+             </select>
+             <script type="text/javascript">
+                 document.getElementById("enableSQLFlag").value="${exportApp.enableSQLFlag}";
+             </script>
+			 <span style="color:#000033; margin-left:2px;">
+			    &nbsp;（提示：可以在模板中使用SQL查询，使用jxls内置的JdbcHelper。）
+			 </span>
+		</td>
+	</tr>
+	<tr>
 		<td width="15%" align="left">是否生成历史文件</td>
 		<td align="left">
 		    <select id="historyFlag" name="historyFlag">
@@ -275,6 +291,79 @@
 			  <span style="color:#000033; margin-left:2px;">
 			    （提示：生成Excel时，可以根据每个Sheet进行划分，如果超出一个Excel，就按多个Excel导出。）
 			  </span>
+		</td>
+	</tr>
+	<tr>
+		<td width="15%" align="left">是否保存生成文件</td>
+		<td align="left">
+		    <select id="saveDataFlag" name="saveDataFlag">
+				<option value="Y">是</option>
+			    <option value="N">否</option>
+             </select>
+             <script type="text/javascript">
+                 document.getElementById("saveDataFlag").value="${exportApp.saveDataFlag}";
+             </script>
+			 <span style="color:#000033; margin-left:2px;">
+			    &nbsp;（提示：生成数据文件是否需要保存到文件存储库。）
+			 </span>
+		</td>
+	</tr>
+	<tr>
+		<td width="15%" align="left">PDF转换工具</td>
+		<td align="left">
+		    <select id="exportPDFTool" name="exportPDFTool">
+				<option value="msoffice">微软Office</option>
+			    <option value="wps">金山WPS</option>
+             </select>
+             <script type="text/javascript">
+                 document.getElementById("exportPDFTool").value="${exportApp.exportPDFTool}";
+             </script>&nbsp;
+			 <span style="color:#000033; margin-left:2px;">
+			    （提示：如果需要转换成PDF，可以决定用哪种转换工具。）
+			 </span>
+		</td>
+	</tr>
+	<tr>
+		<td width="15%" align="left">是否合并PDF</td>
+		<td align="left">
+		    <select id="mergePDFFlag" name="mergePDFFlag">
+			    <option value="">----请选择----</option>
+				<option value="Y">是</option>
+			    <option value="N">否</option>
+             </select>
+             <script type="text/javascript">
+                 document.getElementById("mergePDFFlag").value="${exportApp.mergePDFFlag}";
+             </script>&nbsp;
+			 <span style="color:#000033; margin-left:2px;">
+			    （提示：如果生成多个Excel需要转换后再合并PDF，可以选择是。）
+			 </span>
+		</td>
+	</tr>
+	<tr>
+		<td width="15%" align="left">PDF生成方式</td>
+		<td align="left">
+		    <select id="generateFlag" name="generateFlag">
+				<option value="">生成后批量转换</option>
+			    <option value="ONE">生成一个转换一个</option>
+             </select>
+             <script type="text/javascript">
+                 document.getElementById("generateFlag").value="${exportApp.generateFlag}";
+             </script>
+			 <span style="color:#000033; margin-left:2px;">
+			    （提示：同步并行时可以生成一个转换一个，最后再合成。）
+			 </span>
+		</td>
+	</tr>
+	<tr>
+		<td width="15%" align="left">是否并行处理</td>
+		<td align="left">
+		    <select id="parallelFlag" name="parallelFlag">
+				<option value="Y">是</option>
+			    <option value="N">否</option>
+             </select>
+             <script type="text/javascript">
+                 document.getElementById("parallelFlag").value="${exportApp.parallelFlag}";
+             </script>
 		</td>
 	</tr>
 	<tr>

@@ -263,6 +263,30 @@
 		</td>
 	</tr>
 	<tr>
+		<td width="15%" align="left">每页行数</td>
+		<td align="left">
+			<input id="rowSize" name="rowSize" type="text" 
+			       class="easyui-numberbox" style="width:65px; text-align: right" 
+				   increment="10" precision="0" maxLength="2"
+				   value="${exportItem.rowSize}"/>
+			<span style="margin-top:5px;">
+			&nbsp;（提示：将记录按卡片式布局时每页的行数，数据按行数自行分割。）
+			</span>
+		</td>
+	</tr>
+	<tr>
+		<td width="15%" align="left">每行列数</td>
+		<td align="left">
+			<input id="colSize" name="colSize" type="text" 
+			       class="easyui-numberbox" style="width:65px; text-align: right" 
+				   increment="10" precision="0" maxLength="2"
+				   value="${exportItem.colSize}"/>
+			<span style="margin-top:5px;">
+			&nbsp;（提示：将记录按卡片式布局时每行的栏数，数据按栏数自行分割。）
+			</span>
+		</td>
+	</tr>
+	<tr>
         <td width="15%" align="left">空数据填充标识</td>
 		<td align="left">
 		    <select id="genEmptyFlag" name="genEmptyFlag">
