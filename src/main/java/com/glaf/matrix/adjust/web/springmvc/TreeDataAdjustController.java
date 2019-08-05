@@ -76,8 +76,11 @@ public class TreeDataAdjustController {
 	public byte[] execute(HttpServletRequest request) {
 		String adjustId = RequestUtils.getString(request, "adjustId");
 		long databaseId = RequestUtils.getLong(request, "databaseId");
-		Map<String, Object> parameter = RequestUtils.getParameterMap(request);
-		logger.debug("parameter:" + parameter);
+		Map<String, Object> params = RequestUtils.getParameterMap(request);
+		Map<String, Object> parameter = new HashMap<String, Object>();
+		SysParams.putInternalParams(parameter);
+		parameter.putAll(params);
+		logger.debug("params:" + params);
 		if (StringUtils.isNotEmpty(adjustId)) {
 			Long ts = concurrentTimeMap.get(adjustId);
 			if (concurrentMap.get(adjustId) == null
@@ -121,7 +124,7 @@ public class TreeDataAdjustController {
 								bean.execute(databaseId, dataAdjust.getId(), parameter);
 								ret = true;
 							} catch (Exception ex) {
-								ex.printStackTrace();
+								//ex.printStackTrace();
 								logger.error(ex);
 								ret = false;
 							}
@@ -165,7 +168,7 @@ public class TreeDataAdjustController {
 								bean.execute(databaseId, dataAdjust.getId(), parameter);
 								ret = true;
 							} catch (Exception ex) {
-								ex.printStackTrace();
+								//ex.printStackTrace();
 								logger.error(ex);
 								ret = false;
 							}
