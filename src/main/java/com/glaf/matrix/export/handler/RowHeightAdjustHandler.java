@@ -26,6 +26,7 @@ import org.slf4j.LoggerFactory;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.glaf.core.util.ExcelUtils;
 import com.glaf.matrix.export.domain.ExportApp;
 
 public class RowHeightAdjustHandler implements WorkbookHandler {
@@ -74,7 +75,7 @@ public class RowHeightAdjustHandler implements WorkbookHandler {
 							jsonObject = JSON.parseObject(json);
 							int charNumPerRow = jsonObject.getIntValue("charNumPerRow");
 							float lineHeight = jsonObject.getFloatValue("lineHeight");
-							cellVal = cell.getStringCellValue();
+							cellVal = ExcelUtils.getCellValue(cell);
 							if (StringUtils.isEmpty(cellVal)) {
 								cell.setCellValue("  ");
 							}

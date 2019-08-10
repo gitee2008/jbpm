@@ -131,6 +131,25 @@ public class ExportAppServiceImpl implements ExportAppService {
 		return rows;
 	}
 
+	/**
+	 * 通过SQL获取数据
+	 * 
+	 * @param sql
+	 * @param args
+	 * @return
+	 */
+	public List<Map<String, Object>> getResultList(String sql, Object... args) {
+		if (args != null && args.length > 0) {
+			jdbcTemplate.setQueryTimeout(5000);
+			jdbcTemplate.setMaxRows(50000);
+			return jdbcTemplate.queryForList(sql, args);
+		} else {
+			jdbcTemplate.setQueryTimeout(5000);
+			jdbcTemplate.setMaxRows(50000);
+			return jdbcTemplate.queryForList(sql);
+		}
+	}
+
 	public List<ExportApp> list(ExportAppQuery query) {
 		List<ExportApp> list = exportAppMapper.getExportApps(query);
 		return list;
@@ -204,21 +223,6 @@ public class ExportAppServiceImpl implements ExportAppService {
 		this.entityDAO = entityDAO;
 	}
 
-	@javax.annotation.Resource
-	public void setIdGenerator(IdGenerator idGenerator) {
-		this.idGenerator = idGenerator;
-	}
-
-	@javax.annotation.Resource
-	public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
-		this.jdbcTemplate = jdbcTemplate;
-	}
-
-	@javax.annotation.Resource
-	public void setSqlSessionTemplate(SqlSessionTemplate sqlSessionTemplate) {
-		this.sqlSessionTemplate = sqlSessionTemplate;
-	}
-
 	@javax.annotation.Resource(name = "com.glaf.matrix.export.mapper.ExportAppMapper")
 	public void setExportAppMapper(ExportAppMapper exportAppMapper) {
 		this.exportAppMapper = exportAppMapper;
@@ -234,8 +238,23 @@ public class ExportAppServiceImpl implements ExportAppService {
 		this.exportTemplateVarMapper = exportTemplateVarMapper;
 	}
 
+	@javax.annotation.Resource
+	public void setIdGenerator(IdGenerator idGenerator) {
+		this.idGenerator = idGenerator;
+	}
+
+	@javax.annotation.Resource
+	public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
+		this.jdbcTemplate = jdbcTemplate;
+	}
+
 	@javax.annotation.Resource(name = "com.glaf.matrix.parameter.service.parameterConversionService")
 	public void setParameterConversionService(ParameterConversionService parameterConversionService) {
 		this.parameterConversionService = parameterConversionService;
+	}
+
+	@javax.annotation.Resource
+	public void setSqlSessionTemplate(SqlSessionTemplate sqlSessionTemplate) {
+		this.sqlSessionTemplate = sqlSessionTemplate;
 	}
 }

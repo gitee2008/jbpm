@@ -70,6 +70,9 @@ public class ExportItemJsonFactory {
 		if (jsonObject.containsKey("expression")) {
 			model.setExpression(jsonObject.getString("expression"));
 		}
+		if (jsonObject.containsKey("executeFlag")) {
+			model.setExecuteFlag(jsonObject.getString("executeFlag"));
+		}
 		if (jsonObject.containsKey("fileFlag")) {
 			model.setFileFlag(jsonObject.getString("fileFlag"));
 		}
@@ -207,6 +210,9 @@ public class ExportItemJsonFactory {
 		if (model.getExpression() != null) {
 			jsonObject.put("expression", model.getExpression());
 		}
+		if (model.getExecuteFlag() != null) {
+			jsonObject.put("executeFlag", model.getExecuteFlag());
+		}
 		if (model.getFileFlag() != null) {
 			jsonObject.put("fileFlag", model.getFileFlag());
 		}
@@ -317,6 +323,9 @@ public class ExportItemJsonFactory {
 		}
 		if (model.getExpression() != null) {
 			jsonObject.put("expression", model.getExpression());
+		}
+		if (model.getExecuteFlag() != null) {
+			jsonObject.put("executeFlag", model.getExecuteFlag());
 		}
 		if (model.getFileFlag() != null) {
 			jsonObject.put("fileFlag", model.getFileFlag());

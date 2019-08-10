@@ -13,7 +13,7 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package com.glaf.matrix.export.sql;
+package com.glaf.matrix.export.jdbc;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

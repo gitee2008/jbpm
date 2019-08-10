@@ -72,6 +72,14 @@ public interface ExportAppService {
 	 * @return
 	 */
 	List<ExportApp> list(ExportAppQuery query);
+	
+	/**
+	 * 通过SQL获取数据
+	 * @param sql
+	 * @param args
+	 * @return
+	 */
+	List<Map<String,Object>> getResultList(String sql, Object... args);
 
 	/**
 	 * 保存一条记录

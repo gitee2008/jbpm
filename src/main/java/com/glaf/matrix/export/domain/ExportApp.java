@@ -219,6 +219,12 @@ public class ExportApp implements Serializable, JSONable {
 	protected String active;
 
 	/**
+	 * 删除标识
+	 */
+	@Column(name = "DELETEFLAG_")
+	protected int deleteFlag;
+
+	/**
 	 * 创建人
 	 */
 	@Column(name = "CREATEBY_", length = 50)
@@ -309,6 +315,10 @@ public class ExportApp implements Serializable, JSONable {
 			return DateUtils.getDateTime(this.createTime);
 		}
 		return "";
+	}
+
+	public int getDeleteFlag() {
+		return deleteFlag;
 	}
 
 	public String getDeploymentId() {
@@ -476,6 +486,10 @@ public class ExportApp implements Serializable, JSONable {
 
 	public void setCreateTime(Date createTime) {
 		this.createTime = createTime;
+	}
+
+	public void setDeleteFlag(int deleteFlag) {
+		this.deleteFlag = deleteFlag;
 	}
 
 	public void setDeploymentId(String deploymentId) {

@@ -33,6 +33,7 @@ import org.apache.poi.ss.util.CellRangeAddress;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.glaf.core.util.ExcelUtils;
 import com.glaf.matrix.export.domain.ExportApp;
 
 public class CellMergeHandler implements WorkbookHandler {
@@ -42,7 +43,7 @@ public class CellMergeHandler implements WorkbookHandler {
 	public String getCellValue(Cell cell) {
 		if (cell != null && cell.getCellComment() != null) {
 			if (StringUtils.contains(cell.getCellComment().getString().getString(), "mergeCellHorz")) {
-				return cell.getStringCellValue();
+				return ExcelUtils.getCellValue(cell);
 			}
 		}
 		return null;
@@ -53,7 +54,7 @@ public class CellMergeHandler implements WorkbookHandler {
 			Cell cell = row.getCell(colIndex);
 			if (cell != null && cell.getCellComment() != null) {
 				if (StringUtils.contains(cell.getCellComment().getString().getString(), "mergeCell")) {
-					return cell.getStringCellValue();
+					return ExcelUtils.getCellValue(cell);
 				}
 			}
 		}
@@ -88,7 +89,7 @@ public class CellMergeHandler implements WorkbookHandler {
 					}
 					endCol = colIndex;
 					if (cell.getCellComment() != null) {
-						String value = cell.getStringCellValue();
+						String value = ExcelUtils.getCellValue(cell);
 						if (StringUtils.contains(cell.getCellComment().getString().getString(), "mergeCellHorz")) {
 							logger.debug(rowIndex + "行" + colIndex + "列读取到合并注释:"
 									+ cell.getCellComment().getString().getString());
@@ -180,7 +181,7 @@ public class CellMergeHandler implements WorkbookHandler {
 						continue;
 					}
 					if (cell.getCellComment() != null) {
-						String value = cell.getStringCellValue();
+						String value = ExcelUtils.getCellValue(cell);
 						if (StringUtils.contains(cell.getCellComment().getString().getString(), "mergeCell")) {
 							logger.debug(rowIndex + "行" + colIndex + "列读取到合并注释:"
 									+ cell.getCellComment().getString().getString());

@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package com.glaf.matrix.export.sql;
+package com.glaf.matrix.export.jdbc;
 
 import java.sql.Connection;
 import java.util.List;

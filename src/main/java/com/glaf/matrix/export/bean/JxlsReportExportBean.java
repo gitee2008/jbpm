@@ -78,12 +78,9 @@ import com.glaf.matrix.export.domain.ExportItem;
 import com.glaf.matrix.export.domain.ExportTemplateVar;
 import com.glaf.matrix.export.factory.ExportChartFactory;
 import com.glaf.matrix.export.handler.WorkbookFactory;
+import com.glaf.matrix.export.jdbc.ContextHelperFactory;
 import com.glaf.matrix.export.preprocessor.DataPreprocessorFactory;
 import com.glaf.matrix.export.preprocessor.DataXFactory;
-import com.glaf.matrix.export.sql.EntityHelper;
-import com.glaf.matrix.export.sql.JdbcHelper;
-import com.glaf.matrix.export.sql.MyBatisHelper;
-import com.glaf.matrix.export.sql.QueryHelper;
 import com.glaf.matrix.export.util.PDFUtils;
 import com.glaf.matrix.util.ImageUtils;
 import com.glaf.matrix.util.SysParams;
@@ -736,15 +733,8 @@ public class JxlsReportExportBean {
 				}
 				if (conn != null) {
 					QueryConnectionFactory.getInstance().register(ts, conn);
-					JdbcHelper jdbcHelper = new JdbcHelper(conn, params);
-					QueryHelper queryHelper = new QueryHelper(conn, params);
-					MyBatisHelper myBatisHelper = new MyBatisHelper(conn, params);
-					EntityHelper entityHelper = new EntityHelper(database, params);
-				
-					params.put("jdbc", jdbcHelper);
-					params.put("entity", entityHelper);
-					params.put("dbutils", queryHelper);
-					params.put("mybatis", myBatisHelper);
+					
+					ContextHelperFactory.put(exportApp, database, conn, params);
 				}
 			}
 

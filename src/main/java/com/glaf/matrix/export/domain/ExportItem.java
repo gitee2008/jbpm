@@ -113,6 +113,12 @@ public class ExportItem implements Serializable, JSONable {
 	protected String expression;
 
 	/**
+	 * 是否执行，如果是否，不执行SQL，用做SQL模板的定义。
+	 */
+	@Column(name = "EXECUTEFLAG_", length = 1)
+	protected String executeFlag;
+
+	/**
 	 * 文件标识
 	 */
 	@Column(name = "FILEFLAG_", length = 1)
@@ -367,6 +373,10 @@ public class ExportItem implements Serializable, JSONable {
 		return this.deploymentId;
 	}
 
+	public String getExecuteFlag() {
+		return executeFlag;
+	}
+
 	public String getExpId() {
 		return this.expId;
 	}
@@ -572,6 +582,10 @@ public class ExportItem implements Serializable, JSONable {
 
 	public void setDeploymentId(String deploymentId) {
 		this.deploymentId = deploymentId;
+	}
+
+	public void setExecuteFlag(String executeFlag) {
+		this.executeFlag = executeFlag;
 	}
 
 	public void setExpId(String expId) {

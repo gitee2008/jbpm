@@ -49,10 +49,7 @@ import com.glaf.jxls.ext.JxlsBuilder;
 import com.glaf.matrix.export.domain.ExportApp;
 import com.glaf.matrix.export.domain.ExportFileHistory;
 import com.glaf.matrix.export.handler.WorkbookFactory;
-import com.glaf.matrix.export.sql.EntityHelper;
-import com.glaf.matrix.export.sql.JdbcHelper;
-import com.glaf.matrix.export.sql.MyBatisHelper;
-import com.glaf.matrix.export.sql.QueryHelper;
+import com.glaf.matrix.export.jdbc.ContextHelperFactory;
 import com.glaf.template.Template;
 
 public class ExportExcelTask extends RecursiveTask<ExportFileHistory> {
@@ -124,15 +121,8 @@ public class ExportExcelTask extends RecursiveTask<ExportFileHistory> {
 				}
 				if (conn != null) {
 					QueryConnectionFactory.getInstance().register(ts, conn);
-					JdbcHelper jdbcHelper = new JdbcHelper(conn, parameter);
-					QueryHelper queryHelper = new QueryHelper(conn, parameter);
-					MyBatisHelper myBatisHelper = new MyBatisHelper(conn, parameter);
-					EntityHelper entityHelper = new EntityHelper(database, parameter);
-
-					parameter.put("jdbc", jdbcHelper);
-					parameter.put("entity", entityHelper);
-					parameter.put("dbutils", queryHelper);
-					parameter.put("mybatis", myBatisHelper);
+					
+					ContextHelperFactory.put(exportApp, database, conn, parameter);
 				}
 			}
 

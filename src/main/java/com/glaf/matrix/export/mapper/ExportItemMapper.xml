@@ -26,6 +26,8 @@
 			jdbcType="VARCHAR" />
 		<result property="expression" column="EXPRESSION_"
 			jdbcType="VARCHAR" />
+		<result property="executeFlag" column="EXECUTEFLAG_"
+			jdbcType="VARCHAR" />
 		<result property="fileFlag" column="FILEFLAG_"
 			jdbcType="VARCHAR" />
 		<result property="filePathColumn" column="FILEPATHCOLUMN_"
@@ -124,6 +126,9 @@
 			</if>
 			<if test="expression != null">
 				,EXPRESSION_
+			</if>
+			<if test="executeFlag != null">
+				,EXECUTEFLAG_
 			</if>
 			<if test="fileFlag != null">
 				,FILEFLAG_
@@ -256,6 +261,9 @@
 			<if test="expression != null">
 				,#{expression, jdbcType=VARCHAR}
 			</if>
+			<if test="executeFlag != null">
+				,#{executeFlag, jdbcType=VARCHAR}
+			</if>
 			<if test="fileFlag != null">
 				,#{fileFlag, jdbcType=VARCHAR}
 			</if>
@@ -385,6 +393,9 @@
 			</if>
 			<if test="expression != null">
 				EXPRESSION_ = #{expression, jdbcType=VARCHAR},
+			</if>
+			<if test="executeFlag != null">
+				EXECUTEFLAG_ = #{executeFlag, jdbcType=VARCHAR},
 			</if>
 			<if test="fileFlag != null">
 				FILEFLAG_ = #{fileFlag, jdbcType=VARCHAR},

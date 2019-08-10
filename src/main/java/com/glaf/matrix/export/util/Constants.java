@@ -10,6 +10,10 @@ public final class Constants {
 
 	public final static String DEBUG_PARAMS = "__debug__";
 
+	public final static String LINE_SP = "$$LSP$$";// 换行符
+
+	public final static String QUOTE = "$$QUOTE$$";// 单引号转义符
+
 	private Constants() {
 
 	}

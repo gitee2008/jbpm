@@ -24,6 +24,7 @@ import org.apache.poi.ss.usermodel.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.glaf.core.util.ExcelUtils;
 import com.glaf.matrix.export.domain.ExportApp;
 
 public class HiddenRowHandler implements WorkbookHandler {
@@ -60,7 +61,7 @@ public class HiddenRowHandler implements WorkbookHandler {
 						}
 					}
 				} else {
-					String str = cell.getRichStringCellValue().getString();
+					String str = ExcelUtils.getCellValue(cell);
 					if (str != null) {
 						if (StringUtils.contains(str.trim(), "xe:hiddenRow")) {
 							// logger.debug("读取到分页标识:" + str);
