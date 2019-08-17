@@ -18,7 +18,6 @@
 
 package com.glaf.jxls.ext.model;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,9 +27,7 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 import com.alibaba.fastjson.JSONObject;
 import com.glaf.jxls.ext.JxlsImage;
 
-public class ListModel implements Serializable {
-
-	private static final long serialVersionUID = 1L;
+public class ListModel {
 
 	protected String groupId;
 

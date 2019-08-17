@@ -1,35 +1,20 @@
-/*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package com.glaf.jxls.ext;
 
 import org.jxls.area.Area;
 import org.jxls.builder.xls.XlsCommentAreaBuilder;
 import org.jxls.common.CellRef;
 import org.jxls.common.Context;
+import org.jxls.expression.ExpressionEvaluator;
 import org.jxls.formula.FastFormulaProcessor;
 import org.jxls.formula.FormulaProcessor;
 import org.jxls.formula.StandardFormulaProcessor;
 import org.jxls.transform.Transformer;
-import org.jxls.util.JxlsHelper;
+import org.jxls.transform.poi.PoiTransformer;
 import com.glaf.jxls.ext.command.GridCommand;
 import com.glaf.jxls.ext.command.ImageCommand;
 import com.glaf.jxls.ext.command.KeepCommand;
 import com.glaf.jxls.ext.command.MergeCommand;
+import com.glaf.jxls.ext.helper.ExtJxlsHelper;
 
 import java.io.*;
 import java.util.HashMap;
@@ -42,8 +27,22 @@ import java.util.Map;
  * 生成excel辅助类
  * </p>
  *
+ * https://gitee.com/lnkToKing/jxlss
+ * 
+ * @Author lnk
+ * @Date 2018/1/22
  */
 public abstract class JxlsBuilder {
+
+	private static class JxlsBuilderImpl extends JxlsBuilder {
+		public JxlsBuilderImpl(File inFile) {
+			super(inFile);
+		}
+
+		public JxlsBuilderImpl(InputStream in) {
+			super(in);
+		}
+	}
 
 	static {
 		// 注册 jx 命令
@@ -53,44 +52,12 @@ public abstract class JxlsBuilder {
 		XlsCommentAreaBuilder.addCommandMapping("grid", GridCommand.class);
 	}
 
-	private JxlsHelper jxlsHelper = JxlsHelper.getInstance();
-	private Transformer transformer;
-	private Context context;
-	private InputStream in;
-	private OutputStream out;
-	private File inFile;
-	private File outFile;
-	private Map<String, Object> funcs;
-	private String imageRoot = JxlsConfig.getImageRoot();
-	private boolean ignoreImageMiss = false;
-	private String[] removeSheetNames;
-
-	private JxlsBuilder() {
-		context = new Context();
-		funcs = new HashMap<>();
-		funcs.put("jxu", JxlsUtil.me());
-		funcs.put("jxe", JxlsUtil.me());
-	}
-
-	private JxlsBuilder(InputStream in) {
-		this();
-		this.in = in;
-	}
-
-	private JxlsBuilder(File inFile) {
-		this();
-		if (!inFile.exists()) {
-			throw new IllegalArgumentException("模板文件不存在：" + inFile.getAbsolutePath());
-		}
-		if (!inFile.getName().toLowerCase().endsWith("xls") && !inFile.getName().toLowerCase().endsWith("xlsx")) {
-			throw new IllegalArgumentException("不支持非excel文件：" + inFile.getName());
-		}
-		this.inFile = inFile;
-		try {
-			in = new FileInputStream(inFile);
-		} catch (FileNotFoundException e) {
-			throw new IllegalArgumentException("文件读取失败：" + inFile.getAbsolutePath(), e);
-		}
+	/**
+	 * @param templateFile 模板文件地址
+	 * @return
+	 */
+	public static JxlsBuilder getBuilder(File templateFile) {
+		return new JxlsBuilderImpl(templateFile);
 	}
 
 	/**
@@ -99,14 +66,6 @@ public abstract class JxlsBuilder {
 	 */
 	public static JxlsBuilder getBuilder(InputStream in) {
 		return new JxlsBuilderImpl(in);
-	}
-
-	/**
-	 * @param templateFile 模板文件地址
-	 * @return
-	 */
-	public static JxlsBuilder getBuilder(File templateFile) {
-		return new JxlsBuilderImpl(templateFile);
 	}
 
 	/**
@@ -131,8 +90,61 @@ public abstract class JxlsBuilder {
 		}
 	}
 
-	public JxlsHelper getJxlsHelper() {
-		return jxlsHelper;
+	public static void main(String[] args) throws Exception {
+		JxlsBuilder.getBuilder("xx.xlsx").out("/tmp/xx.xlsx").putVar("", null).build();
+	}
+
+	private ExtJxlsHelper jxlsHelper;
+	private String expressionFactory;
+	private Transformer transformer;
+	private Context context;
+	private InputStream in;
+	private OutputStream out;
+	private File inFile;
+	private File outFile;
+	private Map<String, Object> funcs;
+	private String imageRoot = JxlsConfig.getImageRoot();
+	private boolean ignoreImageMiss = false;
+	private String[] removeSheetNames;
+
+	private JxlsBuilder() {
+		context = new Context();
+		funcs = new HashMap<>();
+		funcs.put("jxu", JxlsUtil.me());
+		funcs.put("jxe", JxlsUtil.me());
+	}
+
+	private JxlsBuilder(File inFile) {
+		this();
+		if (!inFile.exists()) {
+			throw new IllegalArgumentException("模板文件不存在：" + inFile.getAbsolutePath());
+		}
+		if (!inFile.getName().toLowerCase().endsWith("xls") && !inFile.getName().toLowerCase().endsWith("xlsx")) {
+			throw new IllegalArgumentException("不支持非excel文件：" + inFile.getName());
+		}
+		this.inFile = inFile;
+		try {
+			in = new FileInputStream(inFile);
+		} catch (FileNotFoundException e) {
+			throw new IllegalArgumentException("文件读取失败：" + inFile.getAbsolutePath(), e);
+		}
+	}
+
+	private JxlsBuilder(InputStream in) {
+		this();
+		this.in = in;
+	}
+
+	/**
+	 * 添加自定义工具对象
+	 *
+	 * @param name
+	 * @param function
+	 * @return
+	 */
+	public JxlsBuilder addFunction(String name, Object function) {
+		funcs.put(name, function);
+		return this;
 	}
 
 	/**
@@ -142,6 +154,8 @@ public abstract class JxlsBuilder {
 	 * @throws Exception
 	 */
 	public JxlsBuilder build() throws Exception {
+		jxlsHelper = new ExtJxlsHelper(expressionFactory);
+
 		getTransformer();
 
 		if (JxlsUtil.me().hasText(imageRoot)) {
@@ -155,6 +169,153 @@ public abstract class JxlsBuilder {
 		// evaluator.getJexlEngine().setSilent(JxlsConfig.getSilent());
 
 		transform();
+		return this;
+	}
+
+	public JxlsBuilder setExpressionFactory(String expressionFactory) {
+		this.expressionFactory = expressionFactory;
+		return this;
+	}
+
+	public File getInFile() {
+		return inFile;
+	}
+
+	public File getOutFile() {
+		return outFile;
+	}
+
+	public Transformer getTransformer() throws Exception {
+		if (transformer == null) {
+			if (out == null && outFile == null) {
+				throw new Exception("请指定文件输出位置");
+			}
+			if (out == null) {
+				out = new FileOutputStream(outFile);
+			}
+
+			try {
+				transformer = jxlsHelper.createTransformer(in, out);
+			} catch (java.lang.Throwable ex) {
+			}
+			if (transformer == null) {
+				transformer = PoiTransformer.createTransformer(in, out);
+			}
+		}
+		ExpressionEvaluator expressionEvaluator = jxlsHelper.createExpressionEvaluator(null);
+		transformer.getTransformationConfig().setExpressionEvaluator(expressionEvaluator);
+		return transformer;
+	}
+
+	/**
+	 * 获取数据
+	 *
+	 * @param name
+	 * @return
+	 */
+	public Object getVar(String name) {
+		return context.getVar(name);
+	}
+
+	/**
+	 * 设置是否忽略图片错误<br>
+	 * true 忽略图片错误，如果图片读取失败时不终止运行，继续生成excel false 默认，不忽略图片错误，如果图片读取失败终止生成excel
+	 *
+	 * @param ignoreImageMiss
+	 */
+	public JxlsBuilder ignoreImageMiss(boolean ignoreImageMiss) {
+		this.ignoreImageMiss = ignoreImageMiss;
+		return this;
+	}
+
+	/**
+	 * 设置图片根路径
+	 *
+	 * @param root
+	 * @return
+	 */
+	public JxlsBuilder imageRoot(String root) {
+		this.imageRoot = root;
+		return this;
+	}
+
+	/**
+	 * 指定输出文件
+	 *
+	 * @param outFile
+	 * @return
+	 */
+	public JxlsBuilder out(File outFile) {
+		this.outFile = outFile;
+		return this;
+	}
+
+	/**
+	 * 指定输出流
+	 *
+	 * @param out
+	 * @return
+	 */
+	public JxlsBuilder out(OutputStream out) {
+		this.out = out;
+		return this;
+	}
+
+	/**
+	 * 指定输出文件绝对路径
+	 *
+	 * @param outPath
+	 * @return
+	 */
+	public JxlsBuilder out(String outPath) {
+		this.outFile = new File(outPath);
+		return this;
+	}
+
+	/**
+	 * 添加数据
+	 *
+	 * @param map
+	 * @return
+	 */
+	public JxlsBuilder putAll(Map<String, Object> map) {
+		for (String key : map.keySet()) {
+			putVar(key, map.get(key));
+		}
+		return this;
+	}
+
+	/**
+	 * 添加数据
+	 *
+	 * @param name
+	 * @param value
+	 * @return
+	 */
+	public JxlsBuilder putVar(String name, Object value) {
+		context.putVar(name, value);
+		return this;
+	}
+
+	/**
+	 * 生成excel后删除指定表格
+	 * 
+	 * @param sheetNames
+	 * @return
+	 */
+	public JxlsBuilder removeSheet(String... sheetNames) {
+		this.removeSheetNames = sheetNames;
+		return this;
+	}
+
+	/**
+	 * 删除数据
+	 *
+	 * @param name
+	 * @return
+	 */
+	public JxlsBuilder removeVar(String name) {
+		context.removeVar(name);
 		return this;
 	}
 
@@ -184,165 +345,5 @@ public abstract class JxlsBuilder {
 		}
 		transformer.deleteSheet("Sheet");
 		transformer.write();
-	}
-
-	private static class JxlsBuilderImpl extends JxlsBuilder {
-		public JxlsBuilderImpl(InputStream in) {
-			super(in);
-		}
-
-		public JxlsBuilderImpl(File inFile) {
-			super(inFile);
-		}
-	}
-
-	public Transformer getTransformer() throws Exception {
-		if (transformer == null) {
-			if (out == null && outFile == null) {
-				throw new Exception("请指定文件输出位置");
-			}
-			if (out == null) {
-				out = new FileOutputStream(outFile);
-			}
-
-			transformer = jxlsHelper.createTransformer(in, out);
-		}
-		return transformer;
-	}
-
-	/**
-	 * 指定输出流
-	 *
-	 * @param out
-	 * @return
-	 */
-	public JxlsBuilder out(OutputStream out) {
-		this.out = out;
-		return this;
-	}
-
-	/**
-	 * 指定输出文件
-	 *
-	 * @param outFile
-	 * @return
-	 */
-	public JxlsBuilder out(File outFile) {
-		this.outFile = outFile;
-		return this;
-	}
-
-	/**
-	 * 指定输出文件绝对路径
-	 *
-	 * @param outPath
-	 * @return
-	 */
-	public JxlsBuilder out(String outPath) {
-		this.outFile = new File(outPath);
-		return this;
-	}
-
-	/**
-	 * 添加数据
-	 *
-	 * @param name
-	 * @param value
-	 * @return
-	 */
-	public JxlsBuilder putVar(String name, Object value) {
-		context.putVar(name, value);
-		return this;
-	}
-
-	/**
-	 * 添加数据
-	 *
-	 * @param map
-	 * @return
-	 */
-	public JxlsBuilder putAll(Map<String, Object> map) {
-		for (String key : map.keySet()) {
-			putVar(key, map.get(key));
-		}
-		return this;
-	}
-
-	/**
-	 * 删除数据
-	 *
-	 * @param name
-	 * @return
-	 */
-	public JxlsBuilder removeVar(String name) {
-		context.removeVar(name);
-		return this;
-	}
-
-	/**
-	 * 获取数据
-	 *
-	 * @param name
-	 * @return
-	 */
-	public Object getVar(String name) {
-		return context.getVar(name);
-	}
-
-	/**
-	 * 添加自定义工具对象
-	 *
-	 * @param name
-	 * @param function
-	 * @return
-	 */
-	public JxlsBuilder addFunction(String name, Object function) {
-		funcs.put(name, function);
-		return this;
-	}
-
-	/**
-	 * 设置图片根路径
-	 *
-	 * @param root
-	 * @return
-	 */
-	public JxlsBuilder imageRoot(String root) {
-		this.imageRoot = root;
-		return this;
-	}
-
-	/**
-	 * 设置是否忽略图片错误<br>
-	 * true 忽略图片错误，如果图片读取失败时不终止运行，继续生成excel false 默认，不忽略图片错误，如果图片读取失败终止生成excel
-	 *
-	 * @param ignoreImageMiss
-	 */
-	public JxlsBuilder ignoreImageMiss(boolean ignoreImageMiss) {
-		this.ignoreImageMiss = ignoreImageMiss;
-		return this;
-	}
-
-	public File getInFile() {
-		return inFile;
-	}
-
-	public File getOutFile() {
-		return outFile;
-	}
-
-	public static void main(String[] args) throws Exception {
-		JxlsBuilder.getBuilder("xx.xlsx").out("/tmp/xx.xlsx").putVar("", null).build();
-	}
-
-	/**
-	 * 生成excel后删除指定表格
-	 * 
-	 * @param sheetNames
-	 * @return
-	 */
-	public JxlsBuilder removeSheet(String... sheetNames) {
-		this.removeSheetNames = sheetNames;
-		return this;
 	}
 }

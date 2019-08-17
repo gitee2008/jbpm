@@ -192,5 +192,6 @@
 	<classpathentry kind="lib" path="webapps/glaf/WEB-INF/lib/itextpdf7-layout.jar"/>
 	<classpathentry kind="lib" path="webapps/glaf/WEB-INF/lib/itextpdf7-pdfa.jar"/>
 	<classpathentry kind="lib" path="webapps/glaf/WEB-INF/lib/itextpdf7-sign.jar"/>
+	<classpathentry kind="lib" path="webapps/glaf/WEB-INF/lib/aviator.jar"/>
 	<classpathentry kind="output" path="webapps/glaf/WEB-INF/classes"/>
 </classpath>
