@@ -244,7 +244,7 @@
 		<dependency>
 			<groupId>com.aliyun</groupId>
 			<artifactId>aliyun-java-sdk-core</artifactId>
-			<version>4.4.2</version>
+			<version>4.4.6</version>
 		</dependency>
 		<dependency>
 			<groupId>com.aliyun</groupId>
@@ -254,7 +254,7 @@
 		<dependency>
 			<groupId>com.zaxxer</groupId>
 			<artifactId>HikariCP</artifactId>
-			<version>3.3.1</version>
+			<version>3.4.1</version>
 		</dependency>
 		<!-- 缓存 -->
 		<dependency>
@@ -536,7 +536,7 @@
 		<dependency>
 			<groupId>com.alibaba</groupId>
 			<artifactId>fastjson</artifactId>
-			<version>1.2.60</version>
+			<version>1.2.61</version>
 		</dependency>
 		<dependency>
 			<groupId>com.google.code.gson</groupId>
@@ -910,7 +910,7 @@
 		<dependency>
 			<groupId>io.netty</groupId>
             <artifactId>netty-all</artifactId>
-            <version>4.1.39.Final</version>
+            <version>4.1.42.Final</version>
 		</dependency>
 		<!-- 任务调度框架 -->
 		<dependency>
@@ -1044,7 +1044,7 @@
 		<dependency>
 			<groupId>com.itextpdf</groupId>
 			<artifactId>itext7-core</artifactId>
-			<version>7.1.7</version>
+			<version>7.1.8</version>
 			<type>pom</type>
 		</dependency>
 		<dependency>
